@@ -27,10 +27,10 @@ class Zulu {
 
             $newMatch[] = 'ZULU';
             $newMatch[] = $date;
-            $newMatch[] = $row->childNodes[1]->nodeValue;
-            $newMatch[] = str_replace("%", "", $row->childNodes[3]->nodeValue);
-            $newMatch[] = str_replace("%", "", $row->childNodes[4]->nodeValue);
-            $newMatch[] = str_replace("%", "", $row->childNodes[5]->nodeValue);
+            $newMatch['teams'] = $row->childNodes[1]->nodeValue;
+            $newMatch['homePct'] = str_replace("%", "", $row->childNodes[3]->nodeValue);
+            $newMatch['drawPct'] = str_replace("%", "", $row->childNodes[4]->nodeValue);
+            $newMatch['awayPct'] = str_replace("%", "", $row->childNodes[5]->nodeValue);
             $newMatch[] = $row->childNodes[9]->nodeValue;
             $newMatch[] = $row->childNodes[10]->nodeValue;
             $newMatch[] = $row->childNodes[11]->nodeValue;

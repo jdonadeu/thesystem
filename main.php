@@ -23,3 +23,4 @@ echo "* YAAAAASSTAAAAAAAAAAAAA \n";
 echo "* Suerte y gaceta hipica \n";
 echo "* \n";
 echo "****************************************************** \n";
+echo "\n\n";

@@ -8,14 +8,12 @@ class MatchCollector
     public function getMatches(): array
     {
         $zulu = new Zulu();
-        $zuluMatches = $zulu->getMatches();
-
         $foreBet = new ForeBet();
-        $foreBetMatches = $foreBet->getMatches();
 
-        //usort($zuluMatches, "compareByHomePct");
+        $allMatches = $this->matchMerger($zulu->getMatches(), $foreBet->getMatches());
+        usort($allMatches, [$this, "compareByTotalHomePct"]);
 
-        return $this->matchMerger($zuluMatches, $foreBetMatches);
+        return $allMatches;
     }
 
     private function matchMerger(array $a, array $b): array
@@ -26,29 +24,20 @@ class MatchCollector
             $newRow = $aRow;
 
             foreach ($b as $bRow) {
-                $aTeams = $aRow[1];
-                $bTeams = $bRow[1];
+                $aTeams = $aRow['teams'];
+                $bTeams = $bRow['teams'];
 
                 similar_text($aTeams, $bTeams, $pct);
 
-                var_dump($pct);
-
-                if ($pct > 50) {
+                if ($pct > 75) {
+                    $newRow[] = $pct;
                     $newRow[] = "    ";
-                    $newRow = array_merge($newRow, $bRow);
+                    $newRow = array_merge(array_values($newRow), array_values($bRow));
                     $newRow[] = "    ";
                     $newRow[] = "TOTALS";
-
-                    $aPrediction_1 = $aRow[3];
-                    $bPrediction_1 = $bRow[3];
-                    $aPrediction_X = $aRow[4];
-                    $bPrediction_X = $bRow[4];
-                    $aPrediction_2 = $aRow[5];
-                    $bPrediction_2 = $bRow[5];
-
-                    $newRow[] = $aPrediction_1 + $bPrediction_1;
-                    $newRow[] = $aPrediction_X + $bPrediction_X;
-                    $newRow[] = $aPrediction_2 + $bPrediction_2;
+                    $newRow['totalHomePct'] = $aRow['homePct'] + $bRow['homePct'];
+                    $newRow['totalDrawPct'] = $aRow['drawPct'] + $bRow['drawPct'];
+                    $newRow['totalAwayPct'] = $aRow['awayPct'] + $bRow['awayPct'];
 
                     break;
                 }
@@ -60,8 +49,10 @@ class MatchCollector
         return $mergedData;
     }
 
+    private function compareByTotalHomePct($a, $b): int {
+        $aValue = $a['totalHomePct'] ?? 0;
+        $bValue = $b['totalHomePct'] ?? 0;
 
-    private function compareByHomePct($a, $b): int {
-        return $b[2] - $a[2];
+        return $bValue - $aValue;
     }
 }
