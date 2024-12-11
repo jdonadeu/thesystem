@@ -1,6 +1,6 @@
 <?php
 
-include 'MatchCollector.php';
+include 'lib/MatchCollector.php';
 
 $filename = 'matches.csv';
 
