@@ -4,15 +4,15 @@ include 'lib/MatchCollector.php';
 
 // Zulu matches
 $zulu = new Zulu();
-saveCsvFile('zulu-matches.csv', $zulu->getMatches());
+saveCsvFile('csv/zulu-matches.csv', $zulu->getMatches());
 
 // ForeBet files
 $foreBet = new Forebet();
-saveCsvFile('forebet-matches.csv', $foreBet->getMatches());
+saveCsvFile('csv/forebet-matches.csv', $foreBet->getMatches());
 
 // All matches
 $matchCollector = new MatchCollector();
-saveCsvFile('all-matches.csv', $matchCollector->getMatches());
+saveCsvFile('csv/all-matches.csv', $matchCollector->getMatches());
 
 // Output
 echo "\n\n";
