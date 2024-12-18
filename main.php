@@ -1,20 +1,22 @@
 <?php
 
+include 'lib/Zulu.php';
+include 'lib/ForeBet.php';
 include 'lib/MatchCollector.php';
 
-$filename = 'matches.csv';
+// Zulu matches
+$zulu = new Zulu();
+saveCsvFile('zulu-matches.csv', $zulu->getMatches());
 
+// ForeBet files
+$foreBet = new Forebet();
+saveCsvFile('forebet-matches.csv', $foreBet->getMatches());
+
+// All matches
 $matchCollector = new MatchCollector();
-$matches = $matchCollector->getMatches();
+saveCsvFile('all-matches.csv', $matchCollector->getMatches());
 
-$fp = fopen($filename, 'w');
-
-foreach ($matches as $match) {
-    fputcsv($fp, $match);
-}
-
-fclose($fp);
-
+// Output
 echo "\n\n";
 echo "****************************************************** \n";
 echo "* \n";
@@ -24,3 +26,15 @@ echo "* Suerte y gaceta hipica \n";
 echo "* \n";
 echo "****************************************************** \n";
 echo "\n\n";
+
+// Functions
+function saveCsvFile(string $filename, array $data): void
+{
+    $fp = fopen($filename, 'w');
+
+    foreach ($data as $match) {
+        fputcsv($fp, $match);
+    }
+
+    fclose($fp);
+}
