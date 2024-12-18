@@ -10,6 +10,7 @@ class Zulu {
         $tableWithMatches = $this->getTableWithClass($this->getInnerHtml($table), 'content_table');
 
         $zuluMatches = [];
+        $now = new DateTime();
 
         for ($i = 2; $i < count($tableWithMatches->childNodes); $i++) {
             $newMatch = [];
@@ -24,6 +25,10 @@ class Zulu {
             $seed = ']]>';
             $start = strpos($date, $seed) + strlen($seed);
             $date = substr($date, $start);
+
+            if (DateTime::createFromFormat("d-m, H:i", $date) < $now) {
+                continue;
+            }
 
             $newMatch[] = 'ZULU';
             $newMatch[] = $date;

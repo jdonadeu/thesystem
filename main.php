@@ -1,7 +1,5 @@
 <?php
 
-include 'lib/Zulu.php';
-include 'lib/ForeBet.php';
 include 'lib/MatchCollector.php';
 
 // Zulu matches

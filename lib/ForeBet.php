@@ -21,8 +21,15 @@ class ForeBet
 
         $matches = json_decode($json, true);
         $foreBetMatches = [];
+        $now = new DateTime();
 
         foreach ($matches[0] as $match) {
+            $dateTime = DateTime::createFromFormat("Y-m-d H:i:s", $match['DATE_BAH']);
+
+            if ($dateTime < $now) {
+                continue;
+            }
+
             $foreBetMatches[] = [
                 'FOREBET',
                 $match['DATE_BAH'],
