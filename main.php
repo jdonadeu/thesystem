@@ -1,6 +1,8 @@
 <?php
 
 include 'lib/MatchCollector.php';
+include 'lib/Zulu.php';
+include 'lib/ForeBet.php';
 
 // Zulu matches
 $zulu = new Zulu();

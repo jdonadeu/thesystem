@@ -1,9 +1,16 @@
 <?php
 
 include 'lib/MatchCollector.php';
+include 'lib/Zulu.php';
+include 'lib/ForeBet.php';
 
 echo '<html>';
 echo '<body>';
+
+// All matches
+echo '<p>All</p>';
+$matchCollector = new MatchCollector();
+printMatches($matchCollector->getMatches());
 
 // Zulu matches
 echo '<p>Zulu</p>';
@@ -14,11 +21,6 @@ printMatches($zulu->getMatches());
 echo '<p>Forebet</p>';
 $foreBet = new Forebet();
 printMatches($foreBet->getMatches());
-
-// All matches
-echo '<p>All</p>';
-$matchCollector = new MatchCollector();
-printMatches($matchCollector->getMatches());
 
 echo '</body>';
 echo '</html>';

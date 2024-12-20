@@ -1,8 +1,5 @@
 <?php
 
-include 'Zulu.php';
-include 'ForeBet.php';
-
 class MatchCollector
 {
     public function getMatches(): array
