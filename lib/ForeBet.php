@@ -37,9 +37,6 @@ class ForeBet
                 'homePct' => $match['Pred_1'],
                 'drawPct' => $match['Pred_X'],
                 'awayPct' => $match['Pred_2'],
-                $match['best_odd_1'],
-                $match['best_odd_X'],
-                $match['best_odd_2'],
             ];
         }
 

@@ -1,47 +1,55 @@
 <?php
 
-include 'lib/MatchCollector.php';
-include 'lib/Zulu.php';
-include 'lib/ForeBet.php';
-
 echo '<html>';
+
+echo '
+<style>
+
+td {
+    padding: 5px; border: 1px solid black;
+}
+
+</style>';
+
 echo '<body>';
 
 // All matches
+$allMatchesFilename = 'csv/all-matches.csv';
 echo '<p>All</p>';
-$matchCollector = new MatchCollector();
-printMatches($matchCollector->getMatches());
+printTable($allMatchesFilename);
 
 // Zulu matches
+$zuluFilename = 'csv/zulu-matches.csv';
 echo '<p>Zulu</p>';
-$zulu = new Zulu();
-printMatches($zulu->getMatches());
+printTable($zuluFilename);
 
 // ForeBet files
+$foreBetFilename = 'csv/forebet-matches.csv';
 echo '<p>Forebet</p>';
-$foreBet = new Forebet();
-printMatches($foreBet->getMatches());
+printTable($foreBetFilename);
 
 echo '</body>';
 echo '</html>';
 
-
-// Functions
-function saveCsvFile(string $filename, array $data): void
+function printTable(string $filename): void
 {
-    $fp = fopen($filename, 'w');
+    $data = htmlspecialchars(file_get_contents($filename));
+    $rows = explode("\n", $data);
 
-    foreach ($data as $match) {
-        fputcsv($fp, $match);
+    echo '<table style="border: 1px solid black;">';
+
+    foreach ($rows as $row) {
+        $cols = explode(",", $row);
+        echo '<tr>';
+
+        foreach ($cols as $col) {
+            echo '<td>'
+                . str_replace('&quot;', '', $col)
+                . '</td>';
+        }
+
+        echo '</tr>';
     }
 
-    fclose($fp);
-}
-
-function printMatches(array $matches): void
-{
-    foreach ($matches as $match) {
-        echo implode(',', $match) . "<br>";
-    }
-    echo "<br><br>";
+    echo '</table>';
 }

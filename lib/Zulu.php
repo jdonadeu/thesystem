@@ -36,10 +36,6 @@ class Zulu {
             $newMatch['homePct'] = str_replace("%", "", $row->childNodes[3]->nodeValue);
             $newMatch['drawPct'] = str_replace("%", "", $row->childNodes[4]->nodeValue);
             $newMatch['awayPct'] = str_replace("%", "", $row->childNodes[5]->nodeValue);
-            $newMatch[] = $row->childNodes[9]->nodeValue;
-            $newMatch[] = $row->childNodes[10]->nodeValue;
-            $newMatch[] = $row->childNodes[11]->nodeValue;
-            $newMatch[] = $row->childNodes[12]->nodeValue;
             $newMatch[] = $row->childNodes[7]->nodeValue;
 
             $zuluMatches[] = $newMatch;

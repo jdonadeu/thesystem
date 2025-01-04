@@ -26,8 +26,8 @@ class MatchCollector
 
                 similar_text($aTeams, $bTeams, $pct);
 
-                if ($pct > 75) {
-                    $newRow[] = $pct;
+                if ($pct > 60) {
+                    $newRow[] = floor($pct);
                     $newRow[] = "    ";
                     $newRow = array_merge(array_values($newRow), array_values($bRow));
                     $newRow[] = "    ";
