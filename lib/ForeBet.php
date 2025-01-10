@@ -34,6 +34,8 @@ class ForeBet
                 continue;
             }
 
+            //var_dump($match);
+
             $foreBetMatches[] = [
                 'FOREBET',
                 $match['DATE_BAH'],
@@ -41,6 +43,8 @@ class ForeBet
                 'homePct' => $match['Pred_1'],
                 'drawPct' => $match['Pred_X'],
                 'awayPct' => $match['Pred_2'],
+                'goalsavg' => $match['goalsavg'],
+                'host_sc_pr' => $match['host_sc_pr'] . '-' . $match['guest_sc_pr'],
             ];
         }
 
