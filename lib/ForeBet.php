@@ -34,8 +34,6 @@ class ForeBet
                 continue;
             }
 
-            //var_dump($match);
-
             $foreBetMatches[] = [
                 'FOREBET',
                 $match['DATE_BAH'],

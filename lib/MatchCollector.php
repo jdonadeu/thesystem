@@ -2,12 +2,17 @@
 
 class MatchCollector
 {
-    public function getMatches(): array
+    public function getMatches(array $zuluMatches = [], array $foreBetMatches = []): array
     {
-        $zulu = new Zulu();
-        $foreBet = new ForeBet();
+        if (empty($zuluMatches)) {
+            $zuluMatches = (new Zulu())->getMatches();
+        }
 
-        $allMatches = $this->matchMerger($zulu->getMatches(), $foreBet->getMatches());
+        if (empty($foreBetMatches)) {
+            $foreBetMatches = (new ForeBet())->getMatches();
+        }
+
+        $allMatches = $this->matchMerger($zuluMatches, $foreBetMatches);
         usort($allMatches, [$this, "compareByTotalHomePct"]);
 
         return $allMatches;
