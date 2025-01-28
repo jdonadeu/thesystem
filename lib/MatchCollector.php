@@ -41,7 +41,7 @@ class MatchCollector
                     $newRow['totalDrawPct'] = $aRow['drawPct'] + $bRow['drawPct'];
                     $newRow['totalAwayPct'] = $aRow['awayPct'] + $bRow['awayPct'];
 
-                    break;
+                    //break;
                 }
             }
 
