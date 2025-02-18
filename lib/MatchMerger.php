@@ -1,6 +1,6 @@
 <?php
 
-class MatchCollector
+class MatchMerger
 {
     public function getMatches(array $zuluMatches = [], array $foreBetMatches = []): array
     {
@@ -12,13 +12,13 @@ class MatchCollector
             $foreBetMatches = (new ForeBet())->getMatches();
         }
 
-        $allMatches = $this->matchMerger($zuluMatches, $foreBetMatches);
+        $allMatches = $this->merge($zuluMatches, $foreBetMatches);
         usort($allMatches, [$this, "compareByTotalHomePct"]);
 
         return $allMatches;
     }
 
-    private function matchMerger(array $a, array $b): array
+    private function merge(array $a, array $b): array
     {
         $mergedData = [];
 
@@ -40,8 +40,6 @@ class MatchCollector
                     $newRow['totalHomePct'] = $aRow['homePct'] + $bRow['homePct'];
                     $newRow['totalDrawPct'] = $aRow['drawPct'] + $bRow['drawPct'];
                     $newRow['totalAwayPct'] = $aRow['awayPct'] + $bRow['awayPct'];
-
-                    //break;
                 }
             }
 

@@ -1,25 +1,27 @@
 <?php
 
-include 'lib/MatchCollector.php';
+include 'lib/MatchMerger.php';
 include 'lib/Zulu.php';
 include 'lib/ForeBet.php';
 
 // Zulu matches
 $zulu = new Zulu();
-$zuluFilename = 'csv/zulu-matches.csv';
 $zuluMatches = $zulu->getMatches();
-saveCsvFile($zuluFilename, $zuluMatches);
+saveCsvFile('csv/zulu-matches.csv', $zuluMatches);
 
 // ForeBet files
 $foreBet = new Forebet();
-$foreBetFilename = 'csv/forebet-matches.csv';
 $foreBetMatches = $foreBet->getMatches();
-saveCsvFile($foreBetFilename, $foreBetMatches);
+saveCsvFile('csv/forebet-matches.csv', $foreBetMatches);
 
 // All matches
-$matchCollector = new MatchCollector();
-$allMatchesFilename = 'csv/all-matches.csv';
-saveCsvFile($allMatchesFilename, $matchCollector->getMatches($zuluMatches, $foreBetMatches));
+$matchMerger = new MatchMerger();
+saveCsvFile('csv/all-matches.csv', $matchMerger->getMatches($zuluMatches, $foreBetMatches));
+
+// ForeBet under over
+$foreBetMatches = $foreBet->getUnderOverMatches();
+saveCsvFile('csv/forebet-over-under.csv', $foreBet->getUnderOverMatches());
+
 
 // Output
 echo "\n\n";

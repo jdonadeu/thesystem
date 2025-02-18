@@ -1,6 +1,6 @@
 <?php
 
-include 'lib/MatchCollector.php';
+include 'lib/MatchMerger.php';
 include 'lib/Zulu.php';
 include 'lib/ForeBet.php';
 
@@ -9,7 +9,7 @@ echo '<body>';
 
 // All matches
 echo '<p>All</p>';
-$matchCollector = new MatchCollector();
+$matchCollector = new MatchMerger();
 printMatches($matchCollector->getMatches());
 
 // Zulu matches

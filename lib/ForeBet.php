@@ -48,4 +48,32 @@ class ForeBet
 
         return $foreBetMatches;
     }
+
+    public function getUnderOverMatches(): array
+    {
+        $json = file_get_contents('data/forebet_under_over.json');
+        $matches = json_decode($json, true);
+        $foreBetMatches = [];
+        $now = new DateTime();
+
+        foreach ($matches[0] as $match) {
+            $dateTime = DateTime::createFromFormat("Y-m-d H:i:s", $match['DATE_BAH']);
+
+            if ($dateTime < $now) {
+                continue;
+            }
+
+            $foreBetMatches[] = [
+                'FOREBET OVER UNDER',
+                $match['DATE_BAH'],
+                'teams' => trim(preg_replace('/\s\s+/', ' ', $match['HOST_NAME'] . " - " . $match['GUEST_NAME'])),
+                'underPct' => $match['pr_under'],
+                'overPct' => $match['pr_over'],
+                'goalsAvg' => $match['goalsavg'],
+                'host_sc_pr' => $match['host_sc_pr'] . '-' . $match['guest_sc_pr'],
+            ];
+        }
+
+        return $foreBetMatches;
+    }
 }
