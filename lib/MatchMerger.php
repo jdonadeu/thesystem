@@ -13,7 +13,10 @@ class MatchMerger
         }
 
         $allMatches = $this->merge($zuluMatches, $foreBetMatches);
-        usort($allMatches, [$this, "compareByTotalHomePct"]);
+
+        usort($allMatches, function($a, $b) {
+            return ($b['totalHomePct'] ?? 0) - ($a['totalHomePct'] ?? 0);
+        });
 
         return $allMatches;
     }
@@ -47,12 +50,5 @@ class MatchMerger
         }
 
         return $mergedData;
-    }
-
-    private function compareByTotalHomePct($a, $b): int {
-        $aValue = $a['totalHomePct'] ?? 0;
-        $bValue = $b['totalHomePct'] ?? 0;
-
-        return $bValue - $aValue;
     }
 }

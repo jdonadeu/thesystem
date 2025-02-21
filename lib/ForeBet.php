@@ -60,6 +60,10 @@ class ForeBet
             ];
         }
 
+        usort($foreBetMatches, function($a, $b) {
+            return $a['underPct'] - $b['underPct'];
+        });
+
         return $foreBetMatches;
     }
 
@@ -86,6 +90,10 @@ class ForeBet
                 'host_sc_pr' => $match['host_sc_pr'] . '-' . $match['guest_sc_pr'],
             ];
         }
+
+        usort($foreBetMatches, function($a, $b) {
+            return $a['noPct'] - $b['noPct'];
+        });
 
         return $foreBetMatches;
     }
