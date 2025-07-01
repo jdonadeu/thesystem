@@ -1,11 +1,14 @@
 <?php
 
+include 'utils.php';
 include 'lib/MatchMerger.php';
 include 'lib/Zulu.php';
 include 'lib/ForeBet.php';
+include 'lib/PronosticosFutbol365.php';
 
 $zulu = new Zulu();
 $foreBet = new Forebet();
+$pronosticosFutbol365 = new PronosticosFutbol365();
 $matchMerger = new MatchMerger();
 
 // Zulu matches
@@ -19,6 +22,9 @@ $foreBetMatchesBts = $foreBet->getBothToScoreMatches();
 saveCsvFile('csv/forebet-1x2.csv', $foreBetMatches1x2);
 saveCsvFile('csv/forebet-under-over.csv', $foreBetMatchesUnderOver);
 saveCsvFile('csv/forebet-bts.csv', $foreBetMatchesBts);
+
+// PronosticosFutbol365
+$pronosticosFutbol365Matches = $pronosticosFutbol365->getMatches();
 
 // All matches
 $zuluForeBetMatches1x2 = $matchMerger->getMatches($zuluMatches1x2, $foreBetMatches1x2);
@@ -41,7 +47,7 @@ echo "* 1X2 \n";
 echo "****************************************************** \n";
 
 foreach ($zuluForeBetMatches1x2 as $match) {
-    if (($match['totalHomePct'] ?? 0) < 120) {
+    if (($match['totalHomePct'] ?? 0) < 110) {
         continue;
     }
 
@@ -76,15 +82,53 @@ foreach ($foreBetMatchesBts as $match) {
     echo "-- " . implode(",", $match) . "\n";
 }
 
+// Zulu matches ordered by home pct
+echo "\n\n";
+echo "****************************************************** \n";
+echo "* Zulu ordered by homePct\n";
+echo "****************************************************** \n";
 
-// Functions
-function saveCsvFile(string $filename, array $data): void
-{
-    $fp = fopen($filename, 'w');
+usort($zuluMatches1x2, function ($item1, $item2) {
+    return $item2['homePct'] <=> $item1['homePct'];
+});
 
-    foreach ($data as $match) {
-        fputcsv($fp, $match);
+foreach ($zuluMatches1x2 as $match) {
+    if ($match['homePct'] < 50) {
+        continue;
     }
+    echo "-- " . implode(",", $match) . "(" . $match['homePct'] . ")\n";
+}
 
-    fclose($fp);
+// Forebet matches ordered by home pct
+echo "\n\n";
+echo "****************************************************** \n";
+echo "* Forebet ordered by homePct\n";
+echo "****************************************************** \n";
+
+usort($foreBetMatches1x2, function ($item1, $item2) {
+    return $item2['homePct'] <=> $item1['homePct'];
+});
+
+foreach ($foreBetMatches1x2 as $match) {
+    if ($match['homePct'] < 50) {
+        continue;
+    }
+    echo "-- " . implode(",", $match) . "(" . $match['homePct'] . ")\n";
+}
+
+// PronosticosFutbol365 matches ordered by home pct
+echo "\n\n";
+echo "****************************************************** \n";
+echo "* PronosticosFutbol365 ordered by homePct\n";
+echo "****************************************************** \n";
+
+usort($pronosticosFutbol365Matches, function ($item1, $item2) {
+    return $item2['homePct'] <=> $item1['homePct'];
+});
+
+foreach ($pronosticosFutbol365Matches as $match) {
+    if ($match['homePct'] < 50) {
+        continue;
+    }
+    echo "-- " . implode(",", $match) . "(" . $match['homePct'] . ")\n";
 }
