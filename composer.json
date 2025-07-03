@@ -1,0 +1,10 @@
+{
+    "name": "jordi/thesystem",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "TheSystem\\": "src/"
+        }
+    },
+    "require": {}
+}
