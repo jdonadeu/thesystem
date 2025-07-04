@@ -2,8 +2,8 @@
 
 namespace App\Service;
 
-use App\Tipsters\ForeBet;
-use App\Tipsters\Zulu;
+use App\Tipster\ForeBet;
+use App\Tipster\Zulu;
 
 class MatchMerger
 {

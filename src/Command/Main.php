@@ -4,9 +4,9 @@ namespace App\Command;
 
 use App\Service\FilesystemService;
 use App\Service\MatchMerger;
-use App\Tipsters\ForeBet;
-use App\Tipsters\PronosticosFutbol365;
-use App\Tipsters\Zulu;
+use App\Tipster\ForeBet;
+use App\Tipster\PronosticosFutbol365;
+use App\Tipster\Zulu;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 

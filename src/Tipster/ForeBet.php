@@ -1,17 +1,23 @@
 <?php
 
-namespace App\Tipsters;
+namespace App\Tipster;
 
 use DateTime;
 
 // 1x2 url: https://www.forebet.com/scripts/getrs.php?ln=es&tp=1x2&in=2025-02-20&ord=0&tz=+60
 // under-over url: https://www.forebet.com/scripts/getrs.php?ln=es&tp=uo&in=2025-02-20&ord=0&tz=+60
 // bts url: https://www.forebet.com/scripts/getrs.php?ln=es&tp=bts&in=2025-02-20&ord=0&tz=+60
-class ForeBet
+class ForeBet extends Tipster
 {
+    private const TIPSTER_ID = 2;
+    private const TIPSTER_NAME = 'FOREBET';
+    private const WINNING_PCT_THRESHOLD = 50;
+    private const DATA_FILE = 'data/forebet-1x2.json';
+    private const IMPORT_FILE = 'csv/import-forebet.csv';
+
     public function getMatches(): array
     {
-        $json = file_get_contents('data/forebet-1x2.json');
+        $json = file_get_contents(self::DATA_FILE);
         $matches = json_decode($json, true);
         $foreBetMatches = [];
         $now = new DateTime();
@@ -23,10 +29,15 @@ class ForeBet
                 continue;
             }
 
+            $dateParts = explode(" ", $match['DATE_BAH']);
+
+            $teams = trim(preg_replace('/\s\s+/', ' ', $match['HOST_NAME'] . " - " . $match['GUEST_NAME']));
+            $teamParts = explode("-", $teams);
+
             $foreBetMatches[] = [
-                'FOREBET',
-                $match['DATE_BAH'],
-                'teams' => trim(preg_replace('/\s\s+/', ' ', $match['HOST_NAME'] . " - " . $match['GUEST_NAME'])),
+                'date' => $dateParts[0],
+                'homeTeam' => $this->teamNameMapper->getMappedTeamName(trim($teamParts[0])),
+                'visitorTeam' => $this->teamNameMapper->getMappedTeamName(trim($teamParts[1])),
                 'homePct' => $match['Pred_1'],
                 'drawPct' => $match['Pred_X'],
                 'visitorPct' => $match['Pred_2'],
@@ -36,6 +47,55 @@ class ForeBet
         }
 
         return $foreBetMatches;
+    }
+
+    public function importMatches(): void
+    {
+        $matches = $this->getMatches();
+        $this->filesystemService->saveCsvFile(self::IMPORT_FILE, $matches);
+    }
+
+    public function persistMatches(bool $commit): void
+    {
+        if (!($handle = fopen(self::IMPORT_FILE, 'r'))) {
+            echo "Could not open file " . self::IMPORT_FILE;
+            return;
+        }
+
+        while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+            $goals = explode("-", $row[7]);
+
+            $date = $row[0];
+            $homeTeam = $row[1];
+            $visitorTeam = $row[2];
+            $homePct = $row[3];
+            $drawPct = $row[4];
+            $visitorPct = $row[5];
+            $goalsAvg = $row[6];
+            $homeGoals = $goals[0];
+            $visitorGoals = $goals[1];
+
+            if ($homePct < self::WINNING_PCT_THRESHOLD && $visitorPct < self::WINNING_PCT_THRESHOLD) {
+                continue;
+            }
+
+            $event = $this->getEvent(self::TIPSTER_NAME, $date, $homeTeam, $visitorTeam, $commit);
+
+            if ($commit) {
+                $this->predictionRepository->create(
+                    $event->getId(),
+                    self::TIPSTER_ID,
+                    $homePct,
+                    $drawPct,
+                    $visitorPct,
+                    $goalsAvg,
+                    $homeGoals,
+                    $visitorGoals
+                );
+            }
+        }
+
+        fclose($handle);
     }
 
     public function getUnderOverMatches(): array

@@ -4,10 +4,14 @@ namespace App\Service;
 
 class TeamNameMapper
 {
-    private array $teamNameMapping = [];
+    private array $teamNameMapping = [
+        'Waterford United' => 'Waterford',
+        'Dundalk FC' => 'Dundalk',
+        'Fylkir FC' => 'Fylkir',
+    ];
 
     public function getMappedTeamName(string $teamName): string
     {
-        return $teamName;
+        return $this->teamNameMapping[$teamName] ?? $teamName;
     }
 }

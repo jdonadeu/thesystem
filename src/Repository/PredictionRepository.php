@@ -22,7 +22,10 @@ class PredictionRepository extends ServiceEntityRepository
         int $tipsterId,
         float $homePct,
         float $drawPct,
-        float $visitorPct
+        float $visitorPct,
+        ?float $avgGoals = null,
+        ?int $homeGoals = null,
+        ?int $visitorGoals = null,
     ): ?Prediction {
         try {
             $prediction = new Prediction();
@@ -31,6 +34,9 @@ class PredictionRepository extends ServiceEntityRepository
             $prediction->setHomePct($homePct);
             $prediction->setDrawPct($drawPct);
             $prediction->setVisitorPct($visitorPct);
+            $prediction->setAvgGoals($avgGoals);
+            $prediction->setHomeGoals($homeGoals);
+            $prediction->setVisitorGoals($visitorGoals);
             $this->getEntityManager()->persist($prediction);
             $this->getEntityManager()->flush();
         } catch (UniqueConstraintViolationException) {

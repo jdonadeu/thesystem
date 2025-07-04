@@ -1,27 +1,19 @@
 <?php
 
-namespace App\Tipsters;
+namespace App\Tipster;
 
-use App\Repository\EventRepository;
-use App\Repository\PredictionRepository;
-use App\Service\FilesystemService;
 use DateTime;
 use DOMDocument;
 use DOMNode;
 use DOMXPath;
 
-class Zulu {
+class Zulu extends Tipster
+{
     private const TIPSTER_ID = 1;
+    private const TIPSTER_NAME = 'ZULU';
     private const WINNING_PCT_THRESHOLD = 50;
     private const URL = 'https://es.zulubet.com';
     private const IMPORT_FILE = 'csv/import-zulu.csv';
-
-    public function __construct(
-        private readonly EventRepository $eventRepository,
-        private readonly PredictionRepository $predictionRepository,
-        private readonly FilesystemService $filesystemService
-    ) {
-    }
 
     public function getMatches(): array
     {
@@ -61,8 +53,8 @@ class Zulu {
             ));
 
             $newMatch['date'] = $date;
-            $newMatch['homeTeam'] = trim($teams[0]);
-            $newMatch['visitorTeam'] = trim($teams[1]);
+            $newMatch['homeTeam'] = $this->teamNameMapper->getMappedTeamName(trim($teams[0]));
+            $newMatch['visitorTeam'] = $this->teamNameMapper->getMappedTeamName(trim($teams[1]));
             $newMatch['homePct'] = str_replace("%", "", $row->childNodes[3]->nodeValue);
             $newMatch['drawPct'] = str_replace("%", "", $row->childNodes[4]->nodeValue);
             $newMatch['visitorPct'] = str_replace("%", "", $row->childNodes[5]->nodeValue);
@@ -120,19 +112,7 @@ class Zulu {
                 continue;
             }
 
-            $event = $this->eventRepository->findOneBy([
-                'date' => $date,
-                'homeTeam' => $homeTeam,
-                'visitorTeam' => $visitorTeam,
-            ]);
-
-            if ($event === null) {
-                echo "Event not found. [date=$date, homeTeam=$homeTeam, visitorTeam=$visitorTeam] \n";
-
-                if ($commit) {
-                    $event = $this->eventRepository->create($date, $homeTeam, $visitorTeam);
-                }
-            }
+            $event = $this->getEvent(self::TIPSTER_NAME, $date, $homeTeam, $visitorTeam, $commit);
 
             if ($commit) {
                 $this->predictionRepository->create(

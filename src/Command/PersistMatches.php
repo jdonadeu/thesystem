@@ -2,7 +2,8 @@
 
 namespace App\Command;
 
-use App\Tipsters\Zulu;
+use App\Tipster\ForeBet;
+use App\Tipster\Zulu;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
@@ -12,8 +13,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'matches:persist')]
 class PersistMatches extends Command
 {
-    public function __construct(private readonly Zulu $zulu)
-    {
+    public function __construct(
+        private readonly Zulu $zulu,
+        private readonly ForeBet $forebet,
+    ) {
         parent::__construct();
     }
 
@@ -29,7 +32,11 @@ class PersistMatches extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->zulu->persistMatches($input->getOption('commit'));
+        $commit = $input->getOption('commit');
+
+        $this->zulu->persistMatches($commit);
+        $this->forebet->persistMatches($commit);
+
         return Command::SUCCESS;
     }
 }
