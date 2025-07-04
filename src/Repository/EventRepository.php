@@ -4,26 +4,33 @@ namespace App\Repository;
 
 use App\Entity\Event;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\Persistence\ManagerRegistry;
 
 class EventRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private ManagerRegistry $managerRegistry;
+
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, Event::class);
+        parent::__construct($managerRegistry, Event::class);
+        $this->managerRegistry = $managerRegistry;
     }
 
-    public function getByDateAndTeams(string $date, string $homeTeam, string $visitorTeam): ?Event
+    public function create(string $date, string $homeTeam, string $visitorTeam): ?Event
     {
-        $qb = $this->createQueryBuilder('e')
-            ->where('e.date = :date')
-            ->andWhere('e.homeTeam = :homeTeam')
-            ->andWhere('e.visitorTeam = :visitorTeam')
-            ->setParameter('date', $date)
-            ->setParameter('homeTeam', $homeTeam)
-            ->setParameter('visitorTeam', $visitorTeam);
+        try {
+            $event = new Event();
+            $event->setDate($date);
+            $event->setHomeTeam($homeTeam);
+            $event->setVisitorTeam($visitorTeam);
+            $this->getEntityManager()->persist($event);
+            $this->getEntityManager()->flush();
+        } catch (UniqueConstraintViolationException) {
+            $this->managerRegistry->resetManager();
+            return null;
+        }
 
-        $query = $qb->getQuery();
-        return $query->setMaxResults(1)->getOneOrNullResult();
+        return $event;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Service\Filesystem;
+use App\Service\FilesystemService;
 use App\Service\MatchMerger;
 use App\Tipsters\ForeBet;
 use App\Tipsters\PronosticosFutbol365;
@@ -13,15 +13,17 @@ use Symfony\Component\Console\Command\Command;
 #[AsCommand(name: 'main:main')]
 class Main
 {
-    public function __construct(private readonly Zulu $zulu)
-    {}
+    public function __construct(
+        private readonly Zulu $zulu,
+        private readonly MatchMerger $matchMerger
+    ) {
+    }
 
     public function __invoke(): int
     {
-        $fileSystem = new Filesystem();
+        $fileSystem = new FilesystemService();
         $foreBet = new ForeBet();
         $pronosticosFutbol365 = new PronosticosFutbol365();
-        $matchMerger = new MatchMerger();
 
         // Zulu matches
         $zuluMatches1x2 = $this->zulu->getMatches();
@@ -39,7 +41,7 @@ class Main
         $pronosticosFutbol365Matches = $pronosticosFutbol365->getMatches();
 
         // All matches
-        $zuluForeBetMatches1x2 = $matchMerger->getMatches($zuluMatches1x2, $foreBetMatches1x2);
+        $zuluForeBetMatches1x2 = $this->matchMerger->getMatches($zuluMatches1x2, $foreBetMatches1x2);
         $fileSystem->saveCsvFile('csv/zulu-forebet-1x2.csv', $zuluForeBetMatches1x2);
 
         // Output

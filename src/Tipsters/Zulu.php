@@ -2,11 +2,10 @@
 
 namespace App\Tipsters;
 
-use App\Entity\Event;
-use App\Entity\Prediction;
 use App\Repository\EventRepository;
+use App\Repository\PredictionRepository;
+use App\Service\FilesystemService;
 use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
 use DOMDocument;
 use DOMNode;
 use DOMXPath;
@@ -15,10 +14,12 @@ class Zulu {
     private const TIPSTER_ID = 1;
     private const WINNING_PCT_THRESHOLD = 50;
     private const URL = 'https://es.zulubet.com';
+    private const IMPORT_FILE = 'csv/import-zulu.csv';
 
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly EventRepository $eventRepository
+        private readonly EventRepository $eventRepository,
+        private readonly PredictionRepository $predictionRepository,
+        private readonly FilesystemService $filesystemService
     ) {
     }
 
@@ -49,59 +50,27 @@ class Zulu {
                 continue;
             }
 
+            $dateParts = explode(",", $date);
+            $dateParts = explode("-", $dateParts[0]);
+            $date = date("Y")."-$dateParts[1]-$dateParts[0]";
+
             $teams = explode("-", mb_convert_encoding(
                 mb_convert_encoding($row->childNodes[1]->nodeValue, 'ISO-8859-1', 'UTF-8'),
                 'UTF-8',
                 'auto'
             ));
 
-            $newMatch[] = 'ZULU';
             $newMatch['date'] = $date;
-            $newMatch['teams'] = $row->childNodes[1]->nodeValue;
             $newMatch['homeTeam'] = trim($teams[0]);
             $newMatch['visitorTeam'] = trim($teams[1]);
             $newMatch['homePct'] = str_replace("%", "", $row->childNodes[3]->nodeValue);
             $newMatch['drawPct'] = str_replace("%", "", $row->childNodes[4]->nodeValue);
             $newMatch['visitorPct'] = str_replace("%", "", $row->childNodes[5]->nodeValue);
-            $newMatch[] = $row->childNodes[7]->nodeValue;
 
             $zuluMatches[] = $newMatch;
         }
 
         return $zuluMatches;
-    }
-
-    public function importMatches(): void
-    {
-        foreach ($this->getMatches() as $match) {
-            if ($match['homePct'] < self::WINNING_PCT_THRESHOLD && $match['visitorPct'] < self::WINNING_PCT_THRESHOLD) {
-                continue;
-            }
-
-            $dateParts = explode(",", $match['date']);
-            $dateParts = explode("-", $dateParts[0]);
-            $date = date("Y")."-$dateParts[1]-$dateParts[0]";
-
-            $event = $this->eventRepository->getByDateAndTeams($date, $match['homeTeam'], $match['visitorTeam']);
-
-            if ($event === null) {
-                $event = new Event();
-                $event->setDate($date);
-                $event->setHomeTeam($match['homeTeam']);
-                $event->setVisitorTeam($match['visitorTeam']);
-                $this->entityManager->persist($event);
-                $this->entityManager->flush();
-            }
-
-            $prediction = new Prediction();
-            $prediction->setEventId($event->getId());
-            $prediction->setTipsterId(self::TIPSTER_ID);
-            $prediction->setHomePct($match['homePct']);
-            $prediction->setDrawPct($match['drawPct']);
-            $prediction->setVisitorPct($match['visitorPct']);
-            $this->entityManager->persist($prediction);
-            $this->entityManager->flush();
-        }
     }
 
     private function getTableWithClass(string $html, string $className): DOMNode
@@ -124,5 +93,58 @@ class Zulu {
         }
 
         return $innerHTML;
+    }
+
+    public function importMatches(): void
+    {
+        $matches = $this->getMatches();
+        $this->filesystemService->saveCsvFile(self::IMPORT_FILE, $matches);
+    }
+
+    public function persistMatches(bool $commit): void
+    {
+        if (!($handle = fopen(self::IMPORT_FILE, 'r'))) {
+            echo "Could not open file " . self::IMPORT_FILE;
+            return;
+        }
+
+        while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+            $date = $row[0];
+            $homeTeam = $row[1];
+            $visitorTeam = $row[2];
+            $homePct = $row[3];
+            $drawPct = $row[4];
+            $visitorPct = $row[5];
+
+            if ($homePct < self::WINNING_PCT_THRESHOLD && $visitorPct < self::WINNING_PCT_THRESHOLD) {
+                continue;
+            }
+
+            $event = $this->eventRepository->findOneBy([
+                'date' => $date,
+                'homeTeam' => $homeTeam,
+                'visitorTeam' => $visitorTeam,
+            ]);
+
+            if ($event === null) {
+                echo "Event not found. [date=$date, homeTeam=$homeTeam, visitorTeam=$visitorTeam] \n";
+
+                if ($commit) {
+                    $event = $this->eventRepository->create($date, $homeTeam, $visitorTeam);
+                }
+            }
+
+            if ($commit) {
+                $this->predictionRepository->create(
+                    $event->getId(),
+                    self::TIPSTER_ID,
+                    $homePct,
+                    $drawPct,
+                    $visitorPct
+                );
+            }
+        }
+
+        fclose($handle);
     }
 }

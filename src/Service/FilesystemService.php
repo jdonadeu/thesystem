@@ -2,9 +2,9 @@
 
 namespace App\Service;
 
-class Filesystem
+class FilesystemService
 {
-    function saveCsvFile(string $filename, array $data): void
+    public function saveCsvFile(string $filename, array $data): void
     {
         $fp = fopen($filename, 'w');
 
