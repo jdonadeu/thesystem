@@ -1,33 +1,30 @@
 <?php
 
-namespace TheSystem\Tipsters;
+namespace App\Tipsters;
 
+use App\Entity\Event;
+use App\Entity\Prediction;
+use App\Repository\EventRepository;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use DOMDocument;
 use DOMNode;
 use DOMXPath;
-use mysqli;
-use TheSystem\Entities\Event;
-use TheSystem\Entities\Prediction;
-use TheSystem\Repositories\EventRepository;
-use TheSystem\Utils\Db;
 
 class Zulu {
     private const TIPSTER_ID = 1;
     private const WINNING_PCT_THRESHOLD = 50;
-
-    private string $url = 'https://es.zulubet.com';
+    private const URL = 'https://es.zulubet.com';
 
     public function __construct(
-        private readonly EventRepository $eventRepository = new EventRepository(),
-        private ?mysqli $conn = null
+        private readonly EntityManagerInterface $entityManager,
+        private readonly EventRepository $eventRepository
     ) {
-        $this->conn = (new Db())->connect();
     }
 
     public function getMatches(): array
     {
-        $html = file_get_contents($this->url);
+        $html = file_get_contents(self::URL);
         $table = $this->getTableWithClass($html, 'main_table');
         $tableWithMatches = $this->getTableWithClass($this->getInnerHtml($table), 'content_table');
 
@@ -77,7 +74,7 @@ class Zulu {
     public function importMatches(): void
     {
         foreach ($this->getMatches() as $match) {
-            if ($match['homePct'] < self::WINNING_PCT_THRESHOLD) {
+            if ($match['homePct'] < self::WINNING_PCT_THRESHOLD && $match['visitorPct'] < self::WINNING_PCT_THRESHOLD) {
                 continue;
             }
 
@@ -85,30 +82,25 @@ class Zulu {
             $dateParts = explode("-", $dateParts[0]);
             $date = date("Y")."-$dateParts[1]-$dateParts[0]";
 
-            $events = $this->eventRepository->getByDate($date);
-            $eventId = 0;
+            $event = $this->eventRepository->getByDateAndTeams($date, $match['homeTeam'], $match['visitorTeam']);
 
-            while ($dbRow = $events->fetch_assoc()) {
-                if ($date === $dbRow['date'] && $match['homeTeam'] === $dbRow['homeTeam'] && $match['visitorTeam'] === $dbRow['visitorTeam']) {
-                    $eventId = $dbRow['id'];
-                }
-            }
-
-            if ($eventId === 0) {
-                $event = new Event($this->conn);
-                $event->date = $date;
-                $event->homeTeam = $match['homeTeam'];
-                $event->visitorTeam = $match['visitorTeam'];
-                $eventId = $event->insert();
+            if ($event === null) {
+                $event = new Event();
+                $event->setDate($date);
+                $event->setHomeTeam($match['homeTeam']);
+                $event->setVisitorTeam($match['visitorTeam']);
+                $this->entityManager->persist($event);
+                $this->entityManager->flush();
             }
 
             $prediction = new Prediction();
-            $prediction->eventId = $eventId;
-            $prediction->tipsterId = self::TIPSTER_ID;
-            $prediction->homePct = $match['homePct'];
-            $prediction->drawPct = $match['drawPct'];
-            $prediction->visitorPct = $match['visitorPct'];
-            $prediction->insert();
+            $prediction->setEventId($event->getId());
+            $prediction->setTipsterId(self::TIPSTER_ID);
+            $prediction->setHomePct($match['homePct']);
+            $prediction->setDrawPct($match['drawPct']);
+            $prediction->setVisitorPct($match['visitorPct']);
+            $this->entityManager->persist($prediction);
+            $this->entityManager->flush();
         }
     }
 

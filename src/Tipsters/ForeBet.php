@@ -1,6 +1,6 @@
 <?php
 
-namespace TheSystem\Tipsters;
+namespace App\Tipsters;
 
 use DateTime;
 

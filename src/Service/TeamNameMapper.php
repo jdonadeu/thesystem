@@ -1,8 +1,8 @@
 <?php
 
-namespace TheSystem\Utils;
+namespace App\Service;
 
-class TeamNameMapping
+class TeamNameMapper
 {
     private array $teamNameMapping = [];
 

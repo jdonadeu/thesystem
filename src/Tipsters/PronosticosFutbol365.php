@@ -1,6 +1,6 @@
 <?php
 
-namespace TheSystem\Tipsters;
+namespace App\Tipsters;
 
 use DOMDocument;
 use DOMXPath;

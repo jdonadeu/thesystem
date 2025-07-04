@@ -1,16 +1,19 @@
 <?php
 
-namespace TheSystem;
+namespace App\Service;
 
-use TheSystem\Tipsters\ForeBet;
-use TheSystem\Tipsters\Zulu;
+use App\Tipsters\ForeBet;
+use App\Tipsters\Zulu;
 
 class MatchMerger
 {
+    public function __construct(private readonly Zulu $zulu)
+    {}
+
     public function getMatches(array $zuluMatches = [], array $foreBetMatches = []): array
     {
         if (empty($zuluMatches)) {
-            $zuluMatches = (new Zulu())->getMatches();
+            $zuluMatches = $this->zulu->getMatches();
         }
 
         if (empty($foreBetMatches)) {

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="878961ba-8b9f-44a3-8fb1-1336e883c529" name="Changes" comment="wip">
+      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.env.dev" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bin/console" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/packages/cache.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/packages/framework.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/packages/routing.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/preload.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/routes.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/routes/framework.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/index.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Kernel.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/forebet-1x2.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/forebet-1x2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entities/Event.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entities/Event.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entities/Prediction.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entities/Prediction.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MatchMerger.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/MatchMerger.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repositories/EventRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repositories/EventRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Tipsters/ForeBet.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tipsters/ForeBet.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Tipsters/PronosticosFutbol365.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tipsters/PronosticosFutbol365.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Tipsters/Zulu.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tipsters/Zulu.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Utils/Db.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utils/Db.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Utils/Filesystem.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utils/Filesystem.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Utils/TeamNameMapping.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utils/TeamNameMapping.php" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="GOROOT" url="file:///usr/local/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP 7.4" />
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2pwDdrNEMabI2yHIQ9iGHJBTlbj" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "git-widget-placeholder": "master",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "/home/jordi/Personal/thesystem",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "web.server",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/public" />
+      <recent name="$PROJECT_DIR$/scripts" />
+      <recent name="$PROJECT_DIR$/src/Utils" />
+      <recent name="$PROJECT_DIR$/csv" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/src/Utils" />
+      <recent name="$PROJECT_DIR$/scripts" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PS-242.23339.16" />
+        <option value="bundled-php-predefined-a98d8de5180a-90914f2295cb-com.jetbrains.php.sharedIndexes-PS-242.23339.16" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="878961ba-8b9f-44a3-8fb1-1336e883c529" name="Changes" comment="" />
+      <created>1733668334815</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1733668334815</updated>
+      <workItem from="1733668335894" duration="27568000" />
+      <workItem from="1733910212234" duration="27381000" />
+      <workItem from="1735991488646" duration="21288000" />
+      <workItem from="1737362762482" duration="233000" />
+      <workItem from="1737652553993" duration="2958000" />
+      <workItem from="1737885563060" duration="5794000" />
+      <workItem from="1738246843741" duration="84697000" />
+      <workItem from="1740412619533" duration="640000" />
+      <workItem from="1740477941985" duration="13657000" />
+      <workItem from="1741263415966" duration="6828000" />
+      <workItem from="1741612657419" duration="3374000" />
+      <workItem from="1741786755392" duration="5769000" />
+      <workItem from="1742287586820" duration="2759000" />
+      <workItem from="1742387308323" duration="2297000" />
+      <workItem from="1742898961312" duration="2400000" />
+      <workItem from="1751273007438" duration="51660000" />
+    </task>
+    <task id="LOCAL-00001" summary="wip">
+      <option name="closed" value="true" />
+      <created>1751383088715</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1751383088715</updated>
+    </task>
+    <task id="LOCAL-00002" summary="wip">
+      <option name="closed" value="true" />
+      <created>1751554465474</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1751554465474</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="wip" />
+    <option name="LAST_COMMIT_MESSAGE" value="wip" />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+</project>
