@@ -37,19 +37,25 @@ class Tipster
             return $event;
         }
 
-        echo "$tipsterName: Event not found. [date='$date', homeTeam='$homeTeam', visitorTeam='$visitorTeam'] \n";
-
-        $similarEvents = $this->eventService->findSimilarEvents($date, $homeTeam, $visitorTeam);
-
-        foreach ($similarEvents as $similarEvent) {
-            echo " - " . $similarEvent->getDate() . ": "
-                . $similarEvent->getHomeTeam() . " - "
-                . $similarEvent->getVisitorTeam()
-                . "\n";
-        }
-
         if ($commit) {
+            echo "Creating event [date='$date', homeTeam='$homeTeam', visitorTeam='$visitorTeam'] \n";
             return $this->eventRepository->create($date, $homeTeam, $visitorTeam);
+        } else {
+            echo "$tipsterName: Event not found. [date='$date', homeTeam='$homeTeam', visitorTeam='$visitorTeam'] \n";
+
+            $similarEvents = $this->eventService->findSimilarEvents($date, $homeTeam, $visitorTeam);
+            $similarEventsText = "";
+
+            foreach ($similarEvents as $similarEvent) {
+                $similarEventsText .= " - " . $similarEvent->getDate() . ": "
+                    . " '" . $homeTeam . "' => '" . $similarEvent->getHomeTeam()
+                    . "' or '" . $visitorTeam . "' => '" . $similarEvent->getVisitorTeam() . "'"
+                    . "\n";
+            }
+
+            if (count($similarEvents) > 0) {
+                echo "\n" . $similarEventsText . "\n\n";
+            }
         }
 
         return null;

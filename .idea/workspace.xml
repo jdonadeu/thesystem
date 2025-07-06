@@ -5,34 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="878961ba-8b9f-44a3-8fb1-1336e883c529" name="Changes" comment="wip">
-      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.env.dev" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/console" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/packages/cache.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/packages/framework.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/packages/routing.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/preload.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/routes.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/routes/framework.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/index.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Kernel.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/forebet-1x2.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/forebet-1x2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entities/Event.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entities/Event.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entities/Prediction.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entities/Prediction.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MatchMerger.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/MatchMerger.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repositories/EventRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repositories/EventRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Tipsters/ForeBet.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tipsters/ForeBet.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Tipsters/PronosticosFutbol365.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tipsters/PronosticosFutbol365.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Tipsters/Zulu.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tipsters/Zulu.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Utils/Db.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utils/Db.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Utils/Filesystem.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utils/Filesystem.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Utils/TeamNameMapping.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utils/TeamNameMapping.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/PersistMatches.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/PersistMatches.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/TeamNameMapper.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/TeamNameMapper.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Tipster/ForeBet.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tipster/ForeBet.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Tipster/Tipster.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tipster/Tipster.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Tipster/Zulu.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tipster/Zulu.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,35 +34,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "git-widget-placeholder": "master",
-    "go.import.settings.migrated": "true",
-    "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/home/jordi/Personal/thesystem",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "web.server",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.automatic.dependencies.download&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/jordi/Personal/inmo&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;php.add.doc.comment.for.fields.panel.add.php.doc&quot;: &quot;false&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;web.server&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/public" />
       <recent name="$PROJECT_DIR$/scripts" />
       <recent name="$PROJECT_DIR$/src/Utils" />
-      <recent name="$PROJECT_DIR$/csv" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/Command" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src/Utils" />
       <recent name="$PROJECT_DIR$/scripts" />
@@ -120,7 +101,7 @@
       <workItem from="1742287586820" duration="2759000" />
       <workItem from="1742387308323" duration="2297000" />
       <workItem from="1742898961312" duration="2400000" />
-      <workItem from="1751273007438" duration="51660000" />
+      <workItem from="1751273007438" duration="82599000" />
     </task>
     <task id="LOCAL-00001" summary="wip">
       <option name="closed" value="true" />
@@ -138,7 +119,31 @@
       <option name="project" value="LOCAL" />
       <updated>1751554465474</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="wip">
+      <option name="closed" value="true" />
+      <created>1751639145457</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1751639145457</updated>
+    </task>
+    <task id="LOCAL-00004" summary="wip">
+      <option name="closed" value="true" />
+      <created>1751650574960</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1751650574960</updated>
+    </task>
+    <task id="LOCAL-00005" summary="wip">
+      <option name="closed" value="true" />
+      <created>1751660699009</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1751660699009</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

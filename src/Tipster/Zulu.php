@@ -52,12 +52,20 @@ class Zulu extends Tipster
                 'auto'
             ));
 
+            $goals = explode("-", $row->childNodes[6]->nodeValue);
+
             $newMatch['date'] = $date;
             $newMatch['homeTeam'] = $this->teamNameMapper->getMappedTeamName(trim($teams[0]));
             $newMatch['visitorTeam'] = $this->teamNameMapper->getMappedTeamName(trim($teams[1]));
             $newMatch['homePct'] = str_replace("%", "", $row->childNodes[3]->nodeValue);
             $newMatch['drawPct'] = str_replace("%", "", $row->childNodes[4]->nodeValue);
             $newMatch['visitorPct'] = str_replace("%", "", $row->childNodes[5]->nodeValue);
+            $newMatch['homeGoals'] = $goals[0] ?? '';
+            $newMatch['visitorGoals'] = $goals[1] ?? '';
+
+            if ($newMatch['homePct'] < self::WINNING_PCT_THRESHOLD && $newMatch['visitorPct'] < self::WINNING_PCT_THRESHOLD) {
+                continue;
+            }
 
             $zuluMatches[] = $newMatch;
         }
@@ -107,10 +115,6 @@ class Zulu extends Tipster
             $homePct = $row[3];
             $drawPct = $row[4];
             $visitorPct = $row[5];
-
-            if ($homePct < self::WINNING_PCT_THRESHOLD && $visitorPct < self::WINNING_PCT_THRESHOLD) {
-                continue;
-            }
 
             $event = $this->getEvent(self::TIPSTER_NAME, $date, $homeTeam, $visitorTeam, $commit);
 

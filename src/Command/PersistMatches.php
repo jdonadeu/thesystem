@@ -15,7 +15,7 @@ class PersistMatches extends Command
 {
     public function __construct(
         private readonly Zulu $zulu,
-        private readonly ForeBet $forebet,
+        private readonly ForeBet $foreBet,
     ) {
         parent::__construct();
     }
@@ -30,12 +30,12 @@ class PersistMatches extends Command
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(InputInterface $input, OutputInterface $output): int
     {
         $commit = $input->getOption('commit');
 
         $this->zulu->persistMatches($commit);
-        $this->forebet->persistMatches($commit);
+        $this->foreBet->persistMatches($commit);
 
         return Command::SUCCESS;
     }

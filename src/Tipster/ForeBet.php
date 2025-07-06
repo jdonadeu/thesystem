@@ -34,6 +34,10 @@ class ForeBet extends Tipster
             $teams = trim(preg_replace('/\s\s+/', ' ', $match['HOST_NAME'] . " - " . $match['GUEST_NAME']));
             $teamParts = explode("-", $teams);
 
+            if ($match['Pred_1'] < self::WINNING_PCT_THRESHOLD && $match['Pred_2'] < self::WINNING_PCT_THRESHOLD) {
+                continue;
+            }
+
             $foreBetMatches[] = [
                 'date' => $dateParts[0],
                 'homeTeam' => $this->teamNameMapper->getMappedTeamName(trim($teamParts[0])),
@@ -74,10 +78,6 @@ class ForeBet extends Tipster
             $goalsAvg = $row[6];
             $homeGoals = $goals[0];
             $visitorGoals = $goals[1];
-
-            if ($homePct < self::WINNING_PCT_THRESHOLD && $visitorPct < self::WINNING_PCT_THRESHOLD) {
-                continue;
-            }
 
             $event = $this->getEvent(self::TIPSTER_NAME, $date, $homeTeam, $visitorTeam, $commit);
 
