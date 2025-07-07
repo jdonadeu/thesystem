@@ -17,13 +17,27 @@ class EventRepository extends ServiceEntityRepository
         $this->managerRegistry = $managerRegistry;
     }
 
-    public function create(string $date, string $homeTeam, string $visitorTeam): ?Event
-    {
+    public function create(
+        string $date,
+        string $homeTeam,
+        string $visitorTeam,
+        ?int $homeGoals = null,
+        ?int $visitorGoals = null
+    ): ?Event {
         try {
             $event = new Event();
             $event->setDate($date);
             $event->setHomeTeam($homeTeam);
             $event->setVisitorTeam($visitorTeam);
+
+            if ($homeGoals !== null) {
+                $event->setHomeGoals($homeGoals);
+            }
+
+            if ($visitorGoals !== null) {
+                $event->setVisitorGoals($visitorGoals);
+            }
+
             $this->getEntityManager()->persist($event);
             $this->getEntityManager()->flush();
         } catch (UniqueConstraintViolationException) {
@@ -32,5 +46,20 @@ class EventRepository extends ServiceEntityRepository
         }
 
         return $event;
+    }
+
+    public function updateGoals(
+        Event $event,
+        ?int $homeGoals,
+        ?int $visitorGoals
+    ): void {
+        if ($homeGoals === null || $visitorGoals === null) {
+            return;
+        }
+
+        $event->setHomeGoals($homeGoals);
+        $event->setVisitorGoals($visitorGoals);
+        $this->getEntityManager()->persist($event);
+        $this->getEntityManager()->flush();
     }
 }

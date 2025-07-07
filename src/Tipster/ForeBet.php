@@ -79,7 +79,13 @@ class ForeBet extends Tipster
             $homeGoals = $goals[0];
             $visitorGoals = $goals[1];
 
-            $event = $this->getEvent(self::TIPSTER_NAME, $date, $homeTeam, $visitorTeam, $commit);
+            $event = $this->getEvent(
+                $commit,
+                self::TIPSTER_NAME,
+                $date,
+                $homeTeam,
+                $visitorTeam,
+            );
 
             if ($commit) {
                 $this->predictionRepository->create(

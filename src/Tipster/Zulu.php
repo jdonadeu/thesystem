@@ -3,6 +3,7 @@
 namespace App\Tipster;
 
 use DateTime;
+use DateTimeZone;
 use DOMDocument;
 use DOMNode;
 use DOMXPath;
@@ -15,14 +16,17 @@ class Zulu extends Tipster
     private const URL = 'https://es.zulubet.com';
     private const IMPORT_FILE = 'csv/import-zulu.csv';
 
-    public function getMatches(): array
+    public function getMatches(string $date): array
     {
-        $html = file_get_contents(self::URL);
+        $dateTime = new DateTime($date);
+        $urlDate = $dateTime->format('d'). "-" . $dateTime->format('m') . "-" . $dateTime->format('Y') ;
+        $url = self::URL . "/pronosticos-{$urlDate}.html";
+
+        $html = file_get_contents($url);
         $table = $this->getTableWithClass($html, 'main_table');
         $tableWithMatches = $this->getTableWithClass($this->getInnerHtml($table), 'content_table');
 
         $zuluMatches = [];
-        $now = new DateTime();
 
         for ($i = 2; $i < count($tableWithMatches->childNodes); $i++) {
             $newMatch = [];
@@ -32,40 +36,46 @@ class Zulu extends Tipster
                 continue;
             }
 
-            // Date
-            $date = $row->childNodes[0]->nodeValue;
-            $seed = ']]>';
-            $start = strpos($date, $seed) + strlen($seed);
-            $date = substr($date, $start);
+            $homePct = str_replace("%", "", $row->childNodes[3]->nodeValue);
+            $drawPct = str_replace("%", "", $row->childNodes[4]->nodeValue);
+            $visitorPct = str_replace("%", "", $row->childNodes[5]->nodeValue);
 
-            if (DateTime::createFromFormat("d-m, H:i", $date) < $now) {
+            if ($homePct < self::WINNING_PCT_THRESHOLD && $visitorPct < self::WINNING_PCT_THRESHOLD) {
                 continue;
             }
 
-            $dateParts = explode(",", $date);
-            $dateParts = explode("-", $dateParts[0]);
-            $date = date("Y")."-$dateParts[1]-$dateParts[0]";
+            // Date
+            $dateTime = $row->childNodes[0]->nodeValue;
 
+            if (preg_match("/\<\!\[CDATA\[mf_usertime\('([\d\/]+), ([\d:]+)'/", $dateTime, $matches)) {
+                $date = $matches[1];
+                $time = $matches[2];
+            } else {
+                echo "Error reading date from $dateTime \n";
+                continue;
+            }
+
+            $utcDate = new DateTime("$date $time", new DateTimeZone('UTC'));
+            $utcDate->setTimezone(new DateTimeZone('Europe/Madrid'));
+            $date = $utcDate->format('Y-m-d');
+
+            // Teams
             $teams = explode("-", mb_convert_encoding(
                 mb_convert_encoding($row->childNodes[1]->nodeValue, 'ISO-8859-1', 'UTF-8'),
                 'UTF-8',
                 'auto'
             ));
 
-            $goals = explode("-", $row->childNodes[6]->nodeValue);
+            $goals = explode(":", $row->childNodes[12]->nodeValue);
 
             $newMatch['date'] = $date;
             $newMatch['homeTeam'] = $this->teamNameMapper->getMappedTeamName(trim($teams[0]));
             $newMatch['visitorTeam'] = $this->teamNameMapper->getMappedTeamName(trim($teams[1]));
-            $newMatch['homePct'] = str_replace("%", "", $row->childNodes[3]->nodeValue);
-            $newMatch['drawPct'] = str_replace("%", "", $row->childNodes[4]->nodeValue);
-            $newMatch['visitorPct'] = str_replace("%", "", $row->childNodes[5]->nodeValue);
+            $newMatch['homePct'] = $homePct;
+            $newMatch['drawPct'] = $drawPct;
+            $newMatch['visitorPct'] = $visitorPct;
             $newMatch['homeGoals'] = $goals[0] ?? '';
             $newMatch['visitorGoals'] = $goals[1] ?? '';
-
-            if ($newMatch['homePct'] < self::WINNING_PCT_THRESHOLD && $newMatch['visitorPct'] < self::WINNING_PCT_THRESHOLD) {
-                continue;
-            }
 
             $zuluMatches[] = $newMatch;
         }
@@ -95,9 +105,9 @@ class Zulu extends Tipster
         return $innerHTML;
     }
 
-    public function importMatches(): void
+    public function importMatches(string $date): void
     {
-        $matches = $this->getMatches();
+        $matches = $this->getMatches($date);
         $this->filesystemService->saveCsvFile(self::IMPORT_FILE, $matches);
     }
 
@@ -115,8 +125,18 @@ class Zulu extends Tipster
             $homePct = $row[3];
             $drawPct = $row[4];
             $visitorPct = $row[5];
+            $homeGoals = is_numeric($row[6]) ? $row[6] : null;
+            $visitorGoals = is_numeric($row[7]) ? $row[7] : null;
 
-            $event = $this->getEvent(self::TIPSTER_NAME, $date, $homeTeam, $visitorTeam, $commit);
+            $event = $this->getEvent(
+                $commit,
+                self::TIPSTER_NAME,
+                $date,
+                $homeTeam,
+                $visitorTeam,
+                $homeGoals,
+                $visitorGoals,
+            );
 
             if ($commit) {
                 $this->predictionRepository->create(

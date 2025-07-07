@@ -21,11 +21,13 @@ class Tipster
     }
 
     public function getEvent(
+        bool $commit,
         string $tipsterName,
         string $date,
         string $homeTeam,
         string $visitorTeam,
-        bool $commit,
+        ?int $homeGoals = null,
+        ?int $visitorGoals = null,
     ): ?Event {
         $event = $this->eventRepository->findOneBy([
             'date' => $date,
@@ -34,12 +36,13 @@ class Tipster
         ]);
 
         if ($event !== null) {
+            $this->eventRepository->updateGoals($event, $homeGoals, $visitorGoals);
             return $event;
         }
 
         if ($commit) {
             echo "Creating event [date='$date', homeTeam='$homeTeam', visitorTeam='$visitorTeam'] \n";
-            return $this->eventRepository->create($date, $homeTeam, $visitorTeam);
+            return $this->eventRepository->create($date, $homeTeam, $visitorTeam, $homeGoals, $visitorGoals);
         } else {
             echo "$tipsterName: Event not found. [date='$date', homeTeam='$homeTeam', visitorTeam='$visitorTeam'] \n";
 
