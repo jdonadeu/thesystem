@@ -5,13 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="878961ba-8b9f-44a3-8fb1-1336e883c529" name="Changes" comment="wip">
+      <change afterPath="$PROJECT_DIR$/src/Command/TipsterReport.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/forebet-1x2.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/forebet-1x2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/ImportMatches.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/ImportMatches.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/EventRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/EventRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Tipster/ForeBet.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tipster/ForeBet.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Tipster/Tipster.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tipster/Tipster.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Tipster/Zulu.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tipster/Zulu.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/PredictionRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/PredictionRepository.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,7 +97,7 @@
       <workItem from="1742287586820" duration="2759000" />
       <workItem from="1742387308323" duration="2297000" />
       <workItem from="1742898961312" duration="2400000" />
-      <workItem from="1751273007438" duration="92494000" />
+      <workItem from="1751273007438" duration="101308000" />
     </task>
     <task id="LOCAL-00001" summary="wip">
       <option name="closed" value="true" />
@@ -151,7 +147,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751832961051</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="wip">
+      <option name="closed" value="true" />
+      <created>1751915871763</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1751915871763</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

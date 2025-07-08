@@ -8,4 +8,5 @@
 /var/
 /vendor/
 /csv
+.idea
 ###< symfony/framework-bundle ###
