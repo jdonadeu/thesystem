@@ -29,7 +29,7 @@ class Tipster
         ?int $homeGoals = null,
         ?int $visitorGoals = null,
         ?float $odd1 = null,
-        ?float $odd1x = null,
+        ?float $oddX = null,
         ?float $odd2 = null,
     ): ?Event {
         $event = $this->eventRepository->findOneBy([
@@ -53,7 +53,7 @@ class Tipster
                 $homeGoals,
                 $visitorGoals,
                 $odd1,
-                $odd1x,
+                $oddX,
                 $odd2
             );
         } else {

@@ -22,12 +22,20 @@ class ReportRepository extends ServiceEntityRepository
         $summary = [];
         $tipsterName = '';
         $totalEvents = 0;
+
         $totalHomePredictions = 0;
         $totalHomePredictionsPositive = 0;
+        $totalHomeGains = 0;
+
+        $totalHomeOrDrawPredictions = 0;
+        $totalHomeOrDrawPredictionsPositive = 0;
+
         $totalDrawPredictions = 0;
         $totalDrawPredictionsPositive = 0;
+
         $totalVisitorPredictions = 0;
         $totalVisitorPredictionsPositive = 0;
+        $totalVisitorGains = 0;
 
         $predictions = $this->getPredictionsWithEventData($tipsterId, $pctThreshold);
 
@@ -43,9 +51,14 @@ class ReportRepository extends ServiceEntityRepository
 
             if ($predictionTeam === "1") {
                 $totalHomePredictions++;
+                $totalHomeOrDrawPredictions++;
 
                 if ($prediction['eventHomeGoals'] > $prediction['eventVisitorGoals']) {
                     $totalHomePredictionsPositive++;
+                    $totalHomeGains += $prediction['odd_1'];
+                    $totalHomeOrDrawPredictionsPositive++;
+                } elseif ($prediction['eventHomeGoals'] === $prediction['eventVisitorGoals']) {
+                    $totalHomeOrDrawPredictionsPositive++;
                 }
             } elseif ($predictionTeam === "X") {
                 $totalDrawPredictions++;
@@ -58,6 +71,7 @@ class ReportRepository extends ServiceEntityRepository
 
                 if ($prediction['eventHomeGoals'] < $prediction['eventVisitorGoals']) {
                     $totalVisitorPredictionsPositive++;
+                    $totalVisitorGains += $prediction['odd_2'];
                 }
             }
         }
@@ -66,10 +80,14 @@ class ReportRepository extends ServiceEntityRepository
         $summary['totalEvents'] = $totalEvents;
         $summary['totalHomePredictions'] = $totalHomePredictions;
         $summary['totalHomePredictionsPositive'] = $totalHomePredictionsPositive;
+        $summary['totalHomeGains'] = $totalHomeGains;
+        $summary['totalHomeOrDrawPredictions'] = $totalHomeOrDrawPredictions;
+        $summary['totalHomeOrDrawPredictionsPositive'] = $totalHomeOrDrawPredictionsPositive;
         $summary['totalDrawPredictions'] = $totalDrawPredictions;
         $summary['totalDrawPredictionsPositive'] = $totalDrawPredictionsPositive;
         $summary['totalVisitorPredictions'] = $totalVisitorPredictions;
         $summary['totalVisitorPredictionsPositive'] = $totalVisitorPredictionsPositive;
+        $summary['totalVisitorGains'] = $totalVisitorGains;
 
         if (($totalEvents - $totalHomePredictions - $totalDrawPredictions - $totalVisitorPredictions) !== 0) {
             throw new Exception('Invalid number of events');
@@ -83,7 +101,7 @@ class ReportRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = "
-            SELECT t.name AS tipsterName, e.home_goals AS eventHomeGoals, e.visitor_goals AS eventVisitorGoals, p.* 
+            SELECT t.name AS tipsterName, e.home_goals AS eventHomeGoals, e.visitor_goals AS eventVisitorGoals, e.odd_1, e.odd_x, e.odd_2, p.* 
             FROM prediction p
             JOIN event e ON e.id = p.event_id
             JOIN tipster t ON t.id = p.tipster_id

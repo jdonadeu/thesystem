@@ -24,7 +24,7 @@ class EventRepository extends ServiceEntityRepository
         ?int $homeGoals = null,
         ?int $visitorGoals = null,
         ?float $odd1 = null,
-        ?float $odd1x = null,
+        ?float $oddX = null,
         ?float $odd2 = null,
     ): ?Event {
         try {
@@ -45,8 +45,8 @@ class EventRepository extends ServiceEntityRepository
                 $event->setOdd1($odd1);
             }
 
-            if ($odd1x !== null) {
-                $event->setOdd1x($odd1x);
+            if ($oddX !== null) {
+                $event->setOddX($oddX);
             }
 
             if ($odd2 !== null) {

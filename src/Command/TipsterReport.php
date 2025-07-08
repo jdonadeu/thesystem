@@ -39,13 +39,26 @@ class TipsterReport extends Command
             ? 0
             :floor(($tipsterSummary['totalVisitorPredictionsPositive'] * 100) / $tipsterSummary['totalVisitorPredictions']);
 
+        $homeOrDrawPredictionsPct = $tipsterSummary['totalHomeOrDrawPredictions'] === 0
+            ? 0
+            : floor(($tipsterSummary['totalHomeOrDrawPredictionsPositive'] * 100) / $tipsterSummary['totalHomeOrDrawPredictions']);
+
+        $homeNetGains = $tipsterSummary['totalHomeGains'] - $tipsterSummary['totalHomePredictions'];
+        $visitorNetGains = $tipsterSummary['totalVisitorGains'] - $tipsterSummary['totalVisitorPredictions'];
+
+        echo "\n";
         echo "Tipster: {$tipsterSummary['tipsterName']} \n";
         echo "Pct threshold: {$pctThreshold} \n";
         echo "Events: {$tipsterSummary['totalEvents']} \n";
         echo "Home predictions: {$tipsterSummary['totalHomePredictions']} \n";
         echo "Home wins: {$tipsterSummary['totalHomePredictionsPositive']} ({$homePredictionsPct}%) \n";
+        echo "Home gains: {$homeNetGains} ({$tipsterSummary['totalHomeGains']} - {$tipsterSummary['totalHomePredictions']}) \n";
+        echo "Home or draw predictions: {$tipsterSummary['totalHomeOrDrawPredictions']} \n";
+        echo "Home or draw wins: {$tipsterSummary['totalHomeOrDrawPredictionsPositive']} ({$homeOrDrawPredictionsPct}%) \n";
         echo "Visitor predictions: {$tipsterSummary['totalVisitorPredictions']} \n";
         echo "Visitor wins: {$tipsterSummary['totalVisitorPredictionsPositive']} ({$visitorPredictionsPct}%) \n";
+        echo "Visitor gains: {$visitorNetGains} ({$tipsterSummary['totalVisitorGains']} - {$tipsterSummary['totalVisitorPredictions']}) \n";
+        echo "\n";
 
         return Command::SUCCESS;
     }

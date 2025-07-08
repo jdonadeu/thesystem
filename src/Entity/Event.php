@@ -32,7 +32,7 @@ class Event
     private float $odd_1 = 0;
 
     #[ORM\Column]
-    private float $odd_1x = 0;
+    private float $odd_x = 0;
 
     #[ORM\Column]
     private float $odd_2 = 0;
@@ -113,14 +113,14 @@ class Event
         $this->odd_1 = $odd_1;
     }
 
-    public function getOdd1x(): float
+    public function getOddX(): float
     {
-        return $this->odd_1x;
+        return $this->odd_x;
     }
 
-    public function setOdd1x(float $odd_1x): void
+    public function setOddX(float $odd_x): void
     {
-        $this->odd_1x = $odd_1x;
+        $this->odd_x = $odd_x;
     }
 
     public function getOdd2(): float
