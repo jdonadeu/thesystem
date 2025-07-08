@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AutoImportSettings">
-    <option name="autoReloadType" value="ALL" />
+    <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="878961ba-8b9f-44a3-8fb1-1336e883c529" name="Changes" comment="wip">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="94ef29ce-76db-4650-89d2-bd0b8a1edbdf" name="Changes" comment="wip">
+      <change afterPath="$PROJECT_DIR$/src/Command/TipsterOptimalReport.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Command/TipsterReport.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/TipsterReport.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Event.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Event.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/EventRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/EventRepository.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Repository/ReportRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/ReportRepository.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -20,179 +18,20 @@
   <component name="ComposerSettings">
     <execution />
   </component>
-  <component name="GOROOT" url="file:///usr/local/go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP 7.4" />
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 8
-}</component>
-  <component name="ProjectId" id="2pwDdrNEMabI2yHIQ9iGHJBTlbj" />
-  <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showLibraryContents" value="true" />
-  </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.modules.automatic.dependencies.download&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/jordi/Personal/inmo&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;php.add.doc.comment.for.fields.panel.add.php.doc&quot;: &quot;false&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;web.server&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "git-widget-placeholder": "master",
+    "node.js.selected.package.tslint": "(autodetect)"
   }
-}</component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/public" />
-      <recent name="$PROJECT_DIR$/scripts" />
-      <recent name="$PROJECT_DIR$/src/Utils" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/Command" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/src/Utils" />
-      <recent name="$PROJECT_DIR$/scripts" />
-    </key>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PS-242.23339.16" />
-        <option value="bundled-php-predefined-a98d8de5180a-90914f2295cb-com.jetbrains.php.sharedIndexes-PS-242.23339.16" />
-      </set>
-    </attachedChunks>
-  </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+}]]></component>
   <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="878961ba-8b9f-44a3-8fb1-1336e883c529" name="Changes" comment="" />
-      <created>1733668334815</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1733668334815</updated>
-      <workItem from="1733668335894" duration="27568000" />
-      <workItem from="1733910212234" duration="27381000" />
-      <workItem from="1735991488646" duration="21288000" />
-      <workItem from="1737362762482" duration="233000" />
-      <workItem from="1737652553993" duration="2958000" />
-      <workItem from="1737885563060" duration="5794000" />
-      <workItem from="1738246843741" duration="84697000" />
-      <workItem from="1740412619533" duration="640000" />
-      <workItem from="1740477941985" duration="13657000" />
-      <workItem from="1741263415966" duration="6828000" />
-      <workItem from="1741612657419" duration="3374000" />
-      <workItem from="1741786755392" duration="5769000" />
-      <workItem from="1742287586820" duration="2759000" />
-      <workItem from="1742387308323" duration="2297000" />
-      <workItem from="1742898961312" duration="2400000" />
-      <workItem from="1751273007438" duration="106248000" />
-    </task>
-    <task id="LOCAL-00001" summary="wip">
-      <option name="closed" value="true" />
-      <created>1751383088715</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1751383088715</updated>
-    </task>
-    <task id="LOCAL-00002" summary="wip">
-      <option name="closed" value="true" />
-      <created>1751554465474</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1751554465474</updated>
-    </task>
-    <task id="LOCAL-00003" summary="wip">
-      <option name="closed" value="true" />
-      <created>1751639145457</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1751639145457</updated>
-    </task>
-    <task id="LOCAL-00004" summary="wip">
-      <option name="closed" value="true" />
-      <created>1751650574960</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1751650574960</updated>
-    </task>
-    <task id="LOCAL-00005" summary="wip">
-      <option name="closed" value="true" />
-      <created>1751660699009</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1751660699009</updated>
-    </task>
-    <task id="LOCAL-00006" summary="wip">
-      <option name="closed" value="true" />
-      <created>1751832961051</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1751832961051</updated>
-    </task>
-    <task id="LOCAL-00007" summary="wip">
-      <option name="closed" value="true" />
-      <created>1751915871763</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1751915871763</updated>
-    </task>
-    <task id="LOCAL-00008" summary="wip">
-      <option name="closed" value="true" />
-      <created>1751965366371</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1751965366371</updated>
-    </task>
-    <task id="LOCAL-00009" summary="wip">
-      <option name="closed" value="true" />
-      <created>1751966926972</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1751966926972</updated>
-    </task>
-    <task id="LOCAL-00010" summary="wip">
-      <option name="closed" value="true" />
-      <created>1751967934754</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1751967934754</updated>
-    </task>
-    <option name="localTasksCounter" value="11" />
     <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="wip" />
     <option name="LAST_COMMIT_MESSAGE" value="wip" />
-  </component>
-  <component name="VgoProject">
-    <settings-migrated>true</settings-migrated>
   </component>
 </project>

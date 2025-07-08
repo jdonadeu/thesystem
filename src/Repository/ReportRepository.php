@@ -17,7 +17,7 @@ class ReportRepository extends ServiceEntityRepository
         $this->managerRegistry = $managerRegistry;
     }
 
-    public function predictionsSummaryByTipster(int $tipsterId, int $pctThreshold): array
+    public function predictionsSummaryByTipster(int $tipsterId, int $pctThreshold, float $oddThreshold): array
     {
         $summary = [];
         $tipsterName = '';
@@ -41,13 +41,20 @@ class ReportRepository extends ServiceEntityRepository
 
         foreach ($predictions as $prediction) {
             $tipsterName = $prediction['tipsterName'];
-            $totalEvents++;
 
             $predictionTeam = $this->getPredictionTeam(
                 $prediction['home_pct'],
                 $prediction['draw_pct'],
                 $prediction['visitor_pct']
             );
+
+            if (($predictionTeam === "1" && $prediction['odd_1'] < $oddThreshold)
+                || ($predictionTeam === "2" && $prediction['odd_2'] < $oddThreshold)
+            ) {
+                continue;
+            }
+
+            $totalEvents++;
 
             if ($predictionTeam === "1") {
                 $totalHomePredictions++;

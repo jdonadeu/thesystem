@@ -22,14 +22,16 @@ class TipsterReport extends Command
     {
         $this->addArgument('tipsterId', InputArgument::REQUIRED);
         $this->addArgument('pctThreshold', InputArgument::REQUIRED);
+        $this->addArgument('oddThreshold', InputArgument::REQUIRED);
     }
 
     public function __invoke(InputInterface $input, OutputInterface $output): int
     {
         $tipsterId = $input->getArgument('tipsterId');
         $pctThreshold = $input->getArgument('pctThreshold');
+        $oddThreshold = $input->getArgument('oddThreshold');
 
-        $tipsterSummary = $this->reportRepository->predictionsSummaryByTipster($tipsterId, $pctThreshold);
+        $tipsterSummary = $this->reportRepository->predictionsSummaryByTipster($tipsterId, $pctThreshold, $oddThreshold);
 
         $homePredictionsPct = $tipsterSummary['totalHomePredictions'] === 0
             ? 0
@@ -49,6 +51,7 @@ class TipsterReport extends Command
         echo "\n";
         echo "Tipster: {$tipsterSummary['tipsterName']} \n";
         echo "Pct threshold: {$pctThreshold} \n";
+        echo "Odd threshold: {$oddThreshold} \n";
         echo "Events: {$tipsterSummary['totalEvents']} \n";
         echo "Home predictions: {$tipsterSummary['totalHomePredictions']} \n";
         echo "Home wins: {$tipsterSummary['totalHomePredictionsPositive']} ({$homePredictionsPct}%) \n";
