@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Repository\PredictionRepository;
+use App\Repository\ReportRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class TipsterReport extends Command
 {
     public function __construct(
-        private readonly PredictionRepository $predictionRepository,
+        private readonly ReportRepository $reportRepository,
     ) {
         parent::__construct();
     }
@@ -29,7 +29,7 @@ class TipsterReport extends Command
         $tipsterId = $input->getArgument('tipsterId');
         $pctThreshold = $input->getArgument('pctThreshold');
 
-        $tipsterSummary = $this->predictionRepository->predictionsSummaryByTipster($tipsterId, $pctThreshold);
+        $tipsterSummary = $this->reportRepository->predictionsSummaryByTipster($tipsterId, $pctThreshold);
 
         $homePredictionsPct = $tipsterSummary['totalHomePredictions'] === 0
             ? 0
