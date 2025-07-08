@@ -29,6 +29,7 @@ class ImportMatches extends Command
     {
         $this->zulu->importMatches($input->getArgument('date'));
         //$this->foreBet->importMatches();
+        echo "\n";
 
         return Command::SUCCESS;
     }

@@ -28,6 +28,9 @@ class Tipster
         string $visitorTeam,
         ?int $homeGoals = null,
         ?int $visitorGoals = null,
+        ?float $odd1 = null,
+        ?float $odd1x = null,
+        ?float $odd2 = null,
     ): ?Event {
         $event = $this->eventRepository->findOneBy([
             'date' => $date,
@@ -42,7 +45,17 @@ class Tipster
 
         if ($commit) {
             echo "Creating event [date='$date', homeTeam='$homeTeam', visitorTeam='$visitorTeam'] \n";
-            return $this->eventRepository->create($date, $homeTeam, $visitorTeam, $homeGoals, $visitorGoals);
+
+            return $this->eventRepository->create(
+                $date,
+                $homeTeam,
+                $visitorTeam,
+                $homeGoals,
+                $visitorGoals,
+                $odd1,
+                $odd1x,
+                $odd2
+            );
         } else {
             echo "$tipsterName: Event not found. [date='$date', homeTeam='$homeTeam', visitorTeam='$visitorTeam'] \n";
 

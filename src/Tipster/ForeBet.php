@@ -56,6 +56,7 @@ class ForeBet extends Tipster
     public function importMatches(): void
     {
         $matches = $this->getMatches();
+        echo self::TIPSTER_NAME . ": Importing " . count($matches) . " matches\n";
         $this->filesystemService->saveCsvFile(self::IMPORT_FILE, $matches);
     }
 

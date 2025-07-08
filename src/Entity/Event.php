@@ -35,6 +35,9 @@ class Event
     private float $odd_1x = 0;
 
     #[ORM\Column]
+    private float $odd_2 = 0;
+
+    #[ORM\Column]
     private float $oddOver15 = 0;
 
     #[ORM\Column]
@@ -118,6 +121,16 @@ class Event
     public function setOdd1x(float $odd_1x): void
     {
         $this->odd_1x = $odd_1x;
+    }
+
+    public function getOdd2(): float
+    {
+        return $this->odd_2;
+    }
+
+    public function setOdd2(float $odd_2): void
+    {
+        $this->odd_2 = $odd_2;
     }
 
     public function getOddOver15(): float

@@ -22,7 +22,10 @@ class EventRepository extends ServiceEntityRepository
         string $homeTeam,
         string $visitorTeam,
         ?int $homeGoals = null,
-        ?int $visitorGoals = null
+        ?int $visitorGoals = null,
+        ?float $odd1 = null,
+        ?float $odd1x = null,
+        ?float $odd2 = null,
     ): ?Event {
         try {
             $event = new Event();
@@ -36,6 +39,18 @@ class EventRepository extends ServiceEntityRepository
 
             if ($visitorGoals !== null) {
                 $event->setVisitorGoals($visitorGoals);
+            }
+
+            if ($odd1 !== null) {
+                $event->setOdd1($odd1);
+            }
+
+            if ($odd1x !== null) {
+                $event->setOdd1x($odd1x);
+            }
+
+            if ($odd2 !== null) {
+                $event->setOdd2($odd2);
             }
 
             $this->getEntityManager()->persist($event);

@@ -64,11 +64,6 @@ class PredictionRepository extends ServiceEntityRepository
 
         foreach ($predictions as $prediction) {
             $tipsterName = $prediction['tipsterName'];
-
-            if ($prediction['eventHomeGoals'] === null || $prediction['eventVisitorGoals'] === null) {
-                continue;
-            }
-
             $totalEvents++;
 
             $predictionTeam = $this->getPredictionTeam(
@@ -123,7 +118,9 @@ class PredictionRepository extends ServiceEntityRepository
             FROM prediction p
             JOIN event e ON e.id = p.event_id
             JOIN tipster t ON t.id = p.tipster_id
-            WHERE p.tipster_id = :tipsterId AND (p.home_pct >= $pctThreshold || p.visitor_pct >= $pctThreshold)
+            WHERE p.tipster_id = :tipsterId 
+              AND e.home_goals IS NOT NULL AND e.visitor_goals IS NOT NULL  
+              AND (p.home_pct >= $pctThreshold OR p.visitor_pct >= $pctThreshold)
             ";
 
         $resultSet = $conn->executeQuery($sql, ['tipsterId' => $tipsterId]);

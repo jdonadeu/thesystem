@@ -74,6 +74,9 @@ class Zulu extends Tipster
             $newMatch['homePct'] = $homePct;
             $newMatch['drawPct'] = $drawPct;
             $newMatch['visitorPct'] = $visitorPct;
+            $newMatch['odd_1'] = $row->childNodes[9]->nodeValue;
+            $newMatch['odd_1x'] = $row->childNodes[10]->nodeValue;
+            $newMatch['odd_2'] = $row->childNodes[11]->nodeValue;
             $newMatch['homeGoals'] = $goals[0] ?? '';
             $newMatch['visitorGoals'] = $goals[1] ?? '';
 
@@ -108,6 +111,7 @@ class Zulu extends Tipster
     public function importMatches(string $date): void
     {
         $matches = $this->getMatches($date);
+        echo self::TIPSTER_NAME . ": Importing " . count($matches) . " matches\n";
         $this->filesystemService->saveCsvFile(self::IMPORT_FILE, $matches);
     }
 
@@ -125,8 +129,11 @@ class Zulu extends Tipster
             $homePct = $row[3];
             $drawPct = $row[4];
             $visitorPct = $row[5];
-            $homeGoals = is_numeric($row[6]) ? $row[6] : null;
-            $visitorGoals = is_numeric($row[7]) ? $row[7] : null;
+            $odd1 = $row[6];
+            $odd1x = $row[7];
+            $odd2 = $row[8];
+            $homeGoals = is_numeric($row[9]) ? $row[9] : null;
+            $visitorGoals = is_numeric($row[10]) ? $row[10] : null;
 
             $event = $this->getEvent(
                 $commit,
@@ -136,6 +143,9 @@ class Zulu extends Tipster
                 $visitorTeam,
                 $homeGoals,
                 $visitorGoals,
+                $odd1,
+                $odd1x,
+                $odd2,
             );
 
             if ($commit) {
