@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Repository\EventRepository;
 use App\Tipster\ForeBet;
 use App\Tipster\Zulu;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -16,6 +17,7 @@ class PersistMatches extends Command
     public function __construct(
         private readonly Zulu $zulu,
         private readonly ForeBet $foreBet,
+        private readonly EventRepository $eventRepository,
     ) {
         parent::__construct();
     }
@@ -36,6 +38,8 @@ class PersistMatches extends Command
 
         $this->zulu->persistMatches($commit);
         //$this->foreBet->persistMatches($commit);
+
+        $this->eventRepository->removePastWithoutGoals();
 
         return Command::SUCCESS;
     }

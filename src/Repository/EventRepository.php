@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Event;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -76,5 +77,26 @@ class EventRepository extends ServiceEntityRepository
         $event->setVisitorGoals($visitorGoals);
         $this->getEntityManager()->persist($event);
         $this->getEntityManager()->flush();
+    }
+
+    public function removePastWithoutGoals(): void
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->where('e.date < :today')
+            ->andWhere('e.homeGoals IS NULL')
+            ->setParameter('today', new DateTime('today'));
+        $events = $qb->getQuery()->getResult();
+
+        foreach ($events as $event) {
+            $eventId = $event->getId();
+
+            $sql = "DELETE FROM prediction WHERE event_id = :eventId";
+            $conn->executeQuery($sql, ['eventId' => $eventId]);
+
+            $sql = "DELETE FROM event WHERE id = :eventId";
+            $conn->executeQuery($sql, ['eventId' => $eventId]);
+        }
     }
 }
