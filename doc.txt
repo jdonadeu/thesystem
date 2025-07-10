@@ -3,37 +3,19 @@ Todo:
 - Find different bookers and compare quotes
 - Complete forebet
 
-
 ------------------------------------------------------
+Spartak Trnava - BK Hacken	23%	26%	51%	X2	9 	2.72	3.28	2.45
+
+
 Home: optimal pct, optimal odd, net gains
 55, 2.83, 14.71
+
+Home or draw: optimal pct, optimal odd, net gains
+55, 2.76, 8.02
 
 Visitor: optimal pct, optimal odd, net gains
 50, 2.42, 37.49
 
 
-Tipster: Zulu
-Pct threshold: 55
-Odd threshold: 2.83
-Events: 58
-Home predictions: 20
-Home wins: 12 (60%)
-Home gains: 14.71 (34.71 - 20)
-Home or draw predictions: 20
-Home or draw wins: 18 (90%)
-Visitor predictions: 38
-Visitor wins: 14 (36%)
-Visitor gains: 2.18 (40.18 - 38)
-
-Tipster: Zulu
-Pct threshold: 50
-Odd threshold: 2.42
-Events: 1073
-Home predictions: 502
-Home wins: 156 (31%)
-Home gains: -49.11 (452.89 - 502)
-Home or draw predictions: 502
-Home or draw wins: 291 (57%)
-Visitor predictions: 571
-Visitor wins: 207 (36%)
-Visitor gains: 37.49 (608.49 - 571)
+Draw or visitor: optimal pct, optimal odd, net gains
+55, 2.67, 8.668

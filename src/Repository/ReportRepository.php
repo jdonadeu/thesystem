@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Prediction;
+use App\Tipster\Zulu;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
@@ -29,13 +30,15 @@ class ReportRepository extends ServiceEntityRepository
 
         $totalHomeOrDrawPredictions = 0;
         $totalHomeOrDrawPredictionsPositive = 0;
-
-        $totalDrawPredictions = 0;
-        $totalDrawPredictionsPositive = 0;
+        $totalHomeOrDrawGains = 0;
 
         $totalVisitorPredictions = 0;
         $totalVisitorPredictionsPositive = 0;
         $totalVisitorGains = 0;
+
+        $totalDrawOrVisitorPredictions = 0;
+        $totalDrawOrVisitorPredictionsPositive = 0;
+        $totalDrawOrVisitorGains = 0;
 
         $predictions = $this->getPredictionsWithEventData($tipsterId, $pctThreshold);
 
@@ -49,6 +52,7 @@ class ReportRepository extends ServiceEntityRepository
             );
 
             if (($predictionTeam === "1" && $prediction['odd_1'] < $oddThreshold)
+                || $predictionTeam === "X"
                 || ($predictionTeam === "2" && $prediction['odd_2'] < $oddThreshold)
             ) {
                 continue;
@@ -64,39 +68,47 @@ class ReportRepository extends ServiceEntityRepository
                     $totalHomePredictionsPositive++;
                     $totalHomeGains += $prediction['odd_1'];
                     $totalHomeOrDrawPredictionsPositive++;
+                    $totalHomeOrDrawGains += $prediction['odd_1x'];
                 } elseif ($prediction['eventHomeGoals'] === $prediction['eventVisitorGoals']) {
                     $totalHomeOrDrawPredictionsPositive++;
-                }
-            } elseif ($predictionTeam === "X") {
-                $totalDrawPredictions++;
-
-                if ($prediction['eventHomeGoals'] === $prediction['eventVisitorGoals']) {
-                    $totalDrawPredictionsPositive++;
+                    $totalHomeOrDrawGains += $prediction['odd_1x'];
                 }
             } elseif ($predictionTeam === "2") {
                 $totalVisitorPredictions++;
+                $totalDrawOrVisitorPredictions++;
 
                 if ($prediction['eventHomeGoals'] < $prediction['eventVisitorGoals']) {
                     $totalVisitorPredictionsPositive++;
                     $totalVisitorGains += $prediction['odd_2'];
+                    $totalDrawOrVisitorPredictionsPositive++;
+                    $totalDrawOrVisitorGains += $prediction['odd_x2'];
+                } elseif ($prediction['eventHomeGoals'] === $prediction['eventVisitorGoals']) {
+                    $totalDrawOrVisitorPredictionsPositive++;
+                    $totalDrawOrVisitorGains += $prediction['odd_x2'];
                 }
             }
         }
 
         $summary['tipsterName'] = $tipsterName;
         $summary['totalEvents'] = $totalEvents;
+
         $summary['totalHomePredictions'] = $totalHomePredictions;
         $summary['totalHomePredictionsPositive'] = $totalHomePredictionsPositive;
         $summary['totalHomeGains'] = $totalHomeGains;
+
         $summary['totalHomeOrDrawPredictions'] = $totalHomeOrDrawPredictions;
         $summary['totalHomeOrDrawPredictionsPositive'] = $totalHomeOrDrawPredictionsPositive;
-        $summary['totalDrawPredictions'] = $totalDrawPredictions;
-        $summary['totalDrawPredictionsPositive'] = $totalDrawPredictionsPositive;
+        $summary['totalHomeOrDrawGains'] = $totalHomeOrDrawGains;
+
         $summary['totalVisitorPredictions'] = $totalVisitorPredictions;
         $summary['totalVisitorPredictionsPositive'] = $totalVisitorPredictionsPositive;
         $summary['totalVisitorGains'] = $totalVisitorGains;
 
-        if (($totalEvents - $totalHomePredictions - $totalDrawPredictions - $totalVisitorPredictions) !== 0) {
+        $summary['totalDrawOrVisitorPredictions'] = $totalDrawOrVisitorPredictions;
+        $summary['totalDrawOrVisitorPredictionsPositive'] = $totalDrawOrVisitorPredictionsPositive;
+        $summary['totalDrawOrVisitorGains'] = $totalDrawOrVisitorGains;
+
+        if (($totalEvents - $totalHomePredictions - $totalVisitorPredictions) !== 0) {
             throw new Exception('Invalid number of events');
         }
 
@@ -108,7 +120,7 @@ class ReportRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = "
-            SELECT t.name AS tipsterName, e.home_goals AS eventHomeGoals, e.visitor_goals AS eventVisitorGoals, e.odd_1, e.odd_x, e.odd_2, p.* 
+            SELECT t.name AS tipsterName, e.home_goals AS eventHomeGoals, e.visitor_goals AS eventVisitorGoals, e.odd_1, e.odd_x, e.odd_2, (1/((1/e.odd_1)+(1/e.odd_x))) AS odd_1x, (1/((1/e.odd_x)+(1/e.odd_2))) AS odd_x2, p.* 
             FROM prediction p
             JOIN event e ON e.id = p.event_id
             JOIN tipster t ON t.id = p.tipster_id
@@ -133,5 +145,34 @@ class ReportRepository extends ServiceEntityRepository
         } else {
             return "2";
         }
+    }
+
+    public function zuluTips(int $homePct, float $odd1, int $visitorPct, float $odd2): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = "
+            SELECT t.name AS tipsterName, e.date, e.home_team, e.visitor_team, e.odd_1, p.home_pct, p.visitor_pct
+            FROM prediction p
+            LEFT JOIN event e ON e.id = p.event_id
+            LEFT JOIN tipster t ON t.id = p.tipster_id
+            WHERE e.home_goals IS NULL 
+              AND p.tipster_id = :tipsterId 
+              AND ((p.home_pct >= :homePct AND e.odd_1 >= :odd1) OR (p.visitor_pct >= :visitorPct AND e.odd_2 >= :odd2))
+            ORDER BY home_pct DESC
+            ";
+
+        $resultSet = $conn->executeQuery(
+            $sql,
+            [
+                'tipsterId' => Zulu::TIPSTER_ID,
+                'homePct' => $homePct,
+                'odd1' => $odd1,
+                'visitorPct' => $visitorPct,
+                'odd2' => $odd2,
+            ]
+        );
+
+        return $resultSet->fetchAllAssociative();
     }
 }

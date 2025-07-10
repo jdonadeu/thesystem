@@ -10,8 +10,8 @@ use DOMXPath;
 
 class Zulu extends Tipster
 {
-    private const TIPSTER_ID = 1;
-    private const TIPSTER_NAME = 'ZULU';
+    public const TIPSTER_ID = 1;
+    public const TIPSTER_NAME = 'ZULU';
     private const WINNING_PCT_THRESHOLD = 50;
     private const URL = 'https://es.zulubet.com';
     private const IMPORT_FILE = 'csv/import-zulu.csv';

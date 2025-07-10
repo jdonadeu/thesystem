@@ -40,7 +40,7 @@ class PersistMatches extends Command
         //$this->foreBet->persistMatches($commit);
 
         $this->eventRepository->removePastWithoutGoals();
-
+//
         return Command::SUCCESS;
     }
 }
