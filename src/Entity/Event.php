@@ -14,7 +14,13 @@ class Event
     private int $id;
 
     #[ORM\Column]
+    private int $tipsterId;
+
+    #[ORM\Column]
     private string $date;
+
+    #[ORM\Column]
+    private string $time;
 
     #[ORM\Column]
     private string $homeTeam;
@@ -53,6 +59,16 @@ class Event
         $this->id = $id;
     }
 
+    public function getTipsterId(): int
+    {
+        return $this->tipsterId;
+    }
+
+    public function setTipsterId(int $tipsterId): void
+    {
+        $this->tipsterId = $tipsterId;
+    }
+
     public function getDate(): string
     {
         return $this->date;
@@ -61,6 +77,16 @@ class Event
     public function setDate(string $date): void
     {
         $this->date = $date;
+    }
+
+    public function getTime(): string
+    {
+        return $this->time;
+    }
+
+    public function setTime(string $time): void
+    {
+        $this->time = $time;
     }
 
     public function getHomeTeam(): string

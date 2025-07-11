@@ -32,7 +32,7 @@ class TipsZulu extends Command
         );
 
         echo "\n";
-        echo "Tipster, date, home, visitor, odd_1, odd_2, home_pct, visitor_pct \n";
+        echo "Tipster, dateTime, home, visitor, odd_1, odd_2, home_pct, visitor_pct \n";
         echo "------------------------------------------------------------------ \n";
 
         foreach ($tips as $tip) {
@@ -45,7 +45,7 @@ class TipsZulu extends Command
             $visitorPct = !$isHome ? "({$tip['visitor_pct']})" : $tip['visitor_pct'];
 
             echo $tip['tipsterName'] . ", ";
-            echo $tip['date'] . ", ";
+            echo $tip['date'] . " " . $tip['time'] . ", ";
             echo $tip['home_team'] . ", ";
             echo $tip['visitor_team'] . ", ";
             echo $odd1 . ", ";

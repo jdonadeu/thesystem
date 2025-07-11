@@ -17,9 +17,6 @@ class Prediction
     private int $eventId;
 
     #[ORM\Column]
-    private int $tipsterId;
-
-    #[ORM\Column]
     private ?float $homePct = null;
 
     #[ORM\Column]
@@ -64,16 +61,6 @@ class Prediction
     public function setEventId(int $eventId): void
     {
         $this->eventId = $eventId;
-    }
-
-    public function getTipsterId(): int
-    {
-        return $this->tipsterId;
-    }
-
-    public function setTipsterId(int $tipsterId): void
-    {
-        $this->tipsterId = $tipsterId;
     }
 
     public function getHomePct(): ?float

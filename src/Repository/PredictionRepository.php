@@ -19,7 +19,6 @@ class PredictionRepository extends ServiceEntityRepository
 
     public function create(
         int $eventId,
-        int $tipsterId,
         float $homePct,
         float $drawPct,
         float $visitorPct,
@@ -30,7 +29,6 @@ class PredictionRepository extends ServiceEntityRepository
         try {
             $prediction = new Prediction();
             $prediction->setEventId($eventId);
-            $prediction->setTipsterId($tipsterId);
             $prediction->setHomePct($homePct);
             $prediction->setDrawPct($drawPct);
             $prediction->setVisitorPct($visitorPct);

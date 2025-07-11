@@ -57,7 +57,6 @@ class Zulu extends Tipster
 
             $utcDate = new DateTime("$date $time", new DateTimeZone('UTC'));
             $utcDate->setTimezone(new DateTimeZone('Europe/Madrid'));
-            $date = $utcDate->format('Y-m-d');
 
             // Teams
             $teams = explode("-", mb_convert_encoding(
@@ -68,9 +67,10 @@ class Zulu extends Tipster
 
             $goals = explode(":", $row->childNodes[12]->nodeValue);
 
-            $newMatch['date'] = $date;
-            $newMatch['homeTeam'] = $this->teamNameMapper->getMappedTeamName(trim($teams[0]));
-            $newMatch['visitorTeam'] = $this->teamNameMapper->getMappedTeamName(trim($teams[1]));
+            $newMatch['date'] = $utcDate->format('Y-m-d');
+            $newMatch['time'] = $utcDate->format('H:i');
+            $newMatch['homeTeam'] = trim($teams[0]);
+            $newMatch['visitorTeam'] = trim($teams[1]);
             $newMatch['homePct'] = $homePct;
             $newMatch['drawPct'] = $drawPct;
             $newMatch['visitorPct'] = $visitorPct;
@@ -124,21 +124,24 @@ class Zulu extends Tipster
 
         while (($row = fgetcsv($handle, 1000, ',')) !== false) {
             $date = $row[0];
-            $homeTeam = $row[1];
-            $visitorTeam = $row[2];
-            $homePct = $row[3];
-            $drawPct = $row[4];
-            $visitorPct = $row[5];
-            $odd1 = $row[6];
-            $odd1x = $row[7];
-            $odd2 = $row[8];
-            $homeGoals = is_numeric($row[9]) ? $row[9] : null;
-            $visitorGoals = is_numeric($row[10]) ? $row[10] : null;
+            $time = $row[1];
+            $homeTeam = $row[2];
+            $visitorTeam = $row[3];
+            $homePct = $row[4];
+            $drawPct = $row[5];
+            $visitorPct = $row[6];
+            $odd1 = $row[7];
+            $odd1x = $row[8];
+            $odd2 = $row[9];
+            $homeGoals = is_numeric($row[10]) ? $row[10] : null;
+            $visitorGoals = is_numeric($row[11]) ? $row[11] : null;
 
             $event = $this->getEvent(
                 $commit,
                 self::TIPSTER_NAME,
+                self::TIPSTER_ID,
                 $date,
+                $time,
                 $homeTeam,
                 $visitorTeam,
                 $homeGoals,
@@ -151,7 +154,6 @@ class Zulu extends Tipster
             if ($commit) {
                 $this->predictionRepository->create(
                     $event->getId(),
-                    self::TIPSTER_ID,
                     $homePct,
                     $drawPct,
                     $visitorPct

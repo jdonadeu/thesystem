@@ -19,7 +19,9 @@ class EventRepository extends ServiceEntityRepository
     }
 
     public function create(
+        int $tipsterId,
         string $date,
+        string $time,
         string $homeTeam,
         string $visitorTeam,
         ?int $homeGoals = null,
@@ -30,7 +32,9 @@ class EventRepository extends ServiceEntityRepository
     ): ?Event {
         try {
             $event = new Event();
+            $event->setTipsterId($tipsterId);
             $event->setDate($date);
+            $event->setTime($time);
             $event->setHomeTeam($homeTeam);
             $event->setVisitorTeam($visitorTeam);
 

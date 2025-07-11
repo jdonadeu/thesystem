@@ -7,7 +7,6 @@ use App\Repository\EventRepository;
 use App\Repository\PredictionRepository;
 use App\Service\EventService;
 use App\Service\FilesystemService;
-use App\Service\TeamNameMapper;
 
 class Tipster
 {
@@ -16,14 +15,15 @@ class Tipster
         protected readonly PredictionRepository $predictionRepository,
         protected readonly FilesystemService $filesystemService,
         protected readonly EventService $eventService,
-        protected readonly TeamNameMapper $teamNameMapper,
     ) {
     }
 
     public function getEvent(
         bool $commit,
         string $tipsterName,
+        int $tipsterId,
         string $date,
+        string $time,
         string $homeTeam,
         string $visitorTeam,
         ?int $homeGoals = null,
@@ -39,6 +39,7 @@ class Tipster
         ]);
 
         if ($event !== null) {
+            echo "Updating event [date='$date', homeTeam='$homeTeam', visitorTeam='$visitorTeam'] \n";
             $this->eventRepository->update($event, $homeGoals, $visitorGoals, $odd1, $oddX, $odd2);
             return $event;
         }
@@ -47,7 +48,9 @@ class Tipster
             echo "Creating event [date='$date', homeTeam='$homeTeam', visitorTeam='$visitorTeam'] \n";
 
             return $this->eventRepository->create(
+                $tipsterId,
                 $date,
+                $time,
                 $homeTeam,
                 $visitorTeam,
                 $homeGoals,
