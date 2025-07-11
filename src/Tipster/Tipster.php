@@ -39,7 +39,7 @@ class Tipster
         ]);
 
         if ($event !== null) {
-            $this->eventRepository->updateGoals($event, $homeGoals, $visitorGoals);
+            $this->eventRepository->update($event, $homeGoals, $visitorGoals, $odd1, $oddX, $odd2);
             return $event;
         }
 

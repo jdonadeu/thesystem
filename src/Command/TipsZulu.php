@@ -5,14 +5,13 @@ namespace App\Command;
 use App\Repository\ReportRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: 'tips:zulu')]
 class TipsZulu extends Command
 {
-    private const HOME_PCT = 55;
+    private const HOME_PCT = 50;
     private const ODD_1 = 2.00;
     private const VISITOR_PCT = 50;
     private const ODD_2 = 2.00;

@@ -64,17 +64,19 @@ class EventRepository extends ServiceEntityRepository
         return $event;
     }
 
-    public function updateGoals(
+    public function update(
         Event $event,
         ?int $homeGoals,
-        ?int $visitorGoals
+        ?int $visitorGoals,
+        ?float $odd1,
+        ?float $oddX,
+        ?float $odd2,
     ): void {
-        if ($homeGoals === null || $visitorGoals === null) {
-            return;
-        }
-
         $event->setHomeGoals($homeGoals);
         $event->setVisitorGoals($visitorGoals);
+        $event->setOdd1($odd1);
+        $event->setOddX($oddX);
+        $event->setOdd2($odd2);
         $this->getEntityManager()->persist($event);
         $this->getEntityManager()->flush();
     }

@@ -4,8 +4,6 @@ Todo:
 - Complete forebet
 
 ------------------------------------------------------
-Spartak Trnava - BK Hacken	23%	26%	51%	X2	9 	2.72	3.28	2.45
-
 
 Home: optimal pct, optimal odd, net gains
 55, 2.83, 14.71
@@ -15,7 +13,6 @@ Home or draw: optimal pct, optimal odd, net gains
 
 Visitor: optimal pct, optimal odd, net gains
 50, 2.42, 37.49
-
 
 Draw or visitor: optimal pct, optimal odd, net gains
 55, 2.67, 8.668
