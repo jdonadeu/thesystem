@@ -11,10 +11,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'tips:zulu')]
 class TipsZulu extends Command
 {
-    private const HOME_PCT = 50;
-    private const ODD_1 = 2.00;
+    private const HOME_PCT = 55;
+    private const ODD_1 = 2.50;
     private const VISITOR_PCT = 50;
-    private const ODD_2 = 2.00;
+    private const ODD_2 = 2.20;
 
     public function __construct(
         private readonly ReportRepository $reportRepository,

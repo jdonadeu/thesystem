@@ -11,7 +11,6 @@ class ForeBet extends Tipster
 {
     private const TIPSTER_ID = 2;
     private const TIPSTER_NAME = 'FOREBET';
-    private const WINNING_PCT_THRESHOLD = 50;
     private const DATA_FILE = 'data/forebet-1x2.json';
     private const IMPORT_FILE = 'csv/import-forebet.csv';
 
@@ -20,17 +19,9 @@ class ForeBet extends Tipster
         $json = file_get_contents(self::DATA_FILE);
         $matches = json_decode($json, true);
         $foreBetMatches = [];
-        $now = new DateTime();
 
         foreach ($matches[0] as $match) {
             $dateTime = DateTime::createFromFormat("Y-m-d H:i:s", $match['DATE_BAH']);
-
-            if ($dateTime < $now) {
-                continue;
-            }
-
-            $dateParts = explode(" ", $match['DATE_BAH']);
-
             $teams = trim(preg_replace('/\s\s+/', ' ', $match['HOST_NAME'] . " - " . $match['GUEST_NAME']));
             $teamParts = explode("-", $teams);
 
@@ -38,16 +29,21 @@ class ForeBet extends Tipster
                 continue;
             }
 
-            $foreBetMatches[] = [
-                'date' => $dateParts[0],
-                'homeTeam' => $this->teamNameMapper->getMappedTeamName(trim($teamParts[0])),
-                'visitorTeam' => $this->teamNameMapper->getMappedTeamName(trim($teamParts[1])),
-                'homePct' => $match['Pred_1'],
-                'drawPct' => $match['Pred_X'],
-                'visitorPct' => $match['Pred_2'],
-                'goalsavg' => $match['goalsavg'],
-                'host_sc_pr' => $match['host_sc_pr'] . '-' . $match['guest_sc_pr'],
-            ];
+            $newMatch = [];
+            $newMatch['date'] = $dateTime->format('Y-m-d');
+            $newMatch['time'] = $dateTime->format('H:i');
+            $newMatch['homeTeam'] = trim($teamParts[0]);
+            $newMatch['visitorTeam'] = trim($teamParts[1]);
+            $newMatch['homePct'] = $match['Pred_1'];
+            $newMatch['drawPct'] = $match['Pred_X'];
+            $newMatch['visitorPct'] = $match['Pred_2'];
+            $newMatch['goalsavg'] = $match['goalsavg'];
+            $newMatch['host_sc_pr'] = $match['host_sc_pr'] . '-' . $match['guest_sc_pr'];
+            $newMatch['odd_1'] = $match['best_odd_1'];
+            $newMatch['odd_X'] = $match['best_odd_X'];
+            $newMatch['odd_2'] = $match['best_odd_2'];
+
+            $foreBetMatches[] = $newMatch;
         }
 
         return $foreBetMatches;

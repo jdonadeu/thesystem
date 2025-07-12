@@ -12,7 +12,6 @@ class Zulu extends Tipster
 {
     public const TIPSTER_ID = 1;
     public const TIPSTER_NAME = 'ZULU';
-    private const WINNING_PCT_THRESHOLD = 50;
     private const URL = 'https://es.zulubet.com';
     private const IMPORT_FILE = 'csv/import-zulu.csv';
 
@@ -29,7 +28,6 @@ class Zulu extends Tipster
         $zuluMatches = [];
 
         for ($i = 2; $i < count($tableWithMatches->childNodes); $i++) {
-            $newMatch = [];
             $row = $tableWithMatches->childNodes[$i];
 
             if (count($row->childNodes) < 14) {
@@ -67,6 +65,7 @@ class Zulu extends Tipster
 
             $goals = explode(":", $row->childNodes[12]->nodeValue);
 
+            $newMatch = [];
             $newMatch['date'] = $utcDate->format('Y-m-d');
             $newMatch['time'] = $utcDate->format('H:i');
             $newMatch['homeTeam'] = trim($teams[0]);

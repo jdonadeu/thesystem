@@ -10,6 +10,8 @@ use App\Service\FilesystemService;
 
 class Tipster
 {
+    protected const WINNING_PCT_THRESHOLD = 50;
+
     public function __construct(
         protected readonly EventRepository $eventRepository,
         protected readonly PredictionRepository $predictionRepository,
@@ -33,6 +35,7 @@ class Tipster
         ?float $odd2 = null,
     ): ?Event {
         $event = $this->eventRepository->findOneBy([
+            'tipsterId' => $tipsterId,
             'date' => $date,
             'homeTeam' => $homeTeam,
             'visitorTeam' => $visitorTeam,

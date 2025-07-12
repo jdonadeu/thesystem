@@ -123,7 +123,7 @@ class ReportRepository extends ServiceEntityRepository
             SELECT t.name AS tipsterName, e.home_goals AS eventHomeGoals, e.visitor_goals AS eventVisitorGoals, e.odd_1, e.odd_x, e.odd_2, (1/((1/e.odd_1)+(1/e.odd_x))) AS odd_1x, (1/((1/e.odd_x)+(1/e.odd_2))) AS odd_x2, p.* 
             FROM prediction p
             JOIN event e ON e.id = p.event_id
-            JOIN tipster t ON t.id = p.tipster_id
+            JOIN tipster t ON t.id = e.tipster_id
             WHERE e.tipster_id = :tipsterId 
               AND e.home_goals IS NOT NULL AND e.visitor_goals IS NOT NULL  
               AND (p.home_pct >= $pctThreshold OR p.visitor_pct >= $pctThreshold)
@@ -155,10 +155,11 @@ class ReportRepository extends ServiceEntityRepository
             SELECT t.name AS tipsterName, e.*, p.*
             FROM prediction p
             LEFT JOIN event e ON e.id = p.event_id
-            LEFT JOIN tipster t ON t.id = p.tipster_id
+            LEFT JOIN tipster t ON t.id = e.tipster_id
             WHERE e.home_goals IS NULL 
               AND e.tipster_id = :tipsterId 
               AND ((p.home_pct >= :homePct AND e.odd_1 >= :odd1) OR (p.visitor_pct >= :visitorPct AND e.odd_2 >= :odd2))
+            ORDER BY time
             ";
 
         $resultSet = $conn->executeQuery(
