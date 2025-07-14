@@ -1,7 +1,6 @@
 Todo:
 -----------
-- Find different bookers and compare quotes
-- Complete forebet
+- Optimal report with top cap
 
 ------------------------------------------------------
 

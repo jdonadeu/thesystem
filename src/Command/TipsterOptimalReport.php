@@ -3,9 +3,11 @@
 namespace App\Command;
 
 use App\Repository\ReportRepository;
+use App\Tipster\ForeBet;
+use App\Tipster\Zulu;
+use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,7 +28,15 @@ class TipsterOptimalReport extends Command
 
     public function __invoke(InputInterface $input, OutputInterface $output): int
     {
-        $tipsterId = $input->getArgument('tipsterId');
+        $tipsterId = (int)$input->getArgument('tipsterId');
+
+        if ($tipsterId === 1) {
+            $minPctThreshold = Zulu::MIN_PCT_THRESHOLD;
+        } elseif ($tipsterId === 2) {
+            $minPctThreshold = ForeBet::MIN_PCT_THRESHOLD;
+        } else {
+            throw new Exception("Invalid tipster id[value=$tipsterId]");
+        }
 
         $maxHomeNetGains = 0;
         $optimalHomePctThreshold = 0;
@@ -44,7 +54,7 @@ class TipsterOptimalReport extends Command
         $optimalDrawOrVisitorPctThreshold = 0;
         $optimalDrawOrVisitorOddThreshold = 0;
 
-        for ($pctThreshold = 50; $pctThreshold <= 100; $pctThreshold = $pctThreshold + 5) {
+        for ($pctThreshold = $minPctThreshold; $pctThreshold <= 100; $pctThreshold = $pctThreshold + 5) {
             for ($oddThreshold = 100; $oddThreshold <= 300; $oddThreshold = $oddThreshold + 1) {
                 $tipsterSummary = $this->reportRepository->predictionsSummaryByTipster(
                     $tipsterId,

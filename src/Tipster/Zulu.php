@@ -12,6 +12,7 @@ class Zulu extends Tipster
 {
     public const TIPSTER_ID = 1;
     public const TIPSTER_NAME = 'ZULU';
+    public const MIN_PCT_THRESHOLD = 50;
     private const URL = 'https://es.zulubet.com';
     private const IMPORT_FILE = 'csv/import-zulu.csv';
 
@@ -38,7 +39,7 @@ class Zulu extends Tipster
             $drawPct = str_replace("%", "", $row->childNodes[4]->nodeValue);
             $visitorPct = str_replace("%", "", $row->childNodes[5]->nodeValue);
 
-            if ($homePct < self::WINNING_PCT_THRESHOLD && $visitorPct < self::WINNING_PCT_THRESHOLD) {
+            if ($homePct < self::MIN_PCT_THRESHOLD && $visitorPct < self::MIN_PCT_THRESHOLD) {
                 continue;
             }
 
@@ -130,14 +131,13 @@ class Zulu extends Tipster
             $drawPct = $row[5];
             $visitorPct = $row[6];
             $odd1 = $row[7];
-            $odd1x = $row[8];
+            $oddX = $row[8];
             $odd2 = $row[9];
             $homeGoals = is_numeric($row[10]) ? $row[10] : null;
             $visitorGoals = is_numeric($row[11]) ? $row[11] : null;
 
             $event = $this->getEvent(
                 $commit,
-                self::TIPSTER_NAME,
                 self::TIPSTER_ID,
                 $date,
                 $time,
@@ -146,7 +146,7 @@ class Zulu extends Tipster
                 $homeGoals,
                 $visitorGoals,
                 $odd1,
-                $odd1x,
+                $oddX,
                 $odd2,
             );
 

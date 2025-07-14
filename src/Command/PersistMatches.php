@@ -36,8 +36,8 @@ class PersistMatches extends Command
     {
         $commit = $input->getOption('commit');
 
-        $this->zulu->persistMatches($commit);
-        //$this->foreBet->persistMatches($commit);
+        //$this->zulu->persistMatches($commit);
+        $this->foreBet->persistMatches($commit);
 
         $this->eventRepository->removePastWithoutGoals();
 //

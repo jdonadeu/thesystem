@@ -27,8 +27,8 @@ class ImportMatches extends Command
 
     public function __invoke(InputInterface $input, OutputInterface $output): int
     {
-        $this->zulu->importMatches($input->getArgument('date'));
-        //$this->foreBet->importMatches();
+        //$this->zulu->importMatches($input->getArgument('date'));
+        $this->foreBet->importMatches();
         echo "\n";
 
         return Command::SUCCESS;

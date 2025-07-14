@@ -9,8 +9,9 @@ use DateTime;
 // bts url: https://www.forebet.com/scripts/getrs.php?ln=es&tp=bts&in=2025-02-20&ord=0&tz=+60
 class ForeBet extends Tipster
 {
-    private const TIPSTER_ID = 2;
-    private const TIPSTER_NAME = 'FOREBET';
+    public const MIN_PCT_THRESHOLD = 35;
+    public const TIPSTER_ID = 2;
+    public const TIPSTER_NAME = 'FOREBET';
     private const DATA_FILE = 'data/forebet-1x2.json';
     private const IMPORT_FILE = 'csv/import-forebet.csv';
 
@@ -25,7 +26,8 @@ class ForeBet extends Tipster
             $teams = trim(preg_replace('/\s\s+/', ' ', $match['HOST_NAME'] . " - " . $match['GUEST_NAME']));
             $teamParts = explode("-", $teams);
 
-            if ($match['Pred_1'] < self::WINNING_PCT_THRESHOLD && $match['Pred_2'] < self::WINNING_PCT_THRESHOLD) {
+            if (($match['Pred_1'] < self::MIN_PCT_THRESHOLD && $match['Pred_2'] < self::MIN_PCT_THRESHOLD)
+                || $match['best_odd'] == '') {
                 continue;
             }
 
@@ -38,10 +40,13 @@ class ForeBet extends Tipster
             $newMatch['drawPct'] = $match['Pred_X'];
             $newMatch['visitorPct'] = $match['Pred_2'];
             $newMatch['goalsavg'] = $match['goalsavg'];
-            $newMatch['host_sc_pr'] = $match['host_sc_pr'] . '-' . $match['guest_sc_pr'];
+            $newMatch['host_sc_pr'] = $match['host_sc_pr'] ;
+            $newMatch['guest_sc_pr'] = $match['guest_sc_pr'];
             $newMatch['odd_1'] = $match['best_odd_1'];
             $newMatch['odd_X'] = $match['best_odd_X'];
             $newMatch['odd_2'] = $match['best_odd_2'];
+            $newMatch['Host_SC'] = $match['Host_SC'];
+            $newMatch['Guest_SC'] = $match['Guest_SC'];
 
             $foreBetMatches[] = $newMatch;
         }
@@ -64,36 +69,45 @@ class ForeBet extends Tipster
         }
 
         while (($row = fgetcsv($handle, 1000, ',')) !== false) {
-            $goals = explode("-", $row[7]);
-
             $date = $row[0];
-            $homeTeam = $row[1];
-            $visitorTeam = $row[2];
-            $homePct = $row[3];
-            $drawPct = $row[4];
-            $visitorPct = $row[5];
-            $goalsAvg = $row[6];
-            $homeGoals = $goals[0];
-            $visitorGoals = $goals[1];
+            $time = $row[1];
+            $homeTeam = $row[2];
+            $visitorTeam = $row[3];
+            $homePct = $row[4];
+            $drawPct = $row[5];
+            $visitorPct = $row[6];
+            $goalsAvg = $row[7];
+            $homeGoalsPrediction = $row[8];
+            $visitorGoalsPrediction = $row[9];
+            $odd1 = $row[10];
+            $oddX = $row[11];
+            $odd2 = $row[12];
+            $homeGoals = is_numeric($row[13]) ? $row[13] : null;
+            $visitorGoals = is_numeric($row[14]) ? $row[14] : null;
 
             $event = $this->getEvent(
                 $commit,
-                self::TIPSTER_NAME,
+                self::TIPSTER_ID,
                 $date,
+                $time,
                 $homeTeam,
                 $visitorTeam,
+                $homeGoals,
+                $visitorGoals,
+                $odd1,
+                $oddX,
+                $odd2,
             );
 
             if ($commit) {
                 $this->predictionRepository->create(
                     $event->getId(),
-                    self::TIPSTER_ID,
                     $homePct,
                     $drawPct,
                     $visitorPct,
                     $goalsAvg,
-                    $homeGoals,
-                    $visitorGoals
+                    $homeGoalsPrediction,
+                    $visitorGoalsPrediction,
                 );
             }
         }
