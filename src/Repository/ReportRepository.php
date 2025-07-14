@@ -21,7 +21,6 @@ class ReportRepository extends ServiceEntityRepository
     public function predictionsSummaryByTipster(int $tipsterId, int $pctThreshold, float $oddThreshold): array
     {
         $summary = [];
-        $tipsterName = '';
         $totalEvents = 0;
 
         $totalHomePredictions = 0;
@@ -43,8 +42,6 @@ class ReportRepository extends ServiceEntityRepository
         $predictions = $this->getPredictionsWithEventData($tipsterId, $pctThreshold);
 
         foreach ($predictions as $prediction) {
-            $tipsterName = $prediction['tipsterName'];
-
             $predictionTeam = $this->getPredictionTeam(
                 $prediction['home_pct'],
                 $prediction['draw_pct'],
@@ -89,7 +86,6 @@ class ReportRepository extends ServiceEntityRepository
             }
         }
 
-        $summary['tipsterName'] = $tipsterName;
         $summary['totalEvents'] = $totalEvents;
 
         $summary['totalHomePredictions'] = $totalHomePredictions;
@@ -120,10 +116,9 @@ class ReportRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = "
-            SELECT t.name AS tipsterName, e.home_goals AS eventHomeGoals, e.visitor_goals AS eventVisitorGoals, e.odd_1, e.odd_x, e.odd_2, (1/((1/e.odd_1)+(1/e.odd_x))) AS odd_1x, (1/((1/e.odd_x)+(1/e.odd_2))) AS odd_x2, p.* 
+            SELECT e.home_goals AS eventHomeGoals, e.visitor_goals AS eventVisitorGoals, e.odd_1, e.odd_x, e.odd_2, (1/((1/e.odd_1)+(1/e.odd_x))) AS odd_1x, (1/((1/e.odd_x)+(1/e.odd_2))) AS odd_x2, p.* 
             FROM prediction p
             JOIN event e ON e.id = p.event_id
-            JOIN tipster t ON t.id = e.tipster_id
             WHERE e.tipster_id = :tipsterId 
               AND e.home_goals IS NOT NULL AND e.visitor_goals IS NOT NULL  
               AND (p.home_pct >= $pctThreshold OR p.visitor_pct >= $pctThreshold)

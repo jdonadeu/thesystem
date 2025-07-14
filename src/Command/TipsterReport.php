@@ -55,7 +55,7 @@ class TipsterReport extends Command
         $drawOrVisitorNetGains = $tipsterSummary['totalDrawOrVisitorGains'] - $tipsterSummary['totalDrawOrVisitorPredictions'];
 
         echo "\n";
-        echo "Tipster: {$tipsterSummary['tipsterName']} \n";
+        echo "Tipster: $tipsterId \n";
         echo "Pct threshold: {$pctThreshold} \n";
         echo "Odd threshold: {$oddThreshold} \n";
         echo "Events: {$tipsterSummary['totalEvents']} \n";
