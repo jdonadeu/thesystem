@@ -5,17 +5,13 @@ namespace App\Repository;
 use App\Entity\Event;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\Persistence\ManagerRegistry;
 
 class EventRepository extends ServiceEntityRepository
 {
-    private ManagerRegistry $managerRegistry;
-
     public function __construct(ManagerRegistry $managerRegistry)
     {
         parent::__construct($managerRegistry, Event::class);
-        $this->managerRegistry = $managerRegistry;
     }
 
     public function create(
@@ -29,41 +25,21 @@ class EventRepository extends ServiceEntityRepository
         ?float $odd1 = null,
         ?float $oddX = null,
         ?float $odd2 = null,
-    ): ?Event {
-        try {
-            $event = new Event();
-            $event->setTipsterId($tipsterId);
-            $event->setDate($date);
-            $event->setTime($time);
-            $event->setHomeTeam($homeTeam);
-            $event->setVisitorTeam($visitorTeam);
+    ): Event {
+        $event = new Event();
+        $event->setTipsterId($tipsterId);
+        $event->setDate($date);
+        $event->setTime($time);
+        $event->setHomeTeam($homeTeam);
+        $event->setVisitorTeam($visitorTeam);
+        $event->setHomeGoals($homeGoals);
+        $event->setVisitorGoals($visitorGoals);
+        $event->setOdd1($odd1);
+        $event->setOddX($oddX);
+        $event->setOdd2($odd2);
 
-            if ($homeGoals !== null) {
-                $event->setHomeGoals($homeGoals);
-            }
-
-            if ($visitorGoals !== null) {
-                $event->setVisitorGoals($visitorGoals);
-            }
-
-            if ($odd1 !== null) {
-                $event->setOdd1($odd1);
-            }
-
-            if ($oddX !== null) {
-                $event->setOddX($oddX);
-            }
-
-            if ($odd2 !== null) {
-                $event->setOdd2($odd2);
-            }
-
-            $this->getEntityManager()->persist($event);
-            $this->getEntityManager()->flush();
-        } catch (UniqueConstraintViolationException) {
-            $this->managerRegistry->resetManager();
-            return null;
-        }
+        $this->getEntityManager()->persist($event);
+        $this->getEntityManager()->flush();
 
         return $event;
     }
@@ -81,8 +57,59 @@ class EventRepository extends ServiceEntityRepository
         $event->setOdd1($odd1);
         $event->setOddX($oddX);
         $event->setOdd2($odd2);
+
         $this->getEntityManager()->persist($event);
         $this->getEntityManager()->flush();
+    }
+
+    public function createOrUpdate(
+        int $tipsterId,
+        string $date,
+        string $time,
+        string $homeTeam,
+        string $visitorTeam,
+        ?int $homeGoals = null,
+        ?int $visitorGoals = null,
+        ?float $odd1 = null,
+        ?float $oddX = null,
+        ?float $odd2 = null,
+    ): Event {
+        $event = $this->findOneBy([
+            'tipsterId' => $tipsterId,
+            'date' => $date,
+            'homeTeam' => $homeTeam,
+            'visitorTeam' => $visitorTeam,
+        ]);
+
+        if ($event === null) {
+            echo "Creating event [date='$date', homeTeam='$homeTeam', visitorTeam='$visitorTeam'] \n";
+
+            return $this->create(
+                $tipsterId,
+                $date,
+                $time,
+                $homeTeam,
+                $visitorTeam,
+                $homeGoals,
+                $visitorGoals,
+                $odd1,
+                $oddX,
+                $odd2,
+            );
+        }
+
+        echo "Updating event [date='$date', homeTeam='$homeTeam', visitorTeam='$visitorTeam'] \n";
+
+        $this->update(
+            $event,
+            $homeGoals,
+            $visitorGoals,
+            $odd1,
+            $oddX,
+            $odd2,
+        );
+
+        return $event;
     }
 
     public function removePastWithoutGoals(): void

@@ -61,7 +61,7 @@ class ForeBet extends Tipster
         $this->filesystemService->saveCsvFile(self::IMPORT_FILE, $matches);
     }
 
-    public function persistMatches(bool $commit): void
+    public function persistMatches(): void
     {
         if (!($handle = fopen(self::IMPORT_FILE, 'r'))) {
             echo "Could not open file " . self::IMPORT_FILE;
@@ -85,8 +85,7 @@ class ForeBet extends Tipster
             $homeGoals = is_numeric($row[13]) ? $row[13] : null;
             $visitorGoals = is_numeric($row[14]) ? $row[14] : null;
 
-            $event = $this->getEvent(
-                $commit,
+            $event = $this->eventRepository->createOrUpdate(
                 self::TIPSTER_ID,
                 $date,
                 $time,
@@ -99,17 +98,15 @@ class ForeBet extends Tipster
                 $odd2,
             );
 
-            if ($commit) {
-                $this->predictionRepository->create(
-                    $event->getId(),
-                    $homePct,
-                    $drawPct,
-                    $visitorPct,
-                    $goalsAvg,
-                    $homeGoalsPrediction,
-                    $visitorGoalsPrediction,
-                );
-            }
+            $this->predictionRepository->createOrUpdate(
+                $event->getId(),
+                $homePct,
+                $drawPct,
+                $visitorPct,
+                $goalsAvg,
+                $homeGoalsPrediction,
+                $visitorGoalsPrediction,
+            );
         }
 
         fclose($handle);
