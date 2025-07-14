@@ -31,50 +31,51 @@ class TipsterReport extends Command
         $pctThreshold = $input->getArgument('pctThreshold');
         $oddThreshold = $input->getArgument('oddThreshold');
 
-        $tipsterSummary = $this->reportRepository->predictionsSummaryByTipster($tipsterId, $pctThreshold, $oddThreshold);
+        $predictions = $this->reportRepository->getPredictionsForSummary($tipsterId, $pctThreshold, $oddThreshold);
+        $summary = $this->reportRepository->predictionsSummary($predictions);
 
-        $homePredictionsPct = $tipsterSummary['totalHomePredictions'] === 0
+        $homePredictionsPct = $summary['totalHomePredictions'] === 0
             ? 0
-            : floor(($tipsterSummary['totalHomePredictionsPositive'] * 100) / $tipsterSummary['totalHomePredictions']);
+            : floor(($summary['totalHomePredictionsPositive'] * 100) / $summary['totalHomePredictions']);
 
-        $homeOrDrawPredictionsPct = $tipsterSummary['totalHomeOrDrawPredictions'] === 0
+        $homeOrDrawPredictionsPct = $summary['totalHomeOrDrawPredictions'] === 0
             ? 0
-            : floor(($tipsterSummary['totalHomeOrDrawPredictionsPositive'] * 100) / $tipsterSummary['totalHomeOrDrawPredictions']);
+            : floor(($summary['totalHomeOrDrawPredictionsPositive'] * 100) / $summary['totalHomeOrDrawPredictions']);
 
-        $visitorPredictionsPct = $tipsterSummary['totalVisitorPredictions'] === 0
+        $visitorPredictionsPct = $summary['totalVisitorPredictions'] === 0
             ? 0
-            :floor(($tipsterSummary['totalVisitorPredictionsPositive'] * 100) / $tipsterSummary['totalVisitorPredictions']);
+            :floor(($summary['totalVisitorPredictionsPositive'] * 100) / $summary['totalVisitorPredictions']);
 
-        $drawOrVisitorPredictionsPct = $tipsterSummary['totalDrawOrVisitorPredictions'] === 0
+        $drawOrVisitorPredictionsPct = $summary['totalDrawOrVisitorPredictions'] === 0
             ? 0
-            : floor(($tipsterSummary['totalDrawOrVisitorPredictionsPositive'] * 100) / $tipsterSummary['totalDrawOrVisitorPredictions']);
+            : floor(($summary['totalDrawOrVisitorPredictionsPositive'] * 100) / $summary['totalDrawOrVisitorPredictions']);
 
-        $homeNetGains = $tipsterSummary['totalHomeGains'] - $tipsterSummary['totalHomePredictions'];
-        $homeOrDrawNetGains = $tipsterSummary['totalHomeOrDrawGains'] - $tipsterSummary['totalHomeOrDrawPredictions'];
-        $visitorNetGains = $tipsterSummary['totalVisitorGains'] - $tipsterSummary['totalVisitorPredictions'];
-        $drawOrVisitorNetGains = $tipsterSummary['totalDrawOrVisitorGains'] - $tipsterSummary['totalDrawOrVisitorPredictions'];
+        $homeNetGains = $summary['totalHomeGains'] - $summary['totalHomePredictions'];
+        $homeOrDrawNetGains = $summary['totalHomeOrDrawGains'] - $summary['totalHomeOrDrawPredictions'];
+        $visitorNetGains = $summary['totalVisitorGains'] - $summary['totalVisitorPredictions'];
+        $drawOrVisitorNetGains = $summary['totalDrawOrVisitorGains'] - $summary['totalDrawOrVisitorPredictions'];
 
         echo "\n";
         echo "Tipster: $tipsterId \n";
         echo "Pct threshold: {$pctThreshold} \n";
         echo "Odd threshold: {$oddThreshold} \n";
-        echo "Events: {$tipsterSummary['totalEvents']} \n";
+        echo "Events: {$summary['totalEvents']} \n";
         echo "\n";
-        echo "Home predictions: {$tipsterSummary['totalHomePredictions']} \n";
-        echo "Home wins: {$tipsterSummary['totalHomePredictionsPositive']} ({$homePredictionsPct}%) \n";
-        echo "Home gains: {$homeNetGains} ({$tipsterSummary['totalHomeGains']} - {$tipsterSummary['totalHomePredictions']}) \n";
+        echo "Home predictions: {$summary['totalHomePredictions']} \n";
+        echo "Home wins: {$summary['totalHomePredictionsPositive']} ({$homePredictionsPct}%) \n";
+        echo "Home gains: {$homeNetGains} ({$summary['totalHomeGains']} - {$summary['totalHomePredictions']}) \n";
         echo "\n";
-        echo "Home or draw predictions: {$tipsterSummary['totalHomeOrDrawPredictions']} \n";
-        echo "Home or draw wins: {$tipsterSummary['totalHomeOrDrawPredictionsPositive']} ({$homeOrDrawPredictionsPct}%) \n";
-        echo "Home or draw gains: {$homeOrDrawNetGains} ({$tipsterSummary['totalHomeOrDrawGains']} - {$tipsterSummary['totalHomeOrDrawPredictions']}) \n";
+        echo "Home or draw predictions: {$summary['totalHomeOrDrawPredictions']} \n";
+        echo "Home or draw wins: {$summary['totalHomeOrDrawPredictionsPositive']} ({$homeOrDrawPredictionsPct}%) \n";
+        echo "Home or draw gains: {$homeOrDrawNetGains} ({$summary['totalHomeOrDrawGains']} - {$summary['totalHomeOrDrawPredictions']}) \n";
         echo "\n";
-        echo "Visitor predictions: {$tipsterSummary['totalVisitorPredictions']} \n";
-        echo "Visitor wins: {$tipsterSummary['totalVisitorPredictionsPositive']} ({$visitorPredictionsPct}%) \n";
-        echo "Visitor gains: {$visitorNetGains} ({$tipsterSummary['totalVisitorGains']} - {$tipsterSummary['totalVisitorPredictions']}) \n";
+        echo "Visitor predictions: {$summary['totalVisitorPredictions']} \n";
+        echo "Visitor wins: {$summary['totalVisitorPredictionsPositive']} ({$visitorPredictionsPct}%) \n";
+        echo "Visitor gains: {$visitorNetGains} ({$summary['totalVisitorGains']} - {$summary['totalVisitorPredictions']}) \n";
         echo "\n";
-        echo "Draw or visitor predictions: {$tipsterSummary['totalDrawOrVisitorPredictions']} \n";
-        echo "Draw or visitor wins: {$tipsterSummary['totalDrawOrVisitorPredictionsPositive']} ({$drawOrVisitorPredictionsPct}%) \n";
-        echo "Draw or visitor gains: {$drawOrVisitorNetGains} ({$tipsterSummary['totalDrawOrVisitorGains']} - {$tipsterSummary['totalDrawOrVisitorPredictions']}) \n";
+        echo "Draw or visitor predictions: {$summary['totalDrawOrVisitorPredictions']} \n";
+        echo "Draw or visitor wins: {$summary['totalDrawOrVisitorPredictionsPositive']} ({$drawOrVisitorPredictionsPct}%) \n";
+        echo "Draw or visitor gains: {$drawOrVisitorNetGains} ({$summary['totalDrawOrVisitorGains']} - {$summary['totalDrawOrVisitorPredictions']}) \n";
         echo "\n";
 
         return Command::SUCCESS;

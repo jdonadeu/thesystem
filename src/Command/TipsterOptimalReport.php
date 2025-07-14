@@ -26,6 +26,9 @@ class TipsterOptimalReport extends Command
         $this->addArgument('tipsterId', InputArgument::REQUIRED);
     }
 
+    /**
+     * @throws Exception
+     */
     public function __invoke(InputInterface $input, OutputInterface $output): int
     {
         $tipsterId = (int)$input->getArgument('tipsterId');
@@ -54,24 +57,19 @@ class TipsterOptimalReport extends Command
         $optimalDrawOrVisitorPctThreshold = 0;
         $optimalDrawOrVisitorOddThreshold = 0;
 
+        $predictions = $this->reportRepository->getPredictionsForSummary($tipsterId, $minPctThreshold, 1);
+
         for ($pctThreshold = $minPctThreshold; $pctThreshold <= 90; $pctThreshold = $pctThreshold + 2) {
             for ($oddThreshold = 100; $oddThreshold <= 400; $oddThreshold = $oddThreshold + 1) {
-                $tipsterSummary = $this->reportRepository->predictionsSummaryByTipster(
-                    $tipsterId,
-                    $pctThreshold,
-                    $oddThreshold / 100
-                );
+                $filteredPredictions = $this->filterPredictionsByPct($predictions, $pctThreshold, $oddThreshold / 100);
+                $summary = $this->reportRepository->predictionsSummary($filteredPredictions);
 
-                $homeNetGains = $tipsterSummary['totalHomeGains'] - $tipsterSummary['totalHomePredictions'];
-                $homeOrDrawNetGains = $tipsterSummary['totalHomeOrDrawGains'] - $tipsterSummary['totalHomeOrDrawPredictions'];
-                $visitorNetGains = $tipsterSummary['totalVisitorGains'] - $tipsterSummary['totalVisitorPredictions'];
-                $drawOrVisitorNetGains = $tipsterSummary['totalDrawOrVisitorGains'] - $tipsterSummary['totalDrawOrVisitorPredictions'];
+                $homeNetGains = $summary['totalHomeGains'] - $summary['totalHomePredictions'];
+                $homeOrDrawNetGains = $summary['totalHomeOrDrawGains'] - $summary['totalHomeOrDrawPredictions'];
+                $visitorNetGains = $summary['totalVisitorGains'] - $summary['totalVisitorPredictions'];
+                $drawOrVisitorNetGains = $summary['totalDrawOrVisitorGains'] - $summary['totalDrawOrVisitorPredictions'];
 
-                if ($homeNetGains <= 0
-                    && $homeOrDrawNetGains <= 0
-                    && $visitorNetGains <= 0
-                    && $drawOrVisitorNetGains <= 0
-                ) {
+                if ($homeNetGains <= 0 && $homeOrDrawNetGains <= 0 && $visitorNetGains <= 0 && $drawOrVisitorNetGains <= 0) {
                     continue;
                 }
 
@@ -121,6 +119,27 @@ class TipsterOptimalReport extends Command
         echo "\n";
 
         return Command::SUCCESS;
+    }
+
+    private function filterPredictionsByPct(array $predictions, int $pctThreshold, float $oddThreshold): array
+    {
+        $filteredPredictions = [];
+
+        foreach ($predictions as $prediction) {
+            if ($prediction['prediction'] === 'X') {
+                throw new Exception('Draws are not valid');
+            }
+
+            if (($prediction['prediction'] === '1' && ($prediction['home_pct'] < $pctThreshold || $prediction['odd_1'] < $oddThreshold))
+                || ($prediction['prediction'] === '2' && ($prediction['visitor_pct'] < $pctThreshold || $prediction['odd_2'] < $oddThreshold))
+            ) {
+                continue;
+            }
+
+            $filteredPredictions[] = $prediction;
+        }
+
+        return $filteredPredictions;
     }
 }
 

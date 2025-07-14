@@ -10,16 +10,12 @@ use Exception;
 
 class ReportRepository extends ServiceEntityRepository
 {
-    private ManagerRegistry $managerRegistry;
-
     public function __construct(ManagerRegistry $managerRegistry)
     {
         parent::__construct($managerRegistry, Prediction::class);
-        $this->managerRegistry = $managerRegistry;
     }
 
-    public function predictionsSummaryByTipster(int $tipsterId, int $pctThreshold, float $oddThreshold): array
-    {
+    public function predictionsSummary(array $predictions): array {
         $summary = [];
         $totalEvents = 0;
 
@@ -39,25 +35,10 @@ class ReportRepository extends ServiceEntityRepository
         $totalDrawOrVisitorPredictionsPositive = 0;
         $totalDrawOrVisitorGains = 0;
 
-        $predictions = $this->getPredictionsWithEventData($tipsterId, $pctThreshold);
-
         foreach ($predictions as $prediction) {
-            $predictionTeam = $this->getPredictionTeam(
-                $prediction['home_pct'],
-                $prediction['draw_pct'],
-                $prediction['visitor_pct']
-            );
-
-            if (($predictionTeam === "1" && $prediction['odd_1'] < $oddThreshold)
-                || $predictionTeam === "X"
-                || ($predictionTeam === "2" && $prediction['odd_2'] < $oddThreshold)
-            ) {
-                continue;
-            }
-
             $totalEvents++;
 
-            if ($predictionTeam === "1") {
+            if ($prediction['prediction'] === "1") {
                 $totalHomePredictions++;
                 $totalHomeOrDrawPredictions++;
 
@@ -70,7 +51,7 @@ class ReportRepository extends ServiceEntityRepository
                     $totalHomeOrDrawPredictionsPositive++;
                     $totalHomeOrDrawGains += $prediction['odd_1x'];
                 }
-            } elseif ($predictionTeam === "2") {
+            } elseif ($prediction['prediction'] === "2") {
                 $totalVisitorPredictions++;
                 $totalDrawOrVisitorPredictions++;
 
@@ -111,35 +92,23 @@ class ReportRepository extends ServiceEntityRepository
         return $summary;
     }
 
-    private function getPredictionsWithEventData(int $tipsterId, int $pctThreshold): array
+    public function getPredictionsForSummary(int $tipsterId, int $pctThreshold, float $oddThreshold): array
     {
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = "
-            SELECT e.home_goals AS eventHomeGoals, e.visitor_goals AS eventVisitorGoals, e.odd_1, e.odd_x, e.odd_2, (1/((1/e.odd_1)+(1/e.odd_x))) AS odd_1x, (1/((1/e.odd_x)+(1/e.odd_2))) AS odd_x2, p.* 
+            SELECT * FROM
+            (SELECT e.home_goals AS eventHomeGoals, e.visitor_goals AS eventVisitorGoals, e.odd_1, e.odd_x, e.odd_2, (1/((1/e.odd_1)+(1/e.odd_x))) AS odd_1x, (1/((1/e.odd_x)+(1/e.odd_2))) AS odd_x2, p.home_pct, p.draw_pct, p.visitor_pct,
+            IF(home_pct > draw_pct AND home_pct > visitor_pct, '1', IF(draw_pct > home_pct AND draw_pct > visitor_pct, 'X', '2')) AS prediction
             FROM prediction p
             JOIN event e ON e.id = p.event_id
-            WHERE e.tipster_id = :tipsterId 
-              AND e.home_goals IS NOT NULL AND e.visitor_goals IS NOT NULL  
-              AND (p.home_pct >= $pctThreshold OR p.visitor_pct >= $pctThreshold)
+            WHERE e.tipster_id = :tipsterId AND e.home_goals IS NOT NULL AND e.visitor_goals IS NOT NULL) SQ
+            WHERE (prediction = '1' AND home_pct >= $pctThreshold AND odd_1 >= $oddThreshold) 
+               OR (prediction = '2' AND visitor_pct >= $pctThreshold AND odd_2 >= $oddThreshold)
             ";
 
         $resultSet = $conn->executeQuery($sql, ['tipsterId' => $tipsterId]);
-
         return $resultSet->fetchAllAssociative();
-    }
-
-    private function getPredictionTeam(float $homePct, float $drawPct, float $visitorPct): string
-    {
-        $highestPct = max($homePct, $drawPct, $visitorPct);
-
-        if ($homePct === $highestPct) {
-            return "1";
-        } elseif ($drawPct === $highestPct) {
-            return "X";
-        } else {
-            return "2";
-        }
     }
 
     public function zuluTips(int $homePct, float $odd1, int $visitorPct, float $odd2): array
