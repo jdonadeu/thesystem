@@ -92,8 +92,12 @@ class ReportRepository extends ServiceEntityRepository
         return $summary;
     }
 
-    public function getPredictionsForSummary(int $tipsterId, int $pctThreshold, float $oddThreshold): array
-    {
+    public function getPredictionsForSummary(
+        int $tipsterId,
+        int $pctThreshold,
+        float $minOdd,
+        float $maxOdd,
+    ): array {
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = "
@@ -103,8 +107,8 @@ class ReportRepository extends ServiceEntityRepository
             FROM prediction p
             JOIN event e ON e.id = p.event_id
             WHERE e.tipster_id = :tipsterId AND e.home_goals IS NOT NULL AND e.visitor_goals IS NOT NULL) SQ
-            WHERE (prediction = '1' AND home_pct >= $pctThreshold AND odd_1 >= $oddThreshold) 
-               OR (prediction = '2' AND visitor_pct >= $pctThreshold AND odd_2 >= $oddThreshold)
+            WHERE (prediction = '1' AND home_pct >= $pctThreshold AND odd_1 >= $minOdd AND odd_1 < $maxOdd) 
+               OR (prediction = '2' AND visitor_pct >= $pctThreshold AND odd_2 >= $minOdd AND odd_2 < $maxOdd)
             ";
 
         $resultSet = $conn->executeQuery($sql, ['tipsterId' => $tipsterId]);

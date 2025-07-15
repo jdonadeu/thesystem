@@ -22,16 +22,18 @@ class TipsterReport extends Command
     {
         $this->addArgument('tipsterId', InputArgument::REQUIRED);
         $this->addArgument('pctThreshold', InputArgument::REQUIRED);
-        $this->addArgument('oddThreshold', InputArgument::REQUIRED);
+        $this->addArgument('minOdd', InputArgument::REQUIRED);
+        $this->addArgument('maxOdd', InputArgument::REQUIRED);
     }
 
     public function __invoke(InputInterface $input, OutputInterface $output): int
     {
         $tipsterId = $input->getArgument('tipsterId');
         $pctThreshold = $input->getArgument('pctThreshold');
-        $oddThreshold = $input->getArgument('oddThreshold');
+        $minOdd = $input->getArgument('minOdd');
+        $maxOdd = $input->getArgument('maxOdd');
 
-        $predictions = $this->reportRepository->getPredictionsForSummary($tipsterId, $pctThreshold, $oddThreshold);
+        $predictions = $this->reportRepository->getPredictionsForSummary($tipsterId, $pctThreshold, $minOdd, $maxOdd);
         $summary = $this->reportRepository->predictionsSummary($predictions);
 
         $homePredictionsPct = $summary['totalHomePredictions'] === 0
@@ -58,7 +60,7 @@ class TipsterReport extends Command
         echo "\n";
         echo "Tipster: $tipsterId \n";
         echo "Pct threshold: {$pctThreshold} \n";
-        echo "Odd threshold: {$oddThreshold} \n";
+        echo "Odds: $minOdd - $maxOdd \n";
         echo "Events: {$summary['totalEvents']} \n";
         echo "\n";
         echo "Home predictions: {$summary['totalHomePredictions']} \n";

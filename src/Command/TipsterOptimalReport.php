@@ -57,10 +57,10 @@ class TipsterOptimalReport extends Command
         $optimalDrawOrVisitorPctThreshold = 0;
         $optimalDrawOrVisitorOddThreshold = 0;
 
-        $predictions = $this->reportRepository->getPredictionsForSummary($tipsterId, $minPctThreshold, 1);
+        $predictions = $this->reportRepository->getPredictionsForSummary($tipsterId, $minPctThreshold, 1, 99);
 
         for ($pctThreshold = $minPctThreshold; $pctThreshold <= 90; $pctThreshold = $pctThreshold + 2) {
-            for ($oddThreshold = 100; $oddThreshold <= 400; $oddThreshold = $oddThreshold + 1) {
+            for ($oddThreshold = 100; $oddThreshold <= 600; $oddThreshold = $oddThreshold + 1) {
                 $filteredPredictions = $this->filterPredictionsByPct($predictions, $pctThreshold, $oddThreshold / 100);
                 $summary = $this->reportRepository->predictionsSummary($filteredPredictions);
 

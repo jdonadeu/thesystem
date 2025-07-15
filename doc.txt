@@ -1,17 +1,18 @@
 Todo:
 -----------
-- Optimal report with top cap
+
 
 ------------------------------------------------------
+Forebet
 
 Home: optimal pct, optimal odd, net gains
-55, 2.83, 14.71
+41, 2.88, 36.23
 
 Home or draw: optimal pct, optimal odd, net gains
-55, 2.76, 8.02
+49, 2.9, 8.4921
 
 Visitor: optimal pct, optimal odd, net gains
-50, 2.42, 37.49
+37, 3.25, 21.28
 
 Draw or visitor: optimal pct, optimal odd, net gains
-55, 2.67, 8.668
+35, 4, 16.5174
