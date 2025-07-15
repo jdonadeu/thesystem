@@ -22,7 +22,7 @@ class ImportMatches extends Command
 
     protected function configure(): void
     {
-        $this->addArgument('date', InputArgument::REQUIRED);
+        $this->addArgument('date', InputArgument::OPTIONAL);
     }
 
     public function __invoke(InputInterface $input, OutputInterface $output): int

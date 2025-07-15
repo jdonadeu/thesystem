@@ -115,7 +115,7 @@ class ReportRepository extends ServiceEntityRepository
         return $resultSet->fetchAllAssociative();
     }
 
-    public function zuluTips(int $homePct, float $odd1, int $visitorPct, float $odd2): array
+    public function tips(int $tipsterId, int $homePct, float $odd1, int $visitorPct, float $odd2): array
     {
         $conn = $this->getEntityManager()->getConnection();
 
@@ -133,7 +133,7 @@ class ReportRepository extends ServiceEntityRepository
         $resultSet = $conn->executeQuery(
             $sql,
             [
-                'tipsterId' => Zulu::TIPSTER_ID,
+                'tipsterId' => $tipsterId,
                 'homePct' => $homePct,
                 'odd1' => $odd1,
                 'visitorPct' => $visitorPct,

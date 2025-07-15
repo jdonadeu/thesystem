@@ -1,18 +1,18 @@
 Todo:
 -----------
-
+- forebet tips
 
 ------------------------------------------------------
 Forebet
 
 Home: optimal pct, optimal odd, net gains
-41, 2.88, 36.23
+43, 2.88, 39.48
 
 Home or draw: optimal pct, optimal odd, net gains
-49, 2.9, 8.4921
+49, 2.9, 12.4758
 
 Visitor: optimal pct, optimal odd, net gains
-37, 3.25, 21.28
+39, 2.8, 28.84
 
 Draw or visitor: optimal pct, optimal odd, net gains
-35, 4, 16.5174
+35, 4.6, 14.8786
