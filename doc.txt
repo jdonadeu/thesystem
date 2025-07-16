@@ -6,13 +6,19 @@ Todo:
 Forebet
 
 Home: optimal pct, optimal odd, net gains
-43, 2.88, 39.48
+43, 2.88, 50.59
 
 Home or draw: optimal pct, optimal odd, net gains
-49, 2.9, 12.4758
+49, 2.9, 13.2581
 
 Visitor: optimal pct, optimal odd, net gains
-39, 2.8, 28.84
+37, 3.8, 52.21
 
 Draw or visitor: optimal pct, optimal odd, net gains
-35, 4.6, 14.8786
+35, 4.33, 24.994
+
+
+TipsterId, dateTime, home, visitor, odd_1, odd_2, home_pct, visitor_pct
+------------------------------------------------------------------------
+2, 2025-07-16 00:00:00, Central Córdoba SdE, Cerro Largo, 1.57, (6.50), 36.00, (38.00), => (visitor)
+2, 2025-07-16 20:00:00, Santos U20, Atletico, 1.57, (4.50), 31.00, (43.00), => (visitor)

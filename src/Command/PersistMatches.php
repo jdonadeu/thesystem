@@ -26,7 +26,8 @@ class PersistMatches extends Command
         //$this->zulu->persistMatches();
         $this->foreBet->persistMatches();
 
-        $this->eventRepository->removePastWithoutGoals();
+        // Run manually in a separate command with commit parameter
+        //$this->eventRepository->removePastWithoutGoals();
 
         return Command::SUCCESS;
     }

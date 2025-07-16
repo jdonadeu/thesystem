@@ -22,8 +22,8 @@ class TipsterTips extends Command
         2 => [
             'HOME_PCT' => 43,
             'ODD_1' => 2.88,
-            'VISITOR_PCT' => 35,
-            'ODD_2' => 2.80,
+            'VISITOR_PCT' => 37,
+            'ODD_2' => 3.80,
         ]
     ];
 
