@@ -6,16 +6,17 @@ Todo:
 Forebet
 
 Home: optimal pct, optimal odd, net gains
-43, 2.88, 50.59
+43, 2.15, 57.5
 
 Home or draw: optimal pct, optimal odd, net gains
-49, 2.9, 13.2581
+47, 2.15, 11.5784
 
 Visitor: optimal pct, optimal odd, net gains
-37, 3.8, 52.21
+35, 4.2, 38.61
 
 Draw or visitor: optimal pct, optimal odd, net gains
-35, 4.33, 24.994
+35, 4.33, 20.313
+
 
 
 TipsterId, dateTime, home, visitor, odd_1, odd_2, home_pct, visitor_pct
