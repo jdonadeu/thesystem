@@ -31,6 +31,8 @@ class TipsterOptimalReport extends Command
      */
     public function __invoke(InputInterface $input, OutputInterface $output): int
     {
+        $start = microtime(true);
+
         $tipsterId = (int)$input->getArgument('tipsterId');
 
         if ($tipsterId === 1) {
@@ -60,7 +62,7 @@ class TipsterOptimalReport extends Command
         $events = $this->reportRepository->getEventsForSummary($tipsterId, $minPctThreshold, 1, 99);
 
         for ($pctThreshold = $minPctThreshold; $pctThreshold <= 90; $pctThreshold = $pctThreshold + 2) {
-            for ($oddThreshold = 100; $oddThreshold <= 600; $oddThreshold = $oddThreshold + 1) {
+            for ($oddThreshold = 100; $oddThreshold <= 600; $oddThreshold = $oddThreshold + 5) {
                 $filteredEvents = $this->filterEventsByPctAndOdd($events, $pctThreshold, $oddThreshold / 100);
                 $summary = $this->reportRepository->eventsSummary($filteredEvents);
 
@@ -117,6 +119,10 @@ class TipsterOptimalReport extends Command
         echo "Draw or visitor: optimal pct, optimal odd, net gains\n";
         echo "$optimalDrawOrVisitorPctThreshold, $optimalDrawOrVisitorOddThreshold, $maxDrawOrVisitorNetGains \n";
         echo "\n";
+
+        $end = microtime(true);
+        $executionTime = $end - $start;
+        echo "\nExecution time: " . $executionTime . " seconds\n\n";
 
         return Command::SUCCESS;
     }
