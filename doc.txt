@@ -1,7 +1,6 @@
 Todo:
 -----------
 - Run optimal separate for each type (home, home-draw, etc)
-- Join event and persist tables. Only one table
 
 ------------------------------------------------------
 Forebet

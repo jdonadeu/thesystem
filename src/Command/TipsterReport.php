@@ -33,8 +33,8 @@ class TipsterReport extends Command
         $minOdd = $input->getArgument('minOdd');
         $maxOdd = $input->getArgument('maxOdd');
 
-        $predictions = $this->reportRepository->getPredictionsForSummary($tipsterId, $pctThreshold, $minOdd, $maxOdd);
-        $summary = $this->reportRepository->predictionsSummary($predictions);
+        $events = $this->reportRepository->getEventsForSummary($tipsterId, $pctThreshold, $minOdd, $maxOdd);
+        $summary = $this->reportRepository->eventsSummary($events);
 
         $homePredictionsPct = $summary['totalHomePredictions'] === 0
             ? 0

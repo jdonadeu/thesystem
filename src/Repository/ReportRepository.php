@@ -14,7 +14,7 @@ class ReportRepository extends ServiceEntityRepository
         parent::__construct($managerRegistry, Event::class);
     }
 
-    public function predictionsSummary(array $events): array {
+    public function eventsSummary(array $events): array {
         $summary = [];
         $totalEvents = 0;
 
@@ -94,7 +94,7 @@ class ReportRepository extends ServiceEntityRepository
         return $summary;
     }
 
-    public function getPredictionsForSummary(
+    public function getEventsForSummary(
         int $tipsterId,
         int $pctThreshold,
         float $minOdd,

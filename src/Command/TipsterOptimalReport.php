@@ -57,12 +57,12 @@ class TipsterOptimalReport extends Command
         $optimalDrawOrVisitorPctThreshold = 0;
         $optimalDrawOrVisitorOddThreshold = 0;
 
-        $predictions = $this->reportRepository->getPredictionsForSummary($tipsterId, $minPctThreshold, 1, 99);
+        $events = $this->reportRepository->getEventsForSummary($tipsterId, $minPctThreshold, 1, 99);
 
         for ($pctThreshold = $minPctThreshold; $pctThreshold <= 90; $pctThreshold = $pctThreshold + 2) {
             for ($oddThreshold = 100; $oddThreshold <= 600; $oddThreshold = $oddThreshold + 1) {
-                $filteredPredictions = $this->filterPredictionsByPct($predictions, $pctThreshold, $oddThreshold / 100);
-                $summary = $this->reportRepository->predictionsSummary($filteredPredictions);
+                $filteredEvents = $this->filterEventsByPctAndOdd($events, $pctThreshold, $oddThreshold / 100);
+                $summary = $this->reportRepository->eventsSummary($filteredEvents);
 
                 $homeNetGains = $summary['totalHomeGains'] - $summary['totalHomePredictions'];
                 $homeOrDrawNetGains = $summary['totalHomeOrDrawGains'] - $summary['totalHomeOrDrawPredictions'];
@@ -121,25 +121,25 @@ class TipsterOptimalReport extends Command
         return Command::SUCCESS;
     }
 
-    private function filterPredictionsByPct(array $predictions, int $pctThreshold, float $oddThreshold): array
+    private function filterEventsByPctAndOdd(array $events, int $pctThreshold, float $oddThreshold): array
     {
-        $filteredPredictions = [];
+        $filteredEvents = [];
 
-        foreach ($predictions as $prediction) {
-            if ($prediction['prediction'] === 'X') {
+        foreach ($events as $event) {
+            if ($event['prediction'] === 'X') {
                 throw new Exception('Draws are not valid');
             }
 
-            if (($prediction['prediction'] === '1' && ($prediction['home_pct'] < $pctThreshold || $prediction['odd_1'] < $oddThreshold))
-                || ($prediction['prediction'] === '2' && ($prediction['visitor_pct'] < $pctThreshold || $prediction['odd_2'] < $oddThreshold))
+            if (($event['prediction'] === '1' && ($event['home_pct'] < $pctThreshold || $event['odd_1'] < $oddThreshold))
+                || ($event['prediction'] === '2' && ($event['visitor_pct'] < $pctThreshold || $event['odd_2'] < $oddThreshold))
             ) {
                 continue;
             }
 
-            $filteredPredictions[] = $prediction;
+            $filteredEvents[] = $event;
         }
 
-        return $filteredPredictions;
+        return $filteredEvents;
     }
 }
 

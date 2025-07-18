@@ -29,7 +29,7 @@ class PersistMatches extends Command
 
     public function __invoke(InputInterface $input, OutputInterface $output): int
     {
-        $tipsterId = $input->getArgument('tipsterId');
+        $tipsterId = (int)$input->getArgument('tipsterId');
 
         if ($tipsterId === 1) {
             $this->zulu->persistMatches();
