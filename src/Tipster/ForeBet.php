@@ -2,18 +2,26 @@
 
 namespace App\Tipster;
 
+use App\Repository\EventRepository;
+use App\Service\FilesystemService;
 use DateTime;
 
 // 1x2 url: https://www.forebet.com/scripts/getrs.php?ln=es&tp=1x2&in=2025-02-20&ord=0&tz=+60
 // under-over url: https://www.forebet.com/scripts/getrs.php?ln=es&tp=uo&in=2025-02-20&ord=0&tz=+60
 // bts url: https://www.forebet.com/scripts/getrs.php?ln=es&tp=bts&in=2025-02-20&ord=0&tz=+60
-class ForeBet extends Tipster
+class ForeBet
 {
     public const MIN_PCT_THRESHOLD = 35;
     public const TIPSTER_ID = 2;
     public const TIPSTER_NAME = 'FOREBET';
     private const DATA_FILE = 'data/forebet-1x2.json';
     private const IMPORT_FILE = 'csv/import-forebet.csv';
+
+    public function __construct(
+        protected readonly EventRepository $eventRepository,
+        protected readonly FilesystemService $filesystemService,
+    ) {
+    }
 
     public function getMatches(): array
     {
@@ -76,7 +84,7 @@ class ForeBet extends Tipster
             $homePct = $row[4];
             $drawPct = $row[5];
             $visitorPct = $row[6];
-            $goalsAvg = $row[7];
+            $avgGoals = $row[7];
             $homeGoalsPrediction = $row[8];
             $visitorGoalsPrediction = $row[9];
             $odd1 = $row[10];
@@ -91,19 +99,15 @@ class ForeBet extends Tipster
                 $time,
                 $homeTeam,
                 $visitorTeam,
+                $homePct,
+                $drawPct,
+                $visitorPct,
                 $homeGoals,
                 $visitorGoals,
                 $odd1,
                 $oddX,
                 $odd2,
-            );
-
-            $this->predictionRepository->createOrUpdate(
-                $event->getId(),
-                $homePct,
-                $drawPct,
-                $visitorPct,
-                $goalsAvg,
+                $avgGoals,
                 $homeGoalsPrediction,
                 $visitorGoalsPrediction,
             );

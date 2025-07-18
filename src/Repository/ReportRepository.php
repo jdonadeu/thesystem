@@ -2,8 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Prediction;
-use App\Tipster\Zulu;
+use App\Entity\Event;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
@@ -12,10 +11,10 @@ class ReportRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($managerRegistry, Prediction::class);
+        parent::__construct($managerRegistry, Event::class);
     }
 
-    public function predictionsSummary(array $predictions): array {
+    public function predictionsSummary(array $events): array {
         $summary = [];
         $totalEvents = 0;
 
@@ -35,34 +34,37 @@ class ReportRepository extends ServiceEntityRepository
         $totalDrawOrVisitorPredictionsPositive = 0;
         $totalDrawOrVisitorGains = 0;
 
-        foreach ($predictions as $prediction) {
+        foreach ($events as $event) {
             $totalEvents++;
+            $isHomeWin = $event['home_goals'] > $event['visitor_goals'];
+            $isDraw = $event['home_goals'] === $event['visitor_goals'];
+            $isVisitorWin = $event['home_goals'] < $event['visitor_goals'];
 
-            if ($prediction['prediction'] === "1") {
+            if ($event['prediction'] === "1") {
                 $totalHomePredictions++;
                 $totalHomeOrDrawPredictions++;
 
-                if ($prediction['eventHomeGoals'] > $prediction['eventVisitorGoals']) {
+                if ($isHomeWin) {
                     $totalHomePredictionsPositive++;
-                    $totalHomeGains += $prediction['odd_1'];
+                    $totalHomeGains += $event['odd_1'];
                     $totalHomeOrDrawPredictionsPositive++;
-                    $totalHomeOrDrawGains += $prediction['odd_1x'];
-                } elseif ($prediction['eventHomeGoals'] === $prediction['eventVisitorGoals']) {
+                    $totalHomeOrDrawGains += $event['odd_1x'];
+                } elseif ($isDraw) {
                     $totalHomeOrDrawPredictionsPositive++;
-                    $totalHomeOrDrawGains += $prediction['odd_1x'];
+                    $totalHomeOrDrawGains += $event['odd_1x'];
                 }
-            } elseif ($prediction['prediction'] === "2") {
+            } elseif ($event['prediction'] === "2") {
                 $totalVisitorPredictions++;
                 $totalDrawOrVisitorPredictions++;
 
-                if ($prediction['eventHomeGoals'] < $prediction['eventVisitorGoals']) {
+                if ($isVisitorWin) {
                     $totalVisitorPredictionsPositive++;
-                    $totalVisitorGains += $prediction['odd_2'];
+                    $totalVisitorGains += $event['odd_2'];
                     $totalDrawOrVisitorPredictionsPositive++;
-                    $totalDrawOrVisitorGains += $prediction['odd_x2'];
-                } elseif ($prediction['eventHomeGoals'] === $prediction['eventVisitorGoals']) {
+                    $totalDrawOrVisitorGains += $event['odd_x2'];
+                } elseif ($isDraw) {
                     $totalDrawOrVisitorPredictionsPositive++;
-                    $totalDrawOrVisitorGains += $prediction['odd_x2'];
+                    $totalDrawOrVisitorGains += $event['odd_x2'];
                 }
             }
         }
@@ -102,11 +104,10 @@ class ReportRepository extends ServiceEntityRepository
 
         $sql = "
             SELECT * FROM
-            (SELECT e.home_goals AS eventHomeGoals, e.visitor_goals AS eventVisitorGoals, e.odd_1, e.odd_x, e.odd_2, (1/((1/e.odd_1)+(1/e.odd_x))) AS odd_1x, (1/((1/e.odd_x)+(1/e.odd_2))) AS odd_x2, p.home_pct, p.draw_pct, p.visitor_pct,
+            (SELECT *, (1/((1/odd_1)+(1/odd_x))) AS odd_1x, (1/((1/odd_x)+(1/odd_2))) AS odd_x2,
             IF(home_pct > draw_pct AND home_pct > visitor_pct, '1', IF(draw_pct > home_pct AND draw_pct > visitor_pct, 'X', '2')) AS prediction
-            FROM prediction p
-            JOIN event e ON e.id = p.event_id
-            WHERE e.tipster_id = :tipsterId AND e.home_goals IS NOT NULL AND e.visitor_goals IS NOT NULL) SQ
+            FROM event
+            WHERE tipster_id = :tipsterId AND home_goals IS NOT NULL AND visitor_goals IS NOT NULL) SQ
             WHERE (prediction = '1' AND home_pct >= $pctThreshold AND odd_1 >= $minOdd AND odd_1 < $maxOdd) 
                OR (prediction = '2' AND visitor_pct >= $pctThreshold AND odd_2 >= $minOdd AND odd_2 < $maxOdd)
             ";
@@ -121,12 +122,11 @@ class ReportRepository extends ServiceEntityRepository
 
         $sql = "
             SELECT * FROM
-            (SELECT p.*, e.date, e.time, e.home_team, e.visitor_team, e.odd_1, e.odd_x, e.odd_2,
+            (SELECT *,
             IF(home_pct > draw_pct AND home_pct > visitor_pct, '1', IF(draw_pct > home_pct AND draw_pct > visitor_pct, 'X', '2')) AS prediction
-            FROM prediction p
-            LEFT JOIN event e ON e.id = p.event_id
-            WHERE e.home_goals IS NULL 
-              AND e.tipster_id = :tipsterId 
+            FROM event
+            WHERE home_goals IS NULL 
+              AND tipster_id = :tipsterId 
             ORDER BY date, time) SQ
             WHERE ((prediction = '1' AND home_pct >= :homePct AND odd_1 >= :odd1) 
                        OR (prediction = '2' AND visitor_pct >= :visitorPct AND odd_2 >= :odd2))

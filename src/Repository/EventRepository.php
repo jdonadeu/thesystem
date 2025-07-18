@@ -20,11 +20,17 @@ class EventRepository extends ServiceEntityRepository
         string $time,
         string $homeTeam,
         string $visitorTeam,
+        float $homePct,
+        float $drawPct,
+        float $visitorPct,
         ?int $homeGoals = null,
         ?int $visitorGoals = null,
         ?float $odd1 = null,
         ?float $oddX = null,
         ?float $odd2 = null,
+        ?float $avgGoals = null,
+        ?int $predHomeGoals = null,
+        ?int $predVisitorGoals = null,
     ): Event {
         $event = new Event();
         $event->setTipsterId($tipsterId);
@@ -32,11 +38,17 @@ class EventRepository extends ServiceEntityRepository
         $event->setTime($time);
         $event->setHomeTeam($homeTeam);
         $event->setVisitorTeam($visitorTeam);
+        $event->setHomePct($homePct);
+        $event->setDrawPct($drawPct);
+        $event->setVisitorPct($visitorPct);
         $event->setHomeGoals($homeGoals);
         $event->setVisitorGoals($visitorGoals);
         $event->setOdd1($odd1);
         $event->setOddX($oddX);
         $event->setOdd2($odd2);
+        $event->setAvgGoals($avgGoals);
+        $event->setPredHomeGoals($predHomeGoals);
+        $event->setPredVisitorGoals($predVisitorGoals);
 
         $this->getEntityManager()->persist($event);
         $this->getEntityManager()->flush();
@@ -46,17 +58,29 @@ class EventRepository extends ServiceEntityRepository
 
     public function update(
         Event $event,
+        float $homePct,
+        float $drawPct,
+        float $visitorPct,
         ?int $homeGoals,
         ?int $visitorGoals,
         ?float $odd1,
         ?float $oddX,
         ?float $odd2,
+        ?float $avgGoals,
+        ?int $predHomeGoals,
+        ?int $predVisitorGoals,
     ): void {
+        $event->setHomePct($homePct);
+        $event->setDrawPct($drawPct);
+        $event->setVisitorPct($visitorPct);
         $event->setHomeGoals($homeGoals);
         $event->setVisitorGoals($visitorGoals);
         $event->setOdd1($odd1);
         $event->setOddX($oddX);
         $event->setOdd2($odd2);
+        $event->setAvgGoals($avgGoals);
+        $event->setPredHomeGoals($predHomeGoals);
+        $event->setPredVisitorGoals($predVisitorGoals);
 
         $this->getEntityManager()->persist($event);
         $this->getEntityManager()->flush();
@@ -68,11 +92,17 @@ class EventRepository extends ServiceEntityRepository
         string $time,
         string $homeTeam,
         string $visitorTeam,
+        float $homePct,
+        float $drawPct,
+        float $visitorPct,
         ?int $homeGoals = null,
         ?int $visitorGoals = null,
         ?float $odd1 = null,
         ?float $oddX = null,
         ?float $odd2 = null,
+        ?float $avgGoals = null,
+        ?int $predHomeGoals = null,
+        ?int $predVisitorGoals = null,
     ): Event {
         $event = $this->findOneBy([
             'tipsterId' => $tipsterId,
@@ -90,11 +120,17 @@ class EventRepository extends ServiceEntityRepository
                 $time,
                 $homeTeam,
                 $visitorTeam,
+                $homePct,
+                $drawPct,
+                $visitorPct,
                 $homeGoals,
                 $visitorGoals,
                 $odd1,
                 $oddX,
                 $odd2,
+                $avgGoals,
+                $predHomeGoals,
+                $predVisitorGoals,
             );
         }
 
@@ -102,11 +138,17 @@ class EventRepository extends ServiceEntityRepository
 
         $this->update(
             $event,
+            $homePct,
+            $drawPct,
+            $visitorPct,
             $homeGoals,
             $visitorGoals,
             $odd1,
             $oddX,
             $odd2,
+            $avgGoals,
+            $predHomeGoals,
+            $predVisitorGoals,
         );
 
         return $event;
@@ -116,20 +158,7 @@ class EventRepository extends ServiceEntityRepository
     {
         $conn = $this->getEntityManager()->getConnection();
 
-        $qb = $this->createQueryBuilder('e');
-        $qb->where('e.date < :today')
-            ->andWhere('e.homeGoals IS NULL')
-            ->setParameter('today', new DateTime('today'));
-        $events = $qb->getQuery()->getResult();
-
-        foreach ($events as $event) {
-            $eventId = $event->getId();
-
-            $sql = "DELETE FROM prediction WHERE event_id = :eventId";
-            $conn->executeQuery($sql, ['eventId' => $eventId]);
-
-            $sql = "DELETE FROM event WHERE id = :eventId";
-            $conn->executeQuery($sql, ['eventId' => $eventId]);
-        }
+        $sql = "DELETE FROM event WHERE (home_goals IS NULL OR visitor_goals IS NULL) AND date < CURDATE()";
+        $conn->executeQuery($sql);
     }
 }

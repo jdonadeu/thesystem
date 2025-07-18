@@ -44,10 +44,22 @@ class Event
     private float $odd_2 = 0;
 
     #[ORM\Column]
-    private float $oddOver15 = 0;
+    private ?float $homePct = null;
 
     #[ORM\Column]
-    private float $oddOver25 = 0;
+    private ?float $drawPct = null;
+
+    #[ORM\Column]
+    private ?float $visitorPct = null;
+
+    #[ORM\Column]
+    private ?float $avgGoals = null;
+
+    #[ORM\Column]
+    private ?int $predHomeGoals = null;
+
+    #[ORM\Column]
+    private ?int $predVisitorGoals = null;
 
     public function getId(): int
     {
@@ -159,23 +171,63 @@ class Event
         $this->odd_2 = $odd_2;
     }
 
-    public function getOddOver15(): float
+    public function getHomePct(): ?float
     {
-        return $this->oddOver15;
+        return $this->homePct;
     }
 
-    public function setOddOver15(float $oddOver15): void
+    public function setHomePct(?float $homePct): void
     {
-        $this->oddOver15 = $oddOver15;
+        $this->homePct = $homePct;
     }
 
-    public function getOddOver25(): float
+    public function getDrawPct(): ?float
     {
-        return $this->oddOver25;
+        return $this->drawPct;
     }
 
-    public function setOddOver25(float $oddOver25): void
+    public function setDrawPct(?float $drawPct): void
     {
-        $this->oddOver25 = $oddOver25;
+        $this->drawPct = $drawPct;
+    }
+
+    public function getVisitorPct(): ?float
+    {
+        return $this->visitorPct;
+    }
+
+    public function setVisitorPct(?float $visitorPct): void
+    {
+        $this->visitorPct = $visitorPct;
+    }
+
+    public function getAvgGoals(): ?float
+    {
+        return $this->avgGoals;
+    }
+
+    public function setAvgGoals(?float $avgGoals): void
+    {
+        $this->avgGoals = $avgGoals;
+    }
+
+    public function getPredHomeGoals(): ?int
+    {
+        return $this->predHomeGoals;
+    }
+
+    public function setPredHomeGoals(?int $predHomeGoals): void
+    {
+        $this->predHomeGoals = $predHomeGoals;
+    }
+
+    public function getPredVisitorGoals(): ?int
+    {
+        return $this->predVisitorGoals;
+    }
+
+    public function setPredVisitorGoals(?int $predVisitorGoals): void
+    {
+        $this->predVisitorGoals = $predVisitorGoals;
     }
 }

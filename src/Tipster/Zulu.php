@@ -2,19 +2,27 @@
 
 namespace App\Tipster;
 
+use App\Repository\EventRepository;
+use App\Service\FilesystemService;
 use DateTime;
 use DateTimeZone;
 use DOMDocument;
 use DOMNode;
 use DOMXPath;
 
-class Zulu extends Tipster
+class Zulu
 {
     public const TIPSTER_ID = 1;
     public const TIPSTER_NAME = 'ZULU';
     public const MIN_PCT_THRESHOLD = 50;
     private const URL = 'https://es.zulubet.com';
     private const IMPORT_FILE = 'csv/import-zulu.csv';
+
+    public function __construct(
+        protected readonly EventRepository $eventRepository,
+        protected readonly FilesystemService $filesystemService,
+    ) {
+    }
 
     public function getMatches(string $date): array
     {
@@ -142,18 +150,14 @@ class Zulu extends Tipster
                 $time,
                 $homeTeam,
                 $visitorTeam,
+                $homePct,
+                $drawPct,
+                $visitorPct,
                 $homeGoals,
                 $visitorGoals,
                 $odd1,
                 $oddX,
                 $odd2,
-            );
-
-            $this->predictionRepository->createOrUpdate(
-                $event->getId(),
-                $homePct,
-                $drawPct,
-                $visitorPct
             );
         }
 

@@ -22,13 +22,20 @@ class ImportMatches extends Command
 
     protected function configure(): void
     {
+        $this->addArgument('tipsterId', InputArgument::REQUIRED);
         $this->addArgument('date', InputArgument::OPTIONAL);
     }
 
     public function __invoke(InputInterface $input, OutputInterface $output): int
     {
-        //$this->zulu->importMatches($input->getArgument('date'));
-        $this->foreBet->importMatches();
+        $tipsterId = $input->getArgument('tipsterId');
+
+        if ($tipsterId === 1) {
+            $this->zulu->importMatches($input->getArgument('date'));
+        } elseif ($tipsterId === 2) {
+            $this->foreBet->importMatches();
+        }
+
         echo "\n";
 
         return Command::SUCCESS;
