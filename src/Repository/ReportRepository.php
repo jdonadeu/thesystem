@@ -120,14 +120,16 @@ class ReportRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = "
-            SELECT t.name AS tipsterName, e.*, p.*
+            SELECT * FROM
+            (SELECT p.*, e.date, e.time, e.home_team, e.visitor_team, e.odd_1, e.odd_x, e.odd_2,
+            IF(home_pct > draw_pct AND home_pct > visitor_pct, '1', IF(draw_pct > home_pct AND draw_pct > visitor_pct, 'X', '2')) AS prediction
             FROM prediction p
             LEFT JOIN event e ON e.id = p.event_id
-            LEFT JOIN tipster t ON t.id = e.tipster_id
             WHERE e.home_goals IS NULL 
               AND e.tipster_id = :tipsterId 
-              AND ((p.home_pct >= :homePct AND e.odd_1 >= :odd1) OR (p.visitor_pct >= :visitorPct AND e.odd_2 >= :odd2))
-            ORDER BY time
+            ORDER BY date, time) SQ
+            WHERE ((prediction = '1' AND home_pct >= :homePct AND odd_1 >= :odd1) 
+                       OR (prediction = '2' AND visitor_pct >= :visitorPct AND odd_2 >= :odd2))
             ";
 
         $resultSet = $conn->executeQuery(
