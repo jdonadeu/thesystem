@@ -145,4 +145,27 @@ class ReportRepository extends ServiceEntityRepository
 
         return $resultSet->fetchAllAssociative();
     }
+
+    public function placedBets(int $tipsterId): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = "
+            SELECT *, (home_goals > visitor_goals) as homeWin, (home_goals = visitor_goals) as drawWin, (home_goals < visitor_goals) as visitorWin
+            FROM event 
+            WHERE
+            tipster_id = :tipsterId
+            AND home_goals IS NOT NULL
+            AND (bet_1 IS NOT NULL OR bet_1x IS NOT NULL OR bet_x2 IS NOT NULL OR bet_2 IS NOT NULL)
+            ";
+
+        $resultSet = $conn->executeQuery(
+            $sql,
+            [
+                'tipsterId' => $tipsterId,
+            ]
+        );
+
+        return $resultSet->fetchAllAssociative();
+    }
 }
