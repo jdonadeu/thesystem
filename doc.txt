@@ -1,13 +1,24 @@
 Todo:
 -----------
+- Add top to tips. Don't bet on very high odds
 - Analyze odds fluctuations: If decreases then it is more probable?
 
 ------------------------------------------------------
 Forebet
 
-Home: optimal pct, optimal odd, net gains
-43, 2.15, 44.039999999999
+HOME
+Predictions: 2142
+Predictions positive: 696 (32%)
+Min pct: 43
+Min odd: 2.15
+Max odd: 7.15
+Net gains: 33.039999999999
 
-Visitor: optimal pct, optimal odd, net gains
-45, 4.2, 28.37
+VISITOR
+Predictions: 3008
+Predictions positive: 694 (23%)
+Min pct: 45
+Min odd: 4.2
+Max odd: 9.2
+Net gains: 22.37
 

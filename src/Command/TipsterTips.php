@@ -20,10 +20,12 @@ class TipsterTips extends Command
             'ODD_2' => 2.20,
         ],
         2 => [
-            'HOME_PCT' => 43,
-            'HOME_ODD' => 2.15,
-            'VISITOR_PCT' => 37,
-            'VISITOR_ODD' => 4.1,
+            'HOME_MIN_PCT' => 43,
+            'HOME_MIN_ODD' => 2.15,
+            'HOME_MAX_ODD' => 7.15,
+            'VISITOR_MIN_PCT' => 45,
+            'VISITOR_MIN_ODD' => 4.2,
+            'VISITOR_MAX_ODD' => 9.2,
         ]
     ];
 
@@ -44,10 +46,12 @@ class TipsterTips extends Command
 
         echo "\n";
         echo "Optimal values => ";
-        echo "Home pct: " . self::OPTIMAL_VALUES[$tipsterId]['HOME_PCT'] . " / ";
-        echo "Home odd: " . self::OPTIMAL_VALUES[$tipsterId]['HOME_ODD'] . " / ";
-        echo "Visitor pct: " . self::OPTIMAL_VALUES[$tipsterId]['VISITOR_PCT'] . " / ";
-        echo "Visitor odd: " . self::OPTIMAL_VALUES[$tipsterId]['VISITOR_ODD'];
+        echo "Home min pct: " . self::OPTIMAL_VALUES[$tipsterId]['HOME_MIN_PCT'] . " / ";
+        echo "Home min odd: " . self::OPTIMAL_VALUES[$tipsterId]['HOME_MIN_ODD'] . " / ";
+        echo "Home max odd: " . self::OPTIMAL_VALUES[$tipsterId]['HOME_MAX_ODD'] . " / ";
+        echo "Visitor min pct: " . self::OPTIMAL_VALUES[$tipsterId]['VISITOR_MIN_PCT'] . " / ";
+        echo "Visitor min odd: " . self::OPTIMAL_VALUES[$tipsterId]['VISITOR_MIN_ODD'];
+        echo "Visitor max odd: " . self::OPTIMAL_VALUES[$tipsterId]['VISITOR_MAX_ODD'];
         echo "\n\n";
 
         foreach ($events as $event) {
@@ -112,15 +116,17 @@ class TipsterTips extends Command
     private function isValidHomeTip(array $event, int $tipsterId): bool
     {
         return $event['prediction'] === '1'
-            && $event['home_pct'] >= self::OPTIMAL_VALUES[$tipsterId]['HOME_PCT']
-            && $event['odd_1'] >= self::OPTIMAL_VALUES[$tipsterId]['HOME_ODD'];
+            && $event['home_pct'] >= self::OPTIMAL_VALUES[$tipsterId]['HOME_MIN_PCT']
+            && $event['odd_1'] >= self::OPTIMAL_VALUES[$tipsterId]['HOME_MIN_ODD']
+            && $event['odd_1'] <= self::OPTIMAL_VALUES[$tipsterId]['HOME_MAX_ODD'];
     }
 
     private function isValidVisitorTip(array $event, int $tipsterId): bool
     {
         return $event['prediction'] === '2'
-            && $event['visitor_pct'] >= self::OPTIMAL_VALUES[$tipsterId]['VISITOR_PCT']
-            && $event['odd_2'] >= self::OPTIMAL_VALUES[$tipsterId]['VISITOR_ODD'];
+            && $event['visitor_pct'] >= self::OPTIMAL_VALUES[$tipsterId]['VISITOR_MIN_PCT']
+            && $event['odd_2'] >= self::OPTIMAL_VALUES[$tipsterId]['VISITOR_MIN_ODD']
+            && $event['odd_2'] <= self::OPTIMAL_VALUES[$tipsterId]['VISITOR_MAX_ODD'];
     }
 }
 

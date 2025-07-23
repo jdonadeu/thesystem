@@ -15,6 +15,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'tipster:optimal')]
 class TipsterOptimalReport extends Command
 {
+    private const ODD_INCREMENT = 5;
+
     public function __construct(
         private readonly ReportRepository $reportRepository,
     ) {
@@ -43,19 +45,23 @@ class TipsterOptimalReport extends Command
             throw new Exception("Invalid tipster id[value=$tipsterId]");
         }
 
+        $totalHomePredictions = 0;
+        $totalHomePredictionsPositive = 0;
         $maxHomeNetGains = 0;
-        $optimalHomePctThreshold = 0;
-        $optimalHomeOddThreshold = 0;
+        $optimalHomeMinPct = 0;
+        $optimalHomeMinOdd = 0;
 
+        $totalVisitorPredictions = 0;
+        $totalVisitorPredictionsPositive = 0;
         $maxVisitorNetGains = 0;
-        $optimalVisitorPctThreshold = 0;
-        $optimalVisitorOddThreshold = 0;
+        $optimalVisitorMinPct = 0;
+        $optimalVisitorMinOdd = 0;
 
         $events = $this->reportRepository->getEventsForSummary($tipsterId, $minTipsterPct, 1, 99);
 
         for ($minPct = $minTipsterPct; $minPct <= 90; $minPct = $minPct + 2) {
             for ($minOdd = 100; $minOdd <= 600; $minOdd = $minOdd + 5) {
-                $filteredEvents = $this->filterEventsByPctAndOdd($events, $minPct, $minOdd / 100);
+                $filteredEvents = $this->filterEventsByPctAndOdd($events, $minPct, $minOdd / 100, self::ODD_INCREMENT);
                 $summary = $this->reportRepository->eventsSummary($filteredEvents);
 
                 $homeNetGains = $summary['totalHomeGains'] - $summary['totalHomePredictions'];
@@ -66,28 +72,48 @@ class TipsterOptimalReport extends Command
                 }
 
                 if ($homeNetGains >= $maxHomeNetGains) {
+                    $totalHomePredictions += $summary['totalHomePredictions'];
+                    $totalHomePredictionsPositive += $summary['totalHomePredictionsPositive'];
                     $maxHomeNetGains = $homeNetGains;
-                    $optimalHomePctThreshold = $minPct;
-                    $optimalHomeOddThreshold = $minOdd;
+                    $optimalHomeMinPct = $minPct;
+                    $optimalHomeMinOdd = $minOdd;
                 }
 
                 if ($visitorNetGains >= $maxVisitorNetGains) {
+                    $totalVisitorPredictions += $summary['totalVisitorPredictions'];
+                    $totalVisitorPredictionsPositive += $summary['totalVisitorPredictionsPositive'];
                     $maxVisitorNetGains = $visitorNetGains;
-                    $optimalVisitorPctThreshold = $minPct;
-                    $optimalVisitorOddThreshold = $minOdd;
+                    $optimalVisitorMinPct = $minPct;
+                    $optimalVisitorMinOdd = $minOdd;
                 }
             }
         }
 
-        $optimalHomeOddThreshold = $optimalHomeOddThreshold / 100;
-        $optimalVisitorOddThreshold = $optimalVisitorOddThreshold / 100;
+        $optimalHomeMinOdd = $optimalHomeMinOdd / 100;
+        $optimalVisitorMinOdd = $optimalVisitorMinOdd / 100;
+
+        $optimalHomeMaxOdd = $optimalHomeMinOdd + self::ODD_INCREMENT;
+        $totalHomePredictionsPositivePct = floor(($totalHomePredictionsPositive / $totalHomePredictions) * 100);
+
+        $optimalVisitorMaxOdd = $optimalVisitorMinOdd + self::ODD_INCREMENT;
+        $totalVisitorPredictionsPositivePct = floor(($totalVisitorPredictionsPositive / $totalVisitorPredictions) * 100);
 
         echo "\n";
-        echo "Home: optimal pct, optimal odd, net gains\n";
-        echo "$optimalHomePctThreshold, $optimalHomeOddThreshold, $maxHomeNetGains \n\n";
+        echo "HOME\n";
+        echo "Predictions: $totalHomePredictions \n";
+        echo "Predictions positive: $totalHomePredictionsPositive ($totalHomePredictionsPositivePct%) \n";
+        echo "Min pct: $optimalHomeMinPct \n";
+        echo "Min odd: $optimalHomeMinOdd \n";
+        echo "Max odd: $optimalHomeMaxOdd \n";
+        echo "Net gains: $maxHomeNetGains \n\n";
 
-        echo "Visitor: optimal pct, optimal odd, net gains\n";
-        echo "$optimalVisitorPctThreshold, $optimalVisitorOddThreshold, $maxVisitorNetGains \n\n";
+        echo "VISITOR\n";
+        echo "Predictions: $totalVisitorPredictions \n";
+        echo "Predictions positive: $totalVisitorPredictionsPositive ($totalVisitorPredictionsPositivePct%) \n";
+        echo "Min pct: $optimalVisitorMinPct \n";
+        echo "Min odd: $optimalVisitorMinOdd \n";
+        echo "Max odd: $optimalVisitorMaxOdd \n";
+        echo "Net gains: $maxVisitorNetGains \n\n";
 
         $end = microtime(true);
         $executionTime = $end - $start;
@@ -96,8 +122,13 @@ class TipsterOptimalReport extends Command
         return Command::SUCCESS;
     }
 
-    private function filterEventsByPctAndOdd(array $events, int $pctThreshold, float $oddThreshold): array
-    {
+    private function filterEventsByPctAndOdd(
+        array $events,
+        int   $minPct,
+        float $minOdd,
+        float $oddIncrement,
+    ): array {
+        $maxOdd = $minOdd + $oddIncrement;
         $filteredEvents = [];
 
         foreach ($events as $event) {
@@ -105,8 +136,14 @@ class TipsterOptimalReport extends Command
                 throw new Exception('Draws are not valid');
             }
 
-            if (($event['prediction'] === '1' && ($event['home_pct'] < $pctThreshold || $event['odd_1'] < $oddThreshold))
-                || ($event['prediction'] === '2' && ($event['visitor_pct'] < $pctThreshold || $event['odd_2'] < $oddThreshold))
+            if ($event['prediction'] === '1'
+                && ($event['home_pct'] < $minPct || $event['odd_1'] < $minOdd || $event['odd_1'] > $maxOdd)
+            ) {
+                continue;
+            }
+
+            if ($event['prediction'] === '2'
+                && ($event['visitor_pct'] < $minPct || $event['odd_2'] < $minOdd || $event['odd_2'] > $maxOdd)
             ) {
                 continue;
             }

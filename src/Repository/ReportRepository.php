@@ -29,7 +29,6 @@ class ReportRepository extends ServiceEntityRepository
         foreach ($events as $event) {
             $totalEvents++;
             $isHomeWin = $event['home_goals'] > $event['visitor_goals'];
-            $isDraw = $event['home_goals'] === $event['visitor_goals'];
             $isVisitorWin = $event['home_goals'] < $event['visitor_goals'];
 
             if ($event['prediction'] === "1") {
