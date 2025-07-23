@@ -36,9 +36,9 @@ class TipsterOptimalReport extends Command
         $tipsterId = (int)$input->getArgument('tipsterId');
 
         if ($tipsterId === 1) {
-            $minPctThreshold = Zulu::MIN_PCT_THRESHOLD;
+            $minTipsterPct = Zulu::MIN_PCT;
         } elseif ($tipsterId === 2) {
-            $minPctThreshold = ForeBet::MIN_PCT_THRESHOLD;
+            $minTipsterPct = ForeBet::MIN_PCT;
         } else {
             throw new Exception("Invalid tipster id[value=$tipsterId]");
         }
@@ -47,82 +47,51 @@ class TipsterOptimalReport extends Command
         $optimalHomePctThreshold = 0;
         $optimalHomeOddThreshold = 0;
 
-        $maxHomeOrDrawNetGains = 0;
-        $optimalHomeOrDrawPctThreshold = 0;
-        $optimalHomeOrDrawOddThreshold = 0;
-
         $maxVisitorNetGains = 0;
         $optimalVisitorPctThreshold = 0;
         $optimalVisitorOddThreshold = 0;
 
-        $maxDrawOrVisitorNetGains = 0;
-        $optimalDrawOrVisitorPctThreshold = 0;
-        $optimalDrawOrVisitorOddThreshold = 0;
+        $events = $this->reportRepository->getEventsForSummary($tipsterId, $minTipsterPct, 1, 99);
 
-        $events = $this->reportRepository->getEventsForSummary($tipsterId, $minPctThreshold, 1, 99);
-
-        for ($pctThreshold = $minPctThreshold; $pctThreshold <= 90; $pctThreshold = $pctThreshold + 2) {
-            for ($oddThreshold = 100; $oddThreshold <= 600; $oddThreshold = $oddThreshold + 5) {
-                $filteredEvents = $this->filterEventsByPctAndOdd($events, $pctThreshold, $oddThreshold / 100);
+        for ($minPct = $minTipsterPct; $minPct <= 90; $minPct = $minPct + 2) {
+            for ($minOdd = 100; $minOdd <= 600; $minOdd = $minOdd + 5) {
+                $filteredEvents = $this->filterEventsByPctAndOdd($events, $minPct, $minOdd / 100);
                 $summary = $this->reportRepository->eventsSummary($filteredEvents);
 
                 $homeNetGains = $summary['totalHomeGains'] - $summary['totalHomePredictions'];
-                $homeOrDrawNetGains = $summary['totalHomeOrDrawGains'] - $summary['totalHomeOrDrawPredictions'];
                 $visitorNetGains = $summary['totalVisitorGains'] - $summary['totalVisitorPredictions'];
-                $drawOrVisitorNetGains = $summary['totalDrawOrVisitorGains'] - $summary['totalDrawOrVisitorPredictions'];
 
-                if ($homeNetGains <= 0 && $homeOrDrawNetGains <= 0 && $visitorNetGains <= 0 && $drawOrVisitorNetGains <= 0) {
+                if ($homeNetGains <= 0 && $visitorNetGains <= 0) {
                     continue;
                 }
 
                 if ($homeNetGains >= $maxHomeNetGains) {
                     $maxHomeNetGains = $homeNetGains;
-                    $optimalHomePctThreshold = $pctThreshold;
-                    $optimalHomeOddThreshold = $oddThreshold;
-                }
-
-                if ($homeOrDrawNetGains >= $maxHomeOrDrawNetGains) {
-                    $maxHomeOrDrawNetGains = $homeOrDrawNetGains;
-                    $optimalHomeOrDrawPctThreshold = $pctThreshold;
-                    $optimalHomeOrDrawOddThreshold = $oddThreshold;
+                    $optimalHomePctThreshold = $minPct;
+                    $optimalHomeOddThreshold = $minOdd;
                 }
 
                 if ($visitorNetGains >= $maxVisitorNetGains) {
                     $maxVisitorNetGains = $visitorNetGains;
-                    $optimalVisitorPctThreshold = $pctThreshold;
-                    $optimalVisitorOddThreshold = $oddThreshold;
-                }
-
-                if ($drawOrVisitorNetGains >= $maxDrawOrVisitorNetGains) {
-                    $maxDrawOrVisitorNetGains = $drawOrVisitorNetGains;
-                    $optimalDrawOrVisitorPctThreshold = $pctThreshold;
-                    $optimalDrawOrVisitorOddThreshold = $oddThreshold;
+                    $optimalVisitorPctThreshold = $minPct;
+                    $optimalVisitorOddThreshold = $minOdd;
                 }
             }
         }
 
         $optimalHomeOddThreshold = $optimalHomeOddThreshold / 100;
-        $optimalHomeOrDrawOddThreshold = $optimalHomeOrDrawOddThreshold / 100;
         $optimalVisitorOddThreshold = $optimalVisitorOddThreshold / 100;
-        $optimalDrawOrVisitorOddThreshold = $optimalDrawOrVisitorOddThreshold / 100;
 
         echo "\n";
         echo "Home: optimal pct, optimal odd, net gains\n";
         echo "$optimalHomePctThreshold, $optimalHomeOddThreshold, $maxHomeNetGains \n\n";
 
-        echo "Home or draw: optimal pct, optimal odd, net gains\n";
-        echo "$optimalHomeOrDrawPctThreshold, $optimalHomeOrDrawOddThreshold, $maxHomeOrDrawNetGains \n\n";
-
         echo "Visitor: optimal pct, optimal odd, net gains\n";
         echo "$optimalVisitorPctThreshold, $optimalVisitorOddThreshold, $maxVisitorNetGains \n\n";
 
-        echo "Draw or visitor: optimal pct, optimal odd, net gains\n";
-        echo "$optimalDrawOrVisitorPctThreshold, $optimalDrawOrVisitorOddThreshold, $maxDrawOrVisitorNetGains \n";
-        echo "\n";
-
         $end = microtime(true);
         $executionTime = $end - $start;
-        echo "\nExecution time: " . $executionTime . " seconds\n\n";
+        echo "\nExecution time: " . floor($executionTime) . " seconds\n\n";
 
         return Command::SUCCESS;
     }

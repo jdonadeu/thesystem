@@ -11,7 +11,7 @@ use DateTime;
 // bts url: https://www.forebet.com/scripts/getrs.php?ln=es&tp=bts&in=2025-02-20&ord=0&tz=+60
 class ForeBet
 {
-    public const MIN_PCT_THRESHOLD = 35;
+    public const MIN_PCT = 35;
     public const TIPSTER_ID = 2;
     public const TIPSTER_NAME = 'FOREBET';
     private const DATA_FILE = 'data/forebet-1x2.json';
@@ -34,7 +34,7 @@ class ForeBet
             $teams = trim(preg_replace('/\s\s+/', ' ', $match['HOST_NAME'] . " - " . $match['GUEST_NAME']));
             $teamParts = explode("-", $teams);
 
-            if (($match['Pred_1'] < self::MIN_PCT_THRESHOLD && $match['Pred_2'] < self::MIN_PCT_THRESHOLD)
+            if (($match['Pred_1'] < self::MIN_PCT && $match['Pred_2'] < self::MIN_PCT)
                 || $match['best_odd'] == '') {
                 continue;
             }

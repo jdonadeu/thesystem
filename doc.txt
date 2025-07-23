@@ -1,18 +1,13 @@
 Todo:
 -----------
-- Run optimal separate for each type (home, home-draw, etc)
+- Analyze odds fluctuations: If decreases then it is more probable?
 
 ------------------------------------------------------
 Forebet
 
 Home: optimal pct, optimal odd, net gains
-43, 2.15, 79.319999999999
-
-Home or draw: optimal pct, optimal odd, net gains
-49, 3, 7.8825
+43, 2.15, 44.039999999999
 
 Visitor: optimal pct, optimal odd, net gains
-37, 3.7, 38.02
+45, 4.2, 28.37
 
-Draw or visitor: optimal pct, optimal odd, net gains
-37, 4.1, 33.7289

@@ -14,7 +14,7 @@ class Zulu
 {
     public const TIPSTER_ID = 1;
     public const TIPSTER_NAME = 'ZULU';
-    public const MIN_PCT_THRESHOLD = 50;
+    public const MIN_PCT = 50;
     private const URL = 'https://es.zulubet.com';
     private const IMPORT_FILE = 'csv/import-zulu.csv';
 
@@ -47,7 +47,7 @@ class Zulu
             $drawPct = str_replace("%", "", $row->childNodes[4]->nodeValue);
             $visitorPct = str_replace("%", "", $row->childNodes[5]->nodeValue);
 
-            if ($homePct < self::MIN_PCT_THRESHOLD && $visitorPct < self::MIN_PCT_THRESHOLD) {
+            if ($homePct < self::MIN_PCT && $visitorPct < self::MIN_PCT) {
                 continue;
             }
 

@@ -21,9 +21,9 @@ class TipsterTips extends Command
         ],
         2 => [
             'HOME_PCT' => 43,
-            'ODD_1' => 2.15,
-            'VISITOR_PCT' => 35,
-            'ODD_2' => 3.8,
+            'HOME_ODD' => 2.15,
+            'VISITOR_PCT' => 37,
+            'VISITOR_ODD' => 4.1,
         ]
     ];
 
@@ -40,43 +40,87 @@ class TipsterTips extends Command
     public function __invoke(InputInterface $input, OutputInterface $output): int
     {
         $tipsterId = $input->getArgument('tipsterId');
-
-        $tips = $this->reportRepository->tips(
-            $tipsterId,
-            self::OPTIMAL_VALUES[$tipsterId]['HOME_PCT'],
-            self::OPTIMAL_VALUES[$tipsterId]['ODD_1'],
-            self::OPTIMAL_VALUES[$tipsterId]['VISITOR_PCT'],
-            self::OPTIMAL_VALUES[$tipsterId]['ODD_2'],
-        );
+        $events = $this->reportRepository->eventsForTips($tipsterId);
 
         echo "\n";
-        echo "TipsterId, dateTime, home, visitor, odd_1, odd_2, home_pct, visitor_pct \n";
-        echo "------------------------------------------------------------------------\n";
+        echo "Optimal values => ";
+        echo "Home pct: " . self::OPTIMAL_VALUES[$tipsterId]['HOME_PCT'] . " / ";
+        echo "Home odd: " . self::OPTIMAL_VALUES[$tipsterId]['HOME_ODD'] . " / ";
+        echo "Visitor pct: " . self::OPTIMAL_VALUES[$tipsterId]['VISITOR_PCT'] . " / ";
+        echo "Visitor odd: " . self::OPTIMAL_VALUES[$tipsterId]['VISITOR_ODD'];
+        echo "\n\n";
 
-        foreach ($tips as $tip) {
-            $isHome = $tip['home_pct'] >= $tip['visitor_pct'];
+        foreach ($events as $event) {
+            if (!$this->isValidTip($event, $tipsterId)) {
+                continue;
+            }
 
-            $odd1 = $isHome ? "({$tip['odd_1']})" : $tip['odd_1'];
-            $homePct = $isHome ? "({$tip['home_pct']})" : $tip['home_pct'];
+            echo $event['date'] . " " . $event['time'] . ", ". $event['home_team'] . " - " . $event['visitor_team'] . " => ";
 
-            $odd2 = !$isHome ? "({$tip['odd_2']})" : $tip['odd_2'];
-            $visitorPct = !$isHome ? "({$tip['visitor_pct']})" : $tip['visitor_pct'];
+            if ($this->isValidHomeTip($event, $tipsterId)) {
+                $bet = ($event['bet_1'] == null)
+                    ? "-------------------------> MISSING BET"
+                    : $event['bet_1'];
 
-            echo $tipsterId . ", ";
-            echo $tip['date'] . " " . $tip['time'] . ", ";
-            echo $tip['home_team'] . ", ";
-            echo $tip['visitor_team'] . ", ";
-            echo $odd1 . ", ";
-            echo $odd2 . ", ";
-            echo $homePct . ", ";
-            echo $visitorPct . ", ";
-            echo $isHome ? "=> (home)" : "=> (visitor)";
+                echo " Home pct: $event[home_pct], ";
+                echo " Odd: $event[odd_1], ";
+                echo " Bet: $bet \n";
+            }
+            if ($this->isValidVisitorTip($event, $tipsterId)) {
+                $bet = ($event['bet_2'] == null)
+                    ? "-------------------------> MISSING BET"
+                    : $event['bet_2'];
+
+                echo " Visitor pct: $event[visitor_pct], ";
+                echo " Odd: $event[odd_2], ";
+                echo " Bet: $bet \n";
+            }
+
             echo "\n";
         }
 
-        echo "\n";
+        echo "\n\n******************** SQLs ********************\n\n";
 
+        foreach ($events as $event) {
+            $updateFields = "";
+
+            if (!$this->isValidTip($event, $tipsterId) || ($event['bet_1'] != null || $event['bet_2'] != null)) {
+                continue;
+            }
+
+            if ($this->isValidHomeTip($event, $tipsterId)) {
+                $updateFields .= "bet_1 = $event[odd_1]";
+            }
+            if ($this->isValidVisitorTip($event, $tipsterId)) {
+                $updateFields .= "bet_2 = $event[odd_2]";
+            }
+
+            echo "-- $event[home_team] - $event[visitor_team] \n";
+            echo "UPDATE event SET $updateFields WHERE id = $event[id];\n\n";
+        }
+
+        echo "\n";
         return Command::SUCCESS;
+    }
+
+    private function isValidTip(array $event, int $tipsterId): bool
+    {
+        return $this->isValidHomeTip($event, $tipsterId)
+            || $this->isValidVisitorTip($event, $tipsterId);
+    }
+
+    private function isValidHomeTip(array $event, int $tipsterId): bool
+    {
+        return $event['prediction'] === '1'
+            && $event['home_pct'] >= self::OPTIMAL_VALUES[$tipsterId]['HOME_PCT']
+            && $event['odd_1'] >= self::OPTIMAL_VALUES[$tipsterId]['HOME_ODD'];
+    }
+
+    private function isValidVisitorTip(array $event, int $tipsterId): bool
+    {
+        return $event['prediction'] === '2'
+            && $event['visitor_pct'] >= self::OPTIMAL_VALUES[$tipsterId]['VISITOR_PCT']
+            && $event['odd_2'] >= self::OPTIMAL_VALUES[$tipsterId]['VISITOR_ODD'];
     }
 }
 
