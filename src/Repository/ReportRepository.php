@@ -74,8 +74,8 @@ class ReportRepository extends ServiceEntityRepository
             IF(home_pct > draw_pct AND home_pct > visitor_pct, '1', IF(draw_pct > home_pct AND draw_pct > visitor_pct, 'X', '2')) AS prediction
             FROM event
             WHERE tipster_id = :tipsterId AND home_goals IS NOT NULL AND visitor_goals IS NOT NULL) SQ
-            WHERE (prediction = '1' AND home_pct >= $minPct AND odd_1 >= $minOdd AND odd_1 < $maxOdd) 
-               OR (prediction = '2' AND visitor_pct >= $minPct AND odd_2 >= $minOdd AND odd_2 < $maxOdd)
+            WHERE (prediction = '1' AND home_pct >= $minPct AND odd_1 >= $minOdd AND odd_1 <= $maxOdd) 
+               OR (prediction = '2' AND visitor_pct >= $minPct AND odd_2 >= $minOdd AND odd_2 <= $maxOdd)
             ";
 
         $resultSet = $conn->executeQuery($sql, ['tipsterId' => $tipsterId]);
@@ -113,7 +113,7 @@ class ReportRepository extends ServiceEntityRepository
             FROM event 
             WHERE
             tipster_id = :tipsterId
-            AND home_goals IS NOT NULL
+            AND home_goals IS NOT NULL and date>'2025-07-24'
             AND (bet_1 IS NOT NULL OR bet_2 IS NOT NULL)
             ";
 

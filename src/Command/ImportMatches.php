@@ -34,6 +34,7 @@ class ImportMatches extends Command
             $this->zulu->importMatches($input->getArgument('date'));
         } elseif ($tipsterId === 2) {
             $this->foreBet->importMatches();
+            $this->foreBet->persistMatches();
         }
 
         echo "\n";

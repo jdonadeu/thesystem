@@ -17,6 +17,7 @@ class PersistMatches extends Command
     public function __construct(
         private readonly Zulu $zulu,
         private readonly ForeBet $foreBet,
+        private readonly EventRepository $eventRepository
     ) {
         parent::__construct();
     }

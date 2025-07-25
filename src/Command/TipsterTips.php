@@ -45,14 +45,15 @@ class TipsterTips extends Command
         $events = $this->reportRepository->eventsForTips($tipsterId);
 
         echo "\n";
+        echo "----------------------------------------------------------------------------------\n";
         echo "Optimal values => ";
         echo "Home min pct: " . self::OPTIMAL_VALUES[$tipsterId]['HOME_MIN_PCT'] . " / ";
         echo "Home min odd: " . self::OPTIMAL_VALUES[$tipsterId]['HOME_MIN_ODD'] . " / ";
         echo "Home max odd: " . self::OPTIMAL_VALUES[$tipsterId]['HOME_MAX_ODD'] . " / ";
         echo "Visitor min pct: " . self::OPTIMAL_VALUES[$tipsterId]['VISITOR_MIN_PCT'] . " / ";
-        echo "Visitor min odd: " . self::OPTIMAL_VALUES[$tipsterId]['VISITOR_MIN_ODD'];
-        echo "Visitor max odd: " . self::OPTIMAL_VALUES[$tipsterId]['VISITOR_MAX_ODD'];
-        echo "\n\n";
+        echo "Visitor min odd: " . self::OPTIMAL_VALUES[$tipsterId]['VISITOR_MIN_ODD'] . " / ";
+        echo "Visitor max odd: " . self::OPTIMAL_VALUES[$tipsterId]['VISITOR_MAX_ODD']. "\n";
+        echo "----------------------------------------------------------------------------------\n\n";
 
         foreach ($events as $event) {
             if (!$this->isValidTip($event, $tipsterId)) {
@@ -83,7 +84,9 @@ class TipsterTips extends Command
             echo "\n";
         }
 
-        echo "\n\n******************** SQLs ********************\n\n";
+        echo "----------------------------------------------------------------------------------\n";
+        echo "SQLs \n";
+        echo "----------------------------------------------------------------------------------\n\n";
 
         foreach ($events as $event) {
             $updateFields = "";
