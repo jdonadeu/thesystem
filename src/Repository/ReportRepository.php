@@ -113,7 +113,7 @@ class ReportRepository extends ServiceEntityRepository
             FROM event 
             WHERE
             tipster_id = :tipsterId
-            AND home_goals IS NOT NULL and date>'2025-07-24'
+            AND home_goals IS NOT NULL
             AND (bet_1 IS NOT NULL OR bet_2 IS NOT NULL)
             ";
 

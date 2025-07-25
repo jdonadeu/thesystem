@@ -1,24 +1,26 @@
 Todo:
 -----------
-- Add top to tips. Don't bet on very high odds
+- Keep track of change of pcts and odds. Separate table? Maybe pcts change after some time?
 - Analyze odds fluctuations: If decreases then it is more probable?
+- Find more tipsters like forebet
 
 ------------------------------------------------------
 Forebet
 
 HOME
-Predictions: 2142
-Predictions positive: 696 (32%)
+Predictions: 3534
+Predictions positive: 961 (27%)
 Min pct: 43
-Min odd: 2.15
-Max odd: 7.15
-Net gains: 33.039999999999
+Min odd: 2.85
+Max odd: 7.85
+Net gains: 46.89
 
 VISITOR
-Predictions: 3008
-Predictions positive: 694 (23%)
-Min pct: 45
-Min odd: 4.2
-Max odd: 9.2
-Net gains: 22.37
+Predictions: 1260
+Predictions positive: 397 (31%)
+Min pct: 61
+Min odd: 1.95
+Max odd: 6.95
+Net gains: 19.97
+
 
