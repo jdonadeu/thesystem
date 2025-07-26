@@ -1,8 +1,9 @@
 Todo:
 -----------
+- Script to audit data. All dates have matches?
 - Keep track of change of pcts and odds. Separate table? Maybe pcts change after some time?
 - Analyze odds fluctuations: If decreases then it is more probable?
-- Find more tipsters like forebet
+- Find more tipsters like forebet. Maybe apis are better?
 
 ------------------------------------------------------
 Forebet
