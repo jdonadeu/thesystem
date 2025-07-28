@@ -48,6 +48,8 @@ class EventRepository extends ServiceEntityRepository
         $event->setAvgGoals($avgGoals);
         $event->setPredHomeGoals($predHomeGoals);
         $event->setPredVisitorGoals($predVisitorGoals);
+        $event->setInitialHomePct($homePct);
+        $event->setInitialVisitorPct($visitorPct);
 
         $this->getEntityManager()->persist($event);
         $this->getEntityManager()->flush();

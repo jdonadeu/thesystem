@@ -61,6 +61,12 @@ class Event
     #[ORM\Column]
     private ?int $predVisitorGoals = null;
 
+    #[ORM\Column]
+    private ?float $initialHomePct = null;
+
+    #[ORM\Column]
+    private ?float $initialVisitorPct = null;
+
     public function getId(): int
     {
         return $this->id;
@@ -229,5 +235,25 @@ class Event
     public function setPredVisitorGoals(?int $predVisitorGoals): void
     {
         $this->predVisitorGoals = $predVisitorGoals;
+    }
+
+    public function getInitialHomePct(): ?float
+    {
+        return $this->initialHomePct;
+    }
+
+    public function setInitialHomePct(?float $initialHomePct): void
+    {
+        $this->initialHomePct = $initialHomePct;
+    }
+
+    public function getInitialVisitorPct(): ?float
+    {
+        return $this->initialVisitorPct;
+    }
+
+    public function setInitialVisitorPct(?float $initialVisitorPct): void
+    {
+        $this->initialVisitorPct = $initialVisitorPct;
     }
 }
