@@ -62,6 +62,15 @@ class Event
     private ?int $predVisitorGoals = null;
 
     #[ORM\Column]
+    private ?float $initialOdd_1 = null;
+
+    #[ORM\Column]
+    private ?float $initialOdd_x = null;
+
+    #[ORM\Column]
+    private ?float $initialOdd_2 = null;
+
+    #[ORM\Column]
     private ?float $initialHomePct = null;
 
     #[ORM\Column]
@@ -255,5 +264,35 @@ class Event
     public function setInitialVisitorPct(?float $initialVisitorPct): void
     {
         $this->initialVisitorPct = $initialVisitorPct;
+    }
+
+    public function getInitialOdd1(): ?float
+    {
+        return $this->initialOdd_1;
+    }
+
+    public function setInitialOdd1(?float $initialOdd_1): void
+    {
+        $this->initialOdd_1 = $initialOdd_1;
+    }
+
+    public function getInitialOddX(): ?float
+    {
+        return $this->initialOdd_x;
+    }
+
+    public function setInitialOddX(?float $initialOdd_x): void
+    {
+        $this->initialOdd_x = $initialOdd_x;
+    }
+
+    public function getInitialOdd2(): ?float
+    {
+        return $this->initialOdd_2;
+    }
+
+    public function setInitialOdd2(?float $initialOdd_2): void
+    {
+        $this->initialOdd_2 = $initialOdd_2;
     }
 }

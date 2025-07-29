@@ -48,6 +48,9 @@ class EventRepository extends ServiceEntityRepository
         $event->setAvgGoals($avgGoals);
         $event->setPredHomeGoals($predHomeGoals);
         $event->setPredVisitorGoals($predVisitorGoals);
+        $event->setInitialOdd1($odd1);
+        $event->setInitialOddx($oddX);
+        $event->setInitialOdd2($odd2);
         $event->setInitialHomePct($homePct);
         $event->setInitialVisitorPct($visitorPct);
 
