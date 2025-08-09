@@ -1,27 +1,33 @@
 Todo:
 -----------
-- Script to audit data. All dates have matches?
-- Keep track of change of pcts and odds. Separate table? Maybe pcts change after some time?
 - Analyze odds fluctuations: If decreases then it is more probable?
+- Within tips, are there differences? maybe use different stakes?
+- Script to audit data. All dates have matches?
 - Find more tipsters like forebet. Maybe apis are better?
+
+------------------------------------------------------
+
+Test 1:
+Start date: 2025-08-07
 
 ------------------------------------------------------
 Forebet
 
 HOME
-Predictions: 3534
-Predictions positive: 961 (27%)
+Predictions: 5229
+Predictions positive: 1504 (28%)
 Min pct: 43
 Min odd: 2.85
 Max odd: 7.85
-Net gains: 46.89
+Net gains: 86.23
 
 VISITOR
-Predictions: 1260
-Predictions positive: 397 (31%)
-Min pct: 61
-Min odd: 1.95
-Max odd: 6.95
-Net gains: 19.97
+Predictions: 4986
+Predictions positive: 1421 (28%)
+Min pct: 57
+Min odd: 2.2
+Max odd: 7.2
+Net gains: 30.52
+
 
 

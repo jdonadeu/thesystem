@@ -23,8 +23,8 @@ class TipsterTips extends Command
             'HOME_MIN_PCT' => 43,
             'HOME_MIN_ODD' => 2.85,
             'HOME_MAX_ODD' => 99,
-            'VISITOR_MIN_PCT' => 61,
-            'VISITOR_MIN_ODD' => 1.95,
+            'VISITOR_MIN_PCT' => 57,
+            'VISITOR_MIN_ODD' => 2.2,
             'VISITOR_MAX_ODD' => 99,
         ]
     ];
