@@ -20,30 +20,40 @@ class ReportRepository extends ServiceEntityRepository
 
         $totalHomePredictions = 0;
         $totalHomePredictionsPositive = 0;
+        $totalHomeStakes = 0;
         $totalHomeGains = 0;
 
         $totalVisitorPredictions = 0;
         $totalVisitorPredictionsPositive = 0;
+        $totalVisitorStakes = 0;
         $totalVisitorGains = 0;
 
         foreach ($events as $event) {
+            $eventObj = new Event();
+            $eventObj->setHomePct($event['home_pct']);
+            $eventObj->setVisitorPct($event['visitor_pct']);
+
             $totalEvents++;
             $isHomeWin = $event['home_goals'] > $event['visitor_goals'];
             $isVisitorWin = $event['home_goals'] < $event['visitor_goals'];
 
             if ($event['prediction'] === "1") {
                 $totalHomePredictions++;
+                $homeStake = $eventObj->calculateHomeStake();
+                $totalHomeStakes += $homeStake;
 
                 if ($isHomeWin) {
                     $totalHomePredictionsPositive++;
-                    $totalHomeGains += $event['odd_1'];
+                    $totalHomeGains += $homeStake * $event['odd_1'];
                 }
             } elseif ($event['prediction'] === "2") {
                 $totalVisitorPredictions++;
+                $visitorStake = $eventObj->calculateVisitorStake();
+                $totalVisitorStakes += $visitorStake;
 
                 if ($isVisitorWin) {
                     $totalVisitorPredictionsPositive++;
-                    $totalVisitorGains += $event['odd_2'];
+                    $totalVisitorGains += $visitorStake * $event['odd_2'];
                 }
             }
         }
@@ -52,11 +62,15 @@ class ReportRepository extends ServiceEntityRepository
 
         $summary['totalHomePredictions'] = $totalHomePredictions;
         $summary['totalHomePredictionsPositive'] = $totalHomePredictionsPositive;
+        $summary['totalHomeStakes'] = $totalHomeStakes;
         $summary['totalHomeGains'] = $totalHomeGains;
+        $summary['totalHomeNetGains'] = $totalHomeGains - $totalHomeStakes;
 
         $summary['totalVisitorPredictions'] = $totalVisitorPredictions;
         $summary['totalVisitorPredictionsPositive'] = $totalVisitorPredictionsPositive;
+        $summary['totalVisitorStakes'] = $totalVisitorStakes;
         $summary['totalVisitorGains'] = $totalVisitorGains;
+        $summary['totalVisitorNetGains'] = $totalVisitorGains - $totalVisitorStakes;
 
         if (($totalEvents - $totalHomePredictions - $totalVisitorPredictions) !== 0) {
             throw new Exception('Invalid number of events');
@@ -125,5 +139,37 @@ class ReportRepository extends ServiceEntityRepository
         );
 
         return $resultSet->fetchAllAssociative();
+    }
+
+    public function updateStakes(): void
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = "
+            SELECT *
+            FROM event_extended
+            WHERE (prediction = '1' AND home_pct >= 43 AND odd_1 >= 2.85  AND odd_1 <= 99)
+            OR (prediction = '2' AND visitor_pct >= 57 AND odd_2 >= 2.2  AND odd_2 <= 99)
+            ";
+
+        $events = $conn->executeQuery($sql)->fetchAllAssociative();
+
+        foreach ($events as $event) {
+            $eventObj = new Event();
+            $eventObj->setHomePct($event['home_pct']);
+            $eventObj->setVisitorPct($event['visitor_pct']);
+
+            $stake = ($event['prediction'] === "1")
+                ? $eventObj->calculateHomeStake()
+                : $eventObj->calculateVisitorStake();
+
+            $updateSql = "
+            UPDATE event
+            SET stake = $stake
+            WHERE id = $event[id]
+            ";
+
+            $conn->executeQuery($updateSql);
+        }
     }
 }

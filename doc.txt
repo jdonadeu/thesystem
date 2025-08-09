@@ -1,14 +1,28 @@
 Todo:
 -----------
-- Analyze odds fluctuations: If decreases then it is more probable?
-- Within tips, are there differences? maybe use different stakes?
 - Script to audit data. All dates have matches?
 - Find more tipsters like forebet. Maybe apis are better?
+
+Conclusions:
+------------
+- Is it better to use a min and max optimal odd? Or just a min odd?
+    - It is better to use only a min odd. There are some outliers but they only generate a positive balance in the long run.
+
+- Is it better to get optimal data from last three months? Or from last year the same month?
+    - No, it is worse.
+
+- Can odd fluctuations be used to better predict results?
+    - No enough data yet
+
+- Use different stakes?
+    - Yes, it does make a difference. The higher the pct, the higher the stake
+
 
 ------------------------------------------------------
 
 Test 1:
 Start date: 2025-08-07
+Initial investment: 15
 
 ------------------------------------------------------
 Forebet

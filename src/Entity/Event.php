@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\EventRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
@@ -294,5 +295,30 @@ class Event
     public function setInitialOdd2(?float $initialOdd_2): void
     {
         $this->initialOdd_2 = $initialOdd_2;
+    }
+
+    public function calculateHomeStake(): float
+    {
+        return $this->calculateStake($this->homePct);
+    }
+
+    public function calculateVisitorStake(): float
+    {
+        return $this->calculateStake($this->visitorPct);
+    }
+
+    private function calculateStake(float $pct): float
+    {
+        $stake = 1;
+
+        for ($i = 40; $i < 100; $i = $i + 3) {
+            if ($pct >= $i && $pct < ($i + 3)) {
+                return $stake;
+            }
+
+            $stake += 0.25;
+        }
+
+        throw new Exception("Invalid pct: $pct");
     }
 }

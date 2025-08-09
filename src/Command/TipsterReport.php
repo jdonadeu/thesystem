@@ -44,22 +44,18 @@ class TipsterReport extends Command
             ? 0
             :floor(($summary['totalVisitorPredictionsPositive'] * 100) / $summary['totalVisitorPredictions']);
 
-        $homeNetGains = $summary['totalHomeGains'] - $summary['totalHomePredictions'];
-        $visitorNetGains = $summary['totalVisitorGains'] - $summary['totalVisitorPredictions'];
-
         echo "\n";
         echo "Tipster: $tipsterId \n";
         echo "Min Pct: {$minPct} \n";
         echo "Odds: $minOdd - $maxOdd \n";
-        echo "Events: {$summary['totalEvents']} \n";
         echo "\n";
         echo "Home predictions: {$summary['totalHomePredictions']} \n";
         echo "Home wins: {$summary['totalHomePredictionsPositive']} ({$homePredictionsPct}%) \n";
-        echo "Home gains: {$homeNetGains} ({$summary['totalHomeGains']} - {$summary['totalHomePredictions']}) \n";
+        echo "Home gains: {$summary['totalHomeNetGains']} ({$summary['totalHomeGains']} - {$summary['totalHomeStakes']}) \n";
         echo "\n";
         echo "Visitor predictions: {$summary['totalVisitorPredictions']} \n";
         echo "Visitor wins: {$summary['totalVisitorPredictionsPositive']} ({$visitorPredictionsPct}%) \n";
-        echo "Visitor gains: {$visitorNetGains} ({$summary['totalVisitorGains']} - {$summary['totalVisitorPredictions']}) \n";
+        echo "Visitor gains: {$summary['totalVisitorNetGains']} ({$summary['totalVisitorGains']} - {$summary['totalVisitorStakes']}) \n";
         echo "\n";
 
         return Command::SUCCESS;

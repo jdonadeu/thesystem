@@ -45,14 +45,10 @@ class TipsterOptimalReport extends Command
             throw new Exception("Invalid tipster id[value=$tipsterId]");
         }
 
-        $totalHomePredictions = 0;
-        $totalHomePredictionsPositive = 0;
         $maxHomeNetGains = 0;
         $optimalHomeMinPct = 0;
         $optimalHomeMinOdd = 0;
 
-        $totalVisitorPredictions = 0;
-        $totalVisitorPredictionsPositive = 0;
         $maxVisitorNetGains = 0;
         $optimalVisitorMinPct = 0;
         $optimalVisitorMinOdd = 0;
@@ -64,25 +60,18 @@ class TipsterOptimalReport extends Command
                 $filteredEvents = $this->filterEventsByPctAndOdd($events, $minPct, $minOdd / 100, self::ODD_INCREMENT);
                 $summary = $this->reportRepository->eventsSummary($filteredEvents);
 
-                $homeNetGains = $summary['totalHomeGains'] - $summary['totalHomePredictions'];
-                $visitorNetGains = $summary['totalVisitorGains'] - $summary['totalVisitorPredictions'];
-
-                if ($homeNetGains <= 0 && $visitorNetGains <= 0) {
+                if ($summary['totalHomeNetGains'] <= 0 && $summary['totalVisitorNetGains'] <= 0) {
                     continue;
                 }
 
-                if ($homeNetGains >= $maxHomeNetGains) {
-                    $totalHomePredictions += $summary['totalHomePredictions'];
-                    $totalHomePredictionsPositive += $summary['totalHomePredictionsPositive'];
-                    $maxHomeNetGains = $homeNetGains;
+                if ($summary['totalHomeNetGains'] >= $maxHomeNetGains) {
+                    $maxHomeNetGains = $summary['totalHomeNetGains'];
                     $optimalHomeMinPct = $minPct;
                     $optimalHomeMinOdd = $minOdd;
                 }
 
-                if ($visitorNetGains >= $maxVisitorNetGains) {
-                    $totalVisitorPredictions += $summary['totalVisitorPredictions'];
-                    $totalVisitorPredictionsPositive += $summary['totalVisitorPredictionsPositive'];
-                    $maxVisitorNetGains = $visitorNetGains;
+                if ($summary['totalVisitorNetGains'] >= $maxVisitorNetGains) {
+                    $maxVisitorNetGains = $summary['totalVisitorNetGains'];
                     $optimalVisitorMinPct = $minPct;
                     $optimalVisitorMinOdd = $minOdd;
                 }
@@ -93,23 +82,16 @@ class TipsterOptimalReport extends Command
         $optimalVisitorMinOdd = $optimalVisitorMinOdd / 100;
 
         $optimalHomeMaxOdd = $optimalHomeMinOdd + self::ODD_INCREMENT;
-        $totalHomePredictionsPositivePct = floor(($totalHomePredictionsPositive / $totalHomePredictions) * 100);
-
         $optimalVisitorMaxOdd = $optimalVisitorMinOdd + self::ODD_INCREMENT;
-        $totalVisitorPredictionsPositivePct = floor(($totalVisitorPredictionsPositive / $totalVisitorPredictions) * 100);
 
         echo "\n";
         echo "HOME\n";
-        echo "Predictions: $totalHomePredictions \n";
-        echo "Predictions positive: $totalHomePredictionsPositive ($totalHomePredictionsPositivePct%) \n";
         echo "Min pct: $optimalHomeMinPct \n";
         echo "Min odd: $optimalHomeMinOdd \n";
         echo "Max odd: $optimalHomeMaxOdd \n";
         echo "Net gains: $maxHomeNetGains \n\n";
 
         echo "VISITOR\n";
-        echo "Predictions: $totalVisitorPredictions \n";
-        echo "Predictions positive: $totalVisitorPredictionsPositive ($totalVisitorPredictionsPositivePct%) \n";
         echo "Min pct: $optimalVisitorMinPct \n";
         echo "Min odd: $optimalVisitorMinOdd \n";
         echo "Max odd: $optimalVisitorMaxOdd \n";

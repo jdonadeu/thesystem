@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Entity\Event;
 use App\Repository\ReportRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -60,6 +61,10 @@ class TipsterTips extends Command
                 continue;
             }
 
+            $eventObj = new Event();
+            $eventObj->setHomePct($event['home_pct']);
+            $eventObj->setVisitorPct($event['visitor_pct']);
+
             echo $event['date'] . " " . $event['time'] . ", ". $event['home_team'] . " - " . $event['visitor_team'] . " => ";
 
             if ($this->isValidHomeTip($event, $tipsterId)) {
@@ -69,6 +74,7 @@ class TipsterTips extends Command
 
                 echo " Home pct: $event[home_pct], ";
                 echo " Odd: $event[odd_1], ";
+                echo " Stake: " . $eventObj->calculateHomeStake() . ", ";
                 echo " Bet: $bet \n";
             }
             if ($this->isValidVisitorTip($event, $tipsterId)) {
@@ -78,6 +84,7 @@ class TipsterTips extends Command
 
                 echo " Visitor pct: $event[visitor_pct], ";
                 echo " Odd: $event[odd_2], ";
+                echo " Stake: " . $eventObj->calculateVisitorStake() . ", ";
                 echo " Bet: $bet \n";
             }
 
@@ -95,11 +102,15 @@ class TipsterTips extends Command
                 continue;
             }
 
+            $eventObj = new Event();
+            $eventObj->setHomePct($event['home_pct']);
+            $eventObj->setVisitorPct($event['visitor_pct']);
+
             if ($this->isValidHomeTip($event, $tipsterId)) {
-                $updateFields .= "bet_1 = $event[odd_1]";
+                $updateFields .= "bet_1 = $event[odd_1], stake = " . $eventObj->calculateHomeStake();
             }
             if ($this->isValidVisitorTip($event, $tipsterId)) {
-                $updateFields .= "bet_2 = $event[odd_2]";
+                $updateFields .= "bet_2 = $event[odd_2], stake = " . $eventObj->calculateVisitorStake();
             }
 
             echo "-- $event[home_team] - $event[visitor_team] \n";
