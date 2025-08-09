@@ -48,6 +48,8 @@ class EventRepository extends ServiceEntityRepository
         $event->setAvgGoals($avgGoals);
         $event->setPredHomeGoals($predHomeGoals);
         $event->setPredVisitorGoals($predVisitorGoals);
+        $event->setHomeStake($event->calculateHomeStake());
+        $event->setVisitorStake($event->calculateVisitorStake());
         $event->setInitialOdd1($odd1);
         $event->setInitialOddx($oddX);
         $event->setInitialOdd2($odd2);
@@ -85,6 +87,8 @@ class EventRepository extends ServiceEntityRepository
         $event->setAvgGoals($avgGoals);
         $event->setPredHomeGoals($predHomeGoals);
         $event->setPredVisitorGoals($predVisitorGoals);
+        $event->setHomeStake($event->calculateHomeStake());
+        $event->setVisitorStake($event->calculateVisitorStake());
 
         $this->getEntityManager()->persist($event);
         $this->getEntityManager()->flush();
@@ -156,13 +160,5 @@ class EventRepository extends ServiceEntityRepository
         );
 
         return $event;
-    }
-
-    public function removePastWithoutGoals(): void
-    {
-        $conn = $this->getEntityManager()->getConnection();
-
-        $sql = "DELETE FROM event WHERE (home_goals IS NULL OR visitor_goals IS NULL) AND date < CURDATE()";
-        $conn->executeQuery($sql);
     }
 }

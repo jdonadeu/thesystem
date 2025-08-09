@@ -63,6 +63,12 @@ class Event
     private ?int $predVisitorGoals = null;
 
     #[ORM\Column]
+    private ?float $homeStake = null;
+
+    #[ORM\Column]
+    private ?float $visitorStake = null;
+
+    #[ORM\Column]
     private ?float $initialOdd_1 = null;
 
     #[ORM\Column]
@@ -247,6 +253,26 @@ class Event
         $this->predVisitorGoals = $predVisitorGoals;
     }
 
+    public function getHomeStake(): ?float
+    {
+        return $this->homeStake;
+    }
+
+    public function setHomeStake(?float $homeStake): void
+    {
+        $this->homeStake = $homeStake;
+    }
+
+    public function getVisitorStake(): ?float
+    {
+        return $this->visitorStake;
+    }
+
+    public function setVisitorStake(?float $visitorStake): void
+    {
+        $this->visitorStake = $visitorStake;
+    }
+
     public function getInitialHomePct(): ?float
     {
         return $this->initialHomePct;
@@ -319,6 +345,6 @@ class Event
             $stake += 0.25;
         }
 
-        throw new Exception("Invalid pct: $pct");
+        return 1;
     }
 }

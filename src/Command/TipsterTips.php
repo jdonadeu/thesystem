@@ -14,12 +14,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class TipsterTips extends Command
 {
     private const OPTIMAL_VALUES = [
-        1 => [
-            'HOME_PCT' => 55,
-            'ODD_1' => 2.50,
-            'VISITOR_PCT' => 50,
-            'ODD_2' => 2.20,
-        ],
         2 => [
             'HOME_MIN_PCT' => 43,
             'HOME_MIN_ODD' => 2.85,
@@ -61,10 +55,6 @@ class TipsterTips extends Command
                 continue;
             }
 
-            $eventObj = new Event();
-            $eventObj->setHomePct($event['home_pct']);
-            $eventObj->setVisitorPct($event['visitor_pct']);
-
             echo $event['date'] . " " . $event['time'] . ", ". $event['home_team'] . " - " . $event['visitor_team'] . " => ";
 
             if ($this->isValidHomeTip($event, $tipsterId)) {
@@ -74,7 +64,7 @@ class TipsterTips extends Command
 
                 echo " Home pct: $event[home_pct], ";
                 echo " Odd: $event[odd_1], ";
-                echo " Stake: " . $eventObj->calculateHomeStake() . ", ";
+                echo " Stake: $event[home_stake], ";
                 echo " Bet: $bet \n";
             }
             if ($this->isValidVisitorTip($event, $tipsterId)) {
@@ -84,7 +74,7 @@ class TipsterTips extends Command
 
                 echo " Visitor pct: $event[visitor_pct], ";
                 echo " Odd: $event[odd_2], ";
-                echo " Stake: " . $eventObj->calculateVisitorStake() . ", ";
+                echo " Stake: $event[visitor_stake], ";
                 echo " Bet: $bet \n";
             }
 
@@ -102,15 +92,11 @@ class TipsterTips extends Command
                 continue;
             }
 
-            $eventObj = new Event();
-            $eventObj->setHomePct($event['home_pct']);
-            $eventObj->setVisitorPct($event['visitor_pct']);
-
             if ($this->isValidHomeTip($event, $tipsterId)) {
-                $updateFields .= "bet_1 = $event[odd_1], stake = " . $eventObj->calculateHomeStake();
+                $updateFields .= "bet_1 = $event[odd_1], stake = $event[home_stake]";
             }
             if ($this->isValidVisitorTip($event, $tipsterId)) {
-                $updateFields .= "bet_2 = $event[odd_2], stake = " . $eventObj->calculateVisitorStake();
+                $updateFields .= "bet_2 = $event[odd_2], stake = $event[visitor_stake]";
             }
 
             echo "-- $event[home_team] - $event[visitor_team] \n";

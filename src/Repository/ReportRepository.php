@@ -29,17 +29,13 @@ class ReportRepository extends ServiceEntityRepository
         $totalVisitorGains = 0;
 
         foreach ($events as $event) {
-            $eventObj = new Event();
-            $eventObj->setHomePct($event['home_pct']);
-            $eventObj->setVisitorPct($event['visitor_pct']);
-
             $totalEvents++;
             $isHomeWin = $event['home_goals'] > $event['visitor_goals'];
             $isVisitorWin = $event['home_goals'] < $event['visitor_goals'];
 
             if ($event['prediction'] === "1") {
                 $totalHomePredictions++;
-                $homeStake = $eventObj->calculateHomeStake();
+                $homeStake = $event['home_stake'];
                 $totalHomeStakes += $homeStake;
 
                 if ($isHomeWin) {
@@ -48,7 +44,7 @@ class ReportRepository extends ServiceEntityRepository
                 }
             } elseif ($event['prediction'] === "2") {
                 $totalVisitorPredictions++;
-                $visitorStake = $eventObj->calculateVisitorStake();
+                $visitorStake = $event['visitor_stake'];
                 $totalVisitorStakes += $visitorStake;
 
                 if ($isVisitorWin) {
@@ -147,9 +143,7 @@ class ReportRepository extends ServiceEntityRepository
 
         $sql = "
             SELECT *
-            FROM event_extended
-            WHERE (prediction = '1' AND home_pct >= 43 AND odd_1 >= 2.85  AND odd_1 <= 99)
-            OR (prediction = '2' AND visitor_pct >= 57 AND odd_2 >= 2.2  AND odd_2 <= 99)
+            FROM event
             ";
 
         $events = $conn->executeQuery($sql)->fetchAllAssociative();
@@ -159,13 +153,12 @@ class ReportRepository extends ServiceEntityRepository
             $eventObj->setHomePct($event['home_pct']);
             $eventObj->setVisitorPct($event['visitor_pct']);
 
-            $stake = ($event['prediction'] === "1")
-                ? $eventObj->calculateHomeStake()
-                : $eventObj->calculateVisitorStake();
+            $homeStake = $eventObj->calculateHomeStake();
+            $visitorStake = $eventObj->calculateVisitorStake();
 
             $updateSql = "
             UPDATE event
-            SET stake = $stake
+            SET home_stake = $homeStake, visitor_stake = $visitorStake
             WHERE id = $event[id]
             ";
 
