@@ -1,5 +1,6 @@
 Todo:
 -----------
+- Pull optimal values from DB
 - Script to audit data. All dates have matches?
 - Find more tipsters like forebet. Maybe apis are better?
 
@@ -22,7 +23,7 @@ Conclusions:
 
 Test 1:
 Start date: 2025-08-07
-Initial investment: 15
+Initial investment: 25 (bet365), 10 (sportium), 5(bwin)
 
 ------------------------------------------------------
 Forebet

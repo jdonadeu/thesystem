@@ -2,7 +2,6 @@
 
 namespace App\Command;
 
-use App\Entity\Event;
 use App\Repository\ReportRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -51,6 +50,11 @@ class TipsterTips extends Command
         echo "----------------------------------------------------------------------------------\n\n";
 
         foreach ($events as $event) {
+            // Only play home for now
+            if ($event['prediction'] !== "1") {
+                continue;
+            }
+
             if (!$this->isValidTip($event, $tipsterId)) {
                 continue;
             }
@@ -86,6 +90,11 @@ class TipsterTips extends Command
         echo "----------------------------------------------------------------------------------\n\n";
 
         foreach ($events as $event) {
+            // Only play home for now
+            if ($event['prediction'] !== "1") {
+                continue;
+            }
+
             $updateFields = "";
 
             if (!$this->isValidTip($event, $tipsterId) || ($event['bet_1'] != null || $event['bet_2'] != null)) {
@@ -93,10 +102,10 @@ class TipsterTips extends Command
             }
 
             if ($this->isValidHomeTip($event, $tipsterId)) {
-                $updateFields .= "bet_1 = $event[odd_1], stake = $event[home_stake]";
+                $updateFields .= "bet_1 = $event[odd_1], home_stake = $event[home_stake]";
             }
             if ($this->isValidVisitorTip($event, $tipsterId)) {
-                $updateFields .= "bet_2 = $event[odd_2], stake = $event[visitor_stake]";
+                $updateFields .= "bet_2 = $event[odd_2], visitor_stake = $event[visitor_stake]";
             }
 
             echo "-- $event[home_team] - $event[visitor_team] \n";
