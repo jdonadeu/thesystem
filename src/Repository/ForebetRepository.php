@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Forebet\ForebetMatch;
+use App\Entity\ForebetMatch;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
@@ -213,7 +213,7 @@ class ForebetRepository extends ServiceEntityRepository
         $summary['totalVisitorNetGains'] = $totalVisitorGains - $totalVisitorStakes;
 
         if (($totalMatches - $totalHomePredictions - $totalVisitorPredictions) !== 0) {
-            throw new Exception('Invalid number of events');
+            throw new Exception('Invalid number of matches');
         }
 
         return $summary;
@@ -227,7 +227,7 @@ class ForebetRepository extends ServiceEntityRepository
             (SELECT *,
             IF(home_pct > draw_pct AND home_pct > visitor_pct, '1', IF(draw_pct > home_pct AND draw_pct > visitor_pct, 'X', '2')) AS prediction
             FROM forebet_matches
-            WHERE tipster_id = :tipsterId AND home_goals IS NOT NULL AND visitor_goals IS NOT NULL) SQ
+            WHERE home_goals IS NOT NULL AND visitor_goals IS NOT NULL) SQ
             WHERE (prediction = '1' AND home_pct >= $minPct AND odd_1 >= $minOdd AND odd_1 <= $maxOdd) 
                OR (prediction = '2' AND visitor_pct >= $minPct AND odd_2 >= $minOdd AND odd_2 <= $maxOdd)
             ";
@@ -276,12 +276,12 @@ class ForebetRepository extends ServiceEntityRepository
         $matches = $conn->executeQuery($sql)->fetchAllAssociative();
 
         foreach ($matches as $match) {
-            $eventObj = new ForebetMatch();
-            $eventObj->setHomePct($match['home_pct']);
-            $eventObj->setVisitorPct($match['visitor_pct']);
+            $matchObj = new ForebetMatch();
+            $matchObj->setHomePct($match['home_pct']);
+            $matchObj->setVisitorPct($match['visitor_pct']);
 
-            $homeStake = $eventObj->calculateHomeStake();
-            $visitorStake = $eventObj->calculateVisitorStake();
+            $homeStake = $matchObj->calculateHomeStake();
+            $visitorStake = $matchObj->calculateVisitorStake();
 
             $updateSql = "
             UPDATE forebet_matches

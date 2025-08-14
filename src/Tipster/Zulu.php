@@ -18,7 +18,7 @@ class Zulu
     private const IMPORT_FILE = 'csv/import-zulu.csv';
 
     public function __construct(
-        protected readonly ForebetRepository $eventRepository,
+        protected readonly ForebetRepository $forebetRepository,
         protected readonly FilesystemService $filesystemService,
     ) {
     }

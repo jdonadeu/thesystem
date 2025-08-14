@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: 'forebet:tips')]
-class TipsterTips extends Command
+class Tips extends Command
 {
     private const OPTIMAL_VALUES = [
         'HOME_MIN_PCT' => 43,
@@ -107,9 +107,9 @@ class TipsterTips extends Command
         return Command::SUCCESS;
     }
 
-    private function isValidTip(array $event): bool
+    private function isValidTip(array $match): bool
     {
-        return $this->isValidHomeTip($event) || $this->isValidVisitorTip($event);
+        return $this->isValidHomeTip($match) || $this->isValidVisitorTip($match);
     }
 
     private function isValidHomeTip(array $match): bool

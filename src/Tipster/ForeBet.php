@@ -17,7 +17,7 @@ class ForeBet
     private const IMPORT_FILE = 'csv/import-forebet.csv';
 
     public function __construct(
-        protected readonly ForebetRepository $eventRepository,
+        protected readonly ForebetRepository $forebetRepository,
         protected readonly FilesystemService $filesystemService,
     ) {
     }
@@ -92,7 +92,7 @@ class ForeBet
             $homeGoals = is_numeric($row[13]) ? $row[13] : null;
             $visitorGoals = is_numeric($row[14]) ? $row[14] : null;
 
-            $this->eventRepository->createOrUpdate(
+            $this->forebetRepository->createOrUpdate(
                 $date,
                 $time,
                 $homeTeam,

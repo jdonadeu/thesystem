@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: 'forebet:optimal')]
-class TipsterOptimalReport extends Command
+class OptimalReport extends Command
 {
     private const ODD_INCREMENT = 5;
 
@@ -35,12 +35,12 @@ class TipsterOptimalReport extends Command
         $optimalVisitorMinPct = 0;
         $optimalVisitorMinOdd = 0;
 
-        $events = $this->forebetRepository->getMatchesForSummary(ForeBet::MIN_PCT, 1, 99);
+        $matches = $this->forebetRepository->getMatchesForSummary(ForeBet::MIN_PCT, 1, 99);
 
         for ($minPct = ForeBet::MIN_PCT; $minPct <= 90; $minPct = $minPct + 2) {
             for ($minOdd = 100; $minOdd <= 600; $minOdd = $minOdd + 5) {
-                $filteredEvents = $this->filterEventsByPctAndOdd($events, $minPct, $minOdd / 100, self::ODD_INCREMENT);
-                $summary = $this->forebetRepository->matchesSummary($filteredEvents);
+                $filteredMatches = $this->filterMatchesByPctAndOdd($matches, $minPct, $minOdd / 100, self::ODD_INCREMENT);
+                $summary = $this->forebetRepository->matchesSummary($filteredMatches);
 
                 if ($summary['totalHomeNetGains'] <= 0 && $summary['totalVisitorNetGains'] <= 0) {
                     continue;
@@ -86,36 +86,32 @@ class TipsterOptimalReport extends Command
         return Command::SUCCESS;
     }
 
-    private function filterEventsByPctAndOdd(
-        array $events,
-        int   $minPct,
-        float $minOdd,
-        float $oddIncrement,
-    ): array {
+    private function filterMatchesByPctAndOdd(array $matches, int $minPct, float $minOdd, float $oddIncrement): array
+    {
         $maxOdd = $minOdd + $oddIncrement;
-        $filteredEvents = [];
+        $filteredMatches = [];
 
-        foreach ($events as $event) {
-            if ($event['prediction'] === 'X') {
+        foreach ($matches as $match) {
+            if ($match['prediction'] === 'X') {
                 throw new Exception('Draws are not valid');
             }
 
-            if ($event['prediction'] === '1'
-                && ($event['home_pct'] < $minPct || $event['odd_1'] < $minOdd || $event['odd_1'] > $maxOdd)
+            if ($match['prediction'] === '1'
+                && ($match['home_pct'] < $minPct || $match['odd_1'] < $minOdd || $match['odd_1'] > $maxOdd)
             ) {
                 continue;
             }
 
-            if ($event['prediction'] === '2'
-                && ($event['visitor_pct'] < $minPct || $event['odd_2'] < $minOdd || $event['odd_2'] > $maxOdd)
+            if ($match['prediction'] === '2'
+                && ($match['visitor_pct'] < $minPct || $match['odd_2'] < $minOdd || $match['odd_2'] > $maxOdd)
             ) {
                 continue;
             }
 
-            $filteredEvents[] = $event;
+            $filteredMatches[] = $match;
         }
 
-        return $filteredEvents;
+        return $filteredMatches;
     }
 }
 

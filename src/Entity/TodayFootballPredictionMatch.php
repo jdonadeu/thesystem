@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Entity\TodayFootballPrediction;
+namespace App\Entity;
 
 use App\Repository\TodayFootballPredictionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TodayFootballPredictionRepository::class)]
+#[ORM\Table(name: 'TodayFootballPrediction_matches')]
 class TodayFootballPredictionMatch
 {
     #[ORM\Id]

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Entity\Forebet;
+namespace App\Entity;
 
 use App\Repository\ForebetRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ForebetRepository::class)]
+#[ORM\Table(name: 'forebet_matches')]
 class ForebetMatch
 {
     #[ORM\Id]

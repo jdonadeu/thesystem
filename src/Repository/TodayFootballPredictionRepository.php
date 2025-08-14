@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Forebet\ForebetMatch;
+use App\Entity\ForebetMatch;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,7 +14,6 @@ class TodayFootballPredictionRepository extends ServiceEntityRepository
     }
 
     public function create(
-        int $tipsterId,
         string $date,
         string $time,
         string $homeTeam,
@@ -32,7 +31,6 @@ class TodayFootballPredictionRepository extends ServiceEntityRepository
         ?int $predVisitorGoals = null,
     ): ForebetMatch {
         $event = new ForebetMatch();
-        $event->setTipsterId($tipsterId);
         $event->setDate($date);
         $event->setTime($time);
         $event->setHomeTeam($homeTeam);
@@ -95,7 +93,6 @@ class TodayFootballPredictionRepository extends ServiceEntityRepository
     }
 
     public function createOrUpdate(
-        int $tipsterId,
         string $date,
         string $time,
         string $homeTeam,
@@ -113,7 +110,6 @@ class TodayFootballPredictionRepository extends ServiceEntityRepository
         ?int $predVisitorGoals = null,
     ): ForebetMatch {
         $event = $this->findOneBy([
-            'tipsterId' => $tipsterId,
             'date' => $date,
             'homeTeam' => $homeTeam,
             'visitorTeam' => $visitorTeam,
@@ -123,7 +119,6 @@ class TodayFootballPredictionRepository extends ServiceEntityRepository
             echo "Creating event [date='$date', homeTeam='$homeTeam', visitorTeam='$visitorTeam'] \n";
 
             return $this->create(
-                $tipsterId,
                 $date,
                 $time,
                 $homeTeam,

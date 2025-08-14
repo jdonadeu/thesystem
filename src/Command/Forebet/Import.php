@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: 'forebet:import')]
-class ImportMatches extends Command
+class Import extends Command
 {
     public function __construct(private readonly ForeBet $foreBet)
     {
