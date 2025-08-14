@@ -30,38 +30,38 @@ class TodayFootballPredictionRepository extends ServiceEntityRepository
         ?int $predHomeGoals = null,
         ?int $predVisitorGoals = null,
     ): ForebetMatch {
-        $event = new ForebetMatch();
-        $event->setDate($date);
-        $event->setTime($time);
-        $event->setHomeTeam($homeTeam);
-        $event->setVisitorTeam($visitorTeam);
-        $event->setHomePct($homePct);
-        $event->setDrawPct($drawPct);
-        $event->setVisitorPct($visitorPct);
-        $event->setHomeGoals($homeGoals);
-        $event->setVisitorGoals($visitorGoals);
-        $event->setOdd1($odd1);
-        $event->setOddX($oddX);
-        $event->setOdd2($odd2);
-        $event->setAvgGoals($avgGoals);
-        $event->setPredHomeGoals($predHomeGoals);
-        $event->setPredVisitorGoals($predVisitorGoals);
-        $event->setHomeStake($event->calculateHomeStake());
-        $event->setVisitorStake($event->calculateVisitorStake());
-        $event->setInitialOdd1($odd1);
-        $event->setInitialOddx($oddX);
-        $event->setInitialOdd2($odd2);
-        $event->setInitialHomePct($homePct);
-        $event->setInitialVisitorPct($visitorPct);
+        $match = new ForebetMatch();
+        $match->setDate($date);
+        $match->setTime($time);
+        $match->setHomeTeam($homeTeam);
+        $match->setVisitorTeam($visitorTeam);
+        $match->setHomePct($homePct);
+        $match->setDrawPct($drawPct);
+        $match->setVisitorPct($visitorPct);
+        $match->setHomeGoals($homeGoals);
+        $match->setVisitorGoals($visitorGoals);
+        $match->setOdd1($odd1);
+        $match->setOddX($oddX);
+        $match->setOdd2($odd2);
+        $match->setAvgGoals($avgGoals);
+        $match->setPredHomeGoals($predHomeGoals);
+        $match->setPredVisitorGoals($predVisitorGoals);
+        $match->setHomeStake($match->calculateHomeStake());
+        $match->setVisitorStake($match->calculateVisitorStake());
+        $match->setInitialOdd1($odd1);
+        $match->setInitialOddx($oddX);
+        $match->setInitialOdd2($odd2);
+        $match->setInitialHomePct($homePct);
+        $match->setInitialVisitorPct($visitorPct);
 
-        $this->getEntityManager()->persist($event);
+        $this->getEntityManager()->persist($match);
         $this->getEntityManager()->flush();
 
-        return $event;
+        return $match;
     }
 
     public function update(
-        ForebetMatch $event,
+        ForebetMatch $match,
         float        $homePct,
         float        $drawPct,
         float        $visitorPct,
@@ -74,21 +74,21 @@ class TodayFootballPredictionRepository extends ServiceEntityRepository
         ?int         $predHomeGoals,
         ?int $predVisitorGoals,
     ): void {
-        $event->setHomePct($homePct);
-        $event->setDrawPct($drawPct);
-        $event->setVisitorPct($visitorPct);
-        $event->setHomeGoals($homeGoals);
-        $event->setVisitorGoals($visitorGoals);
-        $event->setOdd1($odd1);
-        $event->setOddX($oddX);
-        $event->setOdd2($odd2);
-        $event->setAvgGoals($avgGoals);
-        $event->setPredHomeGoals($predHomeGoals);
-        $event->setPredVisitorGoals($predVisitorGoals);
-        $event->setHomeStake($event->calculateHomeStake());
-        $event->setVisitorStake($event->calculateVisitorStake());
+        $match->setHomePct($homePct);
+        $match->setDrawPct($drawPct);
+        $match->setVisitorPct($visitorPct);
+        $match->setHomeGoals($homeGoals);
+        $match->setVisitorGoals($visitorGoals);
+        $match->setOdd1($odd1);
+        $match->setOddX($oddX);
+        $match->setOdd2($odd2);
+        $match->setAvgGoals($avgGoals);
+        $match->setPredHomeGoals($predHomeGoals);
+        $match->setPredVisitorGoals($predVisitorGoals);
+        $match->setHomeStake($match->calculateHomeStake());
+        $match->setVisitorStake($match->calculateVisitorStake());
 
-        $this->getEntityManager()->persist($event);
+        $this->getEntityManager()->persist($match);
         $this->getEntityManager()->flush();
     }
 
@@ -109,14 +109,14 @@ class TodayFootballPredictionRepository extends ServiceEntityRepository
         ?int $predHomeGoals = null,
         ?int $predVisitorGoals = null,
     ): ForebetMatch {
-        $event = $this->findOneBy([
+        $match = $this->findOneBy([
             'date' => $date,
             'homeTeam' => $homeTeam,
             'visitorTeam' => $visitorTeam,
         ]);
 
-        if ($event === null) {
-            echo "Creating event [date='$date', homeTeam='$homeTeam', visitorTeam='$visitorTeam'] \n";
+        if ($match === null) {
+            echo "Creating match [date='$date', homeTeam='$homeTeam', visitorTeam='$visitorTeam'] \n";
 
             return $this->create(
                 $date,
@@ -137,10 +137,10 @@ class TodayFootballPredictionRepository extends ServiceEntityRepository
             );
         }
 
-        echo "Updating event [date='$date', homeTeam='$homeTeam', visitorTeam='$visitorTeam'] \n";
+        echo "Updating match [date='$date', homeTeam='$homeTeam', visitorTeam='$visitorTeam'] \n";
 
         $this->update(
-            $event,
+            $match,
             $homePct,
             $drawPct,
             $visitorPct,
@@ -154,6 +154,6 @@ class TodayFootballPredictionRepository extends ServiceEntityRepository
             $predVisitorGoals,
         );
 
-        return $event;
+        return $match;
     }
 }

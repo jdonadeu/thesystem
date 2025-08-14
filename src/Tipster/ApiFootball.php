@@ -31,15 +31,15 @@ class ApiFootball
 
         $content = $response->toArray();
 
-        $events = $content['response'];
+        $matches = $content['response'];
 
-        foreach ($events as $event) {
+        foreach ($matches as $match) {
             $odd1 = null;
             $oddX = null;
             $odd2 = null;
 
-            $fixtureId = $event['fixture']['id'];
-            $bets = $event['bookmakers'][0]['bets'];
+            $fixtureId = $match['fixture']['id'];
+            $bets = $match['bookmakers'][0]['bets'];
 
             foreach ($bets as $bet) {
                 if ($bet['name'] !== 'Match Winner') {

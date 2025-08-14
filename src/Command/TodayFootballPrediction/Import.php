@@ -2,6 +2,7 @@
 
 namespace App\Command\TodayFootballPrediction;
 
+use App\Tipster\TodayFootballPrediction;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,7 +20,7 @@ class Import extends Command
     public function __invoke(InputInterface $input, OutputInterface $output): int
     {
         $date = $input->getArgument('date');
-        $api = new \App\Tipster\TodayFootballPrediction();
+        $api = new TodayFootballPrediction();
         $api->import($date);
 
         return Command::SUCCESS;

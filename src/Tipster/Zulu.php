@@ -144,7 +144,7 @@ class Zulu
             $homeGoals = is_numeric($row[10]) ? $row[10] : null;
             $visitorGoals = is_numeric($row[11]) ? $row[11] : null;
 
-            $event = $this->eventRepository->createOrUpdate(
+            $this->forebetRepository->createOrUpdate(
                 self::TIPSTER_ID,
                 $date,
                 $time,
