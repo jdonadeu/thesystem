@@ -1,26 +1,24 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Forebet;
 
-use App\Repository\ReportRepository;
+use App\Repository\ForebetRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'tipster:report')]
+#[AsCommand(name: 'forebet:report')]
 class TipsterReport extends Command
 {
-    public function __construct(
-        private readonly ReportRepository $reportRepository,
-    ) {
+    public function __construct(private readonly ForebetRepository $forebetRepository)
+    {
         parent::__construct();
     }
 
     protected function configure(): void
     {
-        $this->addArgument('tipsterId', InputArgument::REQUIRED);
         $this->addArgument('minPct', InputArgument::REQUIRED);
         $this->addArgument('minOdd', InputArgument::REQUIRED);
         $this->addArgument('maxOdd', InputArgument::REQUIRED);
@@ -28,13 +26,12 @@ class TipsterReport extends Command
 
     public function __invoke(InputInterface $input, OutputInterface $output): int
     {
-        $tipsterId = $input->getArgument('tipsterId');
         $minPct = $input->getArgument('minPct');
         $minOdd = $input->getArgument('minOdd');
         $maxOdd = $input->getArgument('maxOdd');
 
-        $events = $this->reportRepository->getEventsForSummary($tipsterId, $minPct, $minOdd, $maxOdd);
-        $summary = $this->reportRepository->eventsSummary($events);
+        $matches = $this->forebetRepository->getMatchesForSummary($minPct, $minOdd, $maxOdd);
+        $summary = $this->forebetRepository->matchesSummary($matches);
 
         $homePredictionsPct = $summary['totalHomePredictions'] === 0
             ? 0
@@ -45,7 +42,6 @@ class TipsterReport extends Command
             :floor(($summary['totalVisitorPredictionsPositive'] * 100) / $summary['totalVisitorPredictions']);
 
         echo "\n";
-        echo "Tipster: $tipsterId \n";
         echo "Min Pct: {$minPct} \n";
         echo "Odds: $minOdd - $maxOdd \n";
         echo "\n";

@@ -1,31 +1,23 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Forebet;
 
-use App\Repository\ReportRepository;
+use App\Repository\ForebetRepository;
 use App\Tipster\ForeBet;
-use App\Tipster\Zulu;
 use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'tipster:optimal')]
+#[AsCommand(name: 'forebet:optimal')]
 class TipsterOptimalReport extends Command
 {
     private const ODD_INCREMENT = 5;
 
-    public function __construct(
-        private readonly ReportRepository $reportRepository,
-    ) {
-        parent::__construct();
-    }
-
-    protected function configure(): void
+    public function __construct(private readonly ForebetRepository $forebetRepository)
     {
-        $this->addArgument('tipsterId', InputArgument::REQUIRED);
+        parent::__construct();
     }
 
     /**
@@ -35,16 +27,6 @@ class TipsterOptimalReport extends Command
     {
         $start = microtime(true);
 
-        $tipsterId = (int)$input->getArgument('tipsterId');
-
-        if ($tipsterId === 1) {
-            $minTipsterPct = Zulu::MIN_PCT;
-        } elseif ($tipsterId === 2) {
-            $minTipsterPct = ForeBet::MIN_PCT;
-        } else {
-            throw new Exception("Invalid tipster id[value=$tipsterId]");
-        }
-
         $maxHomeNetGains = 0;
         $optimalHomeMinPct = 0;
         $optimalHomeMinOdd = 0;
@@ -53,12 +35,12 @@ class TipsterOptimalReport extends Command
         $optimalVisitorMinPct = 0;
         $optimalVisitorMinOdd = 0;
 
-        $events = $this->reportRepository->getEventsForSummary($tipsterId, $minTipsterPct, 1, 99);
+        $events = $this->forebetRepository->getMatchesForSummary(ForeBet::MIN_PCT, 1, 99);
 
-        for ($minPct = $minTipsterPct; $minPct <= 90; $minPct = $minPct + 2) {
+        for ($minPct = ForeBet::MIN_PCT; $minPct <= 90; $minPct = $minPct + 2) {
             for ($minOdd = 100; $minOdd <= 600; $minOdd = $minOdd + 5) {
                 $filteredEvents = $this->filterEventsByPctAndOdd($events, $minPct, $minOdd / 100, self::ODD_INCREMENT);
-                $summary = $this->reportRepository->eventsSummary($filteredEvents);
+                $summary = $this->forebetRepository->matchesSummary($filteredEvents);
 
                 if ($summary['totalHomeNetGains'] <= 0 && $summary['totalVisitorNetGains'] <= 0) {
                     continue;

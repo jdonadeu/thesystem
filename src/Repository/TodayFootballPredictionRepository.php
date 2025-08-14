@@ -2,15 +2,15 @@
 
 namespace App\Repository;
 
-use App\Entity\Event;
+use App\Entity\Forebet\ForebetMatch;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-class EventRepository extends ServiceEntityRepository
+class TodayFootballPredictionRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($managerRegistry, Event::class);
+        parent::__construct($managerRegistry, ForebetMatch::class);
     }
 
     public function create(
@@ -30,8 +30,8 @@ class EventRepository extends ServiceEntityRepository
         ?float $avgGoals = null,
         ?int $predHomeGoals = null,
         ?int $predVisitorGoals = null,
-    ): Event {
-        $event = new Event();
+    ): ForebetMatch {
+        $event = new ForebetMatch();
         $event->setTipsterId($tipsterId);
         $event->setDate($date);
         $event->setTime($time);
@@ -63,17 +63,17 @@ class EventRepository extends ServiceEntityRepository
     }
 
     public function update(
-        Event $event,
-        float $homePct,
-        float $drawPct,
-        float $visitorPct,
-        ?int $homeGoals,
-        ?int $visitorGoals,
-        ?float $odd1,
-        ?float $oddX,
-        ?float $odd2,
-        ?float $avgGoals,
-        ?int $predHomeGoals,
+        ForebetMatch $event,
+        float        $homePct,
+        float        $drawPct,
+        float        $visitorPct,
+        ?int         $homeGoals,
+        ?int         $visitorGoals,
+        ?float       $odd1,
+        ?float       $oddX,
+        ?float       $odd2,
+        ?float       $avgGoals,
+        ?int         $predHomeGoals,
         ?int $predVisitorGoals,
     ): void {
         $event->setHomePct($homePct);
@@ -111,7 +111,7 @@ class EventRepository extends ServiceEntityRepository
         ?float $avgGoals = null,
         ?int $predHomeGoals = null,
         ?int $predVisitorGoals = null,
-    ): Event {
+    ): ForebetMatch {
         $event = $this->findOneBy([
             'tipsterId' => $tipsterId,
             'date' => $date,

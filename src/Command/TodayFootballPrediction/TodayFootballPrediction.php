@@ -1,27 +1,26 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\TodayFootballPrediction;
 
-use App\Repository\ReportRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'apifootball:run')]
-class ApiFootball extends Command
+#[AsCommand(name: 'todayfootballprediction:import')]
+class TodayFootballPrediction extends Command
 {
-    public function __construct(private readonly ReportRepository $reportRepository)
+    protected function configure(): void
     {
-        parent::__construct();
+        $this->addArgument('date', InputArgument::REQUIRED);
     }
 
     public function __invoke(InputInterface $input, OutputInterface $output): int
     {
-        $apiFootball = new \App\Tipster\ApiFootball();
-
-        $apiFootball->go();
+        $date = $input->getArgument('date');
+        $api = new \App\Tipster\TodayFootballPrediction();
+        $api->import($date);
 
         return Command::SUCCESS;
     }

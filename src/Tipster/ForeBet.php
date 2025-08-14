@@ -2,7 +2,7 @@
 
 namespace App\Tipster;
 
-use App\Repository\EventRepository;
+use App\Repository\ForebetRepository;
 use App\Service\FilesystemService;
 use DateTime;
 
@@ -12,13 +12,12 @@ use DateTime;
 class ForeBet
 {
     public const MIN_PCT = 35;
-    public const TIPSTER_ID = 2;
     public const TIPSTER_NAME = 'FOREBET';
     private const DATA_FILE = 'data/forebet-1x2.json';
     private const IMPORT_FILE = 'csv/import-forebet.csv';
 
     public function __construct(
-        protected readonly EventRepository $eventRepository,
+        protected readonly ForebetRepository $eventRepository,
         protected readonly FilesystemService $filesystemService,
     ) {
     }
@@ -93,8 +92,7 @@ class ForeBet
             $homeGoals = is_numeric($row[13]) ? $row[13] : null;
             $visitorGoals = is_numeric($row[14]) ? $row[14] : null;
 
-            $event = $this->eventRepository->createOrUpdate(
-                self::TIPSTER_ID,
+            $this->eventRepository->createOrUpdate(
                 $date,
                 $time,
                 $homeTeam,
@@ -114,68 +112,5 @@ class ForeBet
         }
 
         fclose($handle);
-    }
-
-    public function getUnderOverMatches(): array
-    {
-        $json = file_get_contents('data/forebet-under-over.json');
-        $matches = json_decode($json, true);
-        $foreBetMatches = [];
-        $now = new DateTime();
-
-        foreach ($matches[0] as $match) {
-            $dateTime = DateTime::createFromFormat("Y-m-d H:i:s", $match['DATE_BAH']);
-
-            if ($dateTime < $now) {
-                continue;
-            }
-
-            $foreBetMatches[] = [
-                'FOREBET OVER UNDER 2.5',
-                $match['DATE_BAH'],
-                'teams' => trim(preg_replace('/\s\s+/', ' ', $match['HOST_NAME'] . " - " . $match['GUEST_NAME'])),
-                'underPct' => $match['pr_under'],
-                'overPct' => $match['pr_over'],
-                'goalsAvg' => $match['goalsavg'],
-                'host_sc_pr' => $match['host_sc_pr'] . '-' . $match['guest_sc_pr'],
-            ];
-        }
-
-        usort($foreBetMatches, function($a, $b) {
-            return $a['underPct'] - $b['underPct'];
-        });
-
-        return $foreBetMatches;
-    }
-
-    public function getBothToScoreMatches(): array
-    {
-        $json = file_get_contents('data/forebet-bts.json');
-        $matches = json_decode($json, true);
-        $foreBetMatches = [];
-        $now = new DateTime();
-
-        foreach ($matches[0] as $match) {
-            $dateTime = DateTime::createFromFormat("Y-m-d H:i:s", $match['DATE_BAH']);
-
-            if ($dateTime < $now) {
-                continue;
-            }
-
-            $foreBetMatches[] = [
-                'FOREBET BTS',
-                $match['DATE_BAH'],
-                'teams' => trim(preg_replace('/\s\s+/', ' ', $match['HOST_NAME'] . " - " . $match['GUEST_NAME'])),
-                'noPct' => $match['Pred_no_gg'],
-                'yesPct' => $match['Pred_gg'],
-                'host_sc_pr' => $match['host_sc_pr'] . '-' . $match['guest_sc_pr'],
-            ];
-        }
-
-        usort($foreBetMatches, function($a, $b) {
-            return $a['noPct'] - $b['noPct'];
-        });
-
-        return $foreBetMatches;
     }
 }

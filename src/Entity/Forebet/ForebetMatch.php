@@ -1,21 +1,17 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Forebet;
 
-use App\Repository\EventRepository;
+use App\Repository\ForebetRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 
-#[ORM\Entity(repositoryClass: EventRepository::class)]
-class Event
+#[ORM\Entity(repositoryClass: ForebetRepository::class)]
+class ForebetMatch
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
-
-    #[ORM\Column]
-    private int $tipsterId;
 
     #[ORM\Column]
     private string $date;
@@ -91,16 +87,6 @@ class Event
     public function setId(int $id): void
     {
         $this->id = $id;
-    }
-
-    public function getTipsterId(): int
-    {
-        return $this->tipsterId;
-    }
-
-    public function setTipsterId(int $tipsterId): void
-    {
-        $this->tipsterId = $tipsterId;
     }
 
     public function getDate(): string

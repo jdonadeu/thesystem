@@ -25,7 +25,7 @@ class ApiFootball
     {
         $response = $this->httpClient->request(
             'GET',
-            'https://api-football-v1.p.rapidapi.com/v3/odds?date=2025-08-02&bookmaker=8',
+            'https://api-football-v1.p.rapidapi.com/v3/odds?date=2025-08-11&bookmaker=8',
             self::HTTP_CLIENT_OPTIONS,
         );
 
@@ -56,8 +56,29 @@ class ApiFootball
                     }
                 }
 
-                echo "$fixtureId, $odd1, $oddX, $odd2 \n";
+                $predictions = $this->getPredictions($fixtureId);
+
+                echo "$fixtureId, $odd1, $oddX, $odd2  - ($predictions[home], $predictions[draw], $predictions[away]) \n";
             }
         }
+    }
+
+    private function getPredictions(int $fixtureId): array
+    {
+        $response = $this->httpClient->request(
+            'GET',
+            "https://api-football-v1.p.rapidapi.com/v3/predictions?fixture=$fixtureId",
+            self::HTTP_CLIENT_OPTIONS,
+        );
+
+        $content = $response->toArray();
+        $predictions = $content['response'];
+        $percentages = $predictions[0]['predictions']['percent'];
+
+        return [
+            'home' => substr($percentages['home'], 0, -1),
+            'draw' => substr($percentages['draw'], 0, -1),
+            'away' => substr($percentages['away'], 0, -1),
+        ];
     }
 }

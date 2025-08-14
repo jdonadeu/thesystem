@@ -2,7 +2,7 @@
 
 namespace App\Tipster;
 
-use App\Repository\EventRepository;
+use App\Repository\ForebetRepository;
 use App\Service\FilesystemService;
 use DateTime;
 use DateTimeZone;
@@ -12,14 +12,13 @@ use DOMXPath;
 
 class Zulu
 {
-    public const TIPSTER_ID = 1;
     public const TIPSTER_NAME = 'ZULU';
     public const MIN_PCT = 50;
     private const URL = 'https://es.zulubet.com';
     private const IMPORT_FILE = 'csv/import-zulu.csv';
 
     public function __construct(
-        protected readonly EventRepository $eventRepository,
+        protected readonly ForebetRepository $eventRepository,
         protected readonly FilesystemService $filesystemService,
     ) {
     }
@@ -116,6 +115,7 @@ class Zulu
         return $innerHTML;
     }
 
+    /*
     public function importMatches(string $date): void
     {
         $matches = $this->getMatches($date);
@@ -163,4 +163,5 @@ class Zulu
 
         fclose($handle);
     }
+    */
 }
