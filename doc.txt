@@ -23,26 +23,7 @@ Conclusions:
 
 Test 1:
 Start date: 2025-08-07
-Initial investment: 25 (bet365), 10 (sportium), 5(bwin)
-
-------------------------------------------------------
-Forebet
-
-HOME
-Predictions: 5229
-Predictions positive: 1504 (28%)
-Min pct: 43
-Min odd: 2.85
-Max odd: 7.85
-Net gains: 86.23
-
-VISITOR
-Predictions: 4986
-Predictions positive: 1421 (28%)
-Min pct: 57
-Min odd: 2.2
-Max odd: 7.2
-Net gains: 30.52
+Initial investment: 35 (bet365), 10 (sportium), 5(bwin)
 
 
 

@@ -12,12 +12,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Tips extends Command
 {
     private const OPTIMAL_VALUES = [
-        'HOME_MIN_PCT' => 43,
+        'HOME_MIN_PCT' => 44,
         'HOME_MIN_ODD' => 2.85,
-        'HOME_MAX_ODD' => 99,
-        'VISITOR_MIN_PCT' => 57,
-        'VISITOR_MIN_ODD' => 2.2,
-        'VISITOR_MAX_ODD' => 99,
+        'HOME_MAX_ODD' => 100,
+        'VISITOR_MIN_PCT' => 51,
+        'VISITOR_MIN_ODD' => 4,
+        'VISITOR_MAX_ODD' => 100,
     ];
 
     public function __construct(private readonly ForebetRepository $forebetRepository)
@@ -81,11 +81,6 @@ class Tips extends Command
         echo "----------------------------------------------------------------------------------\n\n";
 
         foreach ($matches as $match) {
-            // Only play home for now
-            if ($match['prediction'] !== "1") {
-                continue;
-            }
-
             $updateFields = "";
 
             if (!$this->isValidTip($match) || ($match['bet_1'] != null || $match['bet_2'] != null)) {

@@ -30,16 +30,20 @@ class OptimalReport extends Command
         $maxHomeNetGains = 0;
         $optimalHomeMinPct = 0;
         $optimalHomeMinOdd = 0;
+        $optimalHomeMaxOdd = 0;
 
         $maxVisitorNetGains = 0;
         $optimalVisitorMinPct = 0;
         $optimalVisitorMinOdd = 0;
+        $optimalVisitorMaxOdd = 0;
 
         $matches = $this->forebetRepository->getMatchesForSummary(ForeBet::MIN_PCT, 1, 99);
 
-        for ($minPct = ForeBet::MIN_PCT; $minPct <= 90; $minPct = $minPct + 2) {
+        for ($minPct = ForeBet::MIN_PCT; $minPct <= 90; $minPct = $minPct + 1) {
             for ($minOdd = 100; $minOdd <= 600; $minOdd = $minOdd + 5) {
-                $filteredMatches = $this->filterMatchesByPctAndOdd($matches, $minPct, $minOdd / 100, self::ODD_INCREMENT);
+                //$maxOdd = $minOdd + self::ODD_INCREMENT;
+                $maxOdd = 10000;
+                $filteredMatches = $this->filterMatchesByPctAndOdd($matches, $minPct, $minOdd / 100, $maxOdd / 100);
                 $summary = $this->forebetRepository->matchesSummary($filteredMatches);
 
                 if ($summary['totalHomeNetGains'] <= 0 && $summary['totalVisitorNetGains'] <= 0) {
@@ -50,21 +54,23 @@ class OptimalReport extends Command
                     $maxHomeNetGains = $summary['totalHomeNetGains'];
                     $optimalHomeMinPct = $minPct;
                     $optimalHomeMinOdd = $minOdd;
+                    $optimalHomeMaxOdd = $maxOdd;
                 }
 
                 if ($summary['totalVisitorNetGains'] >= $maxVisitorNetGains) {
                     $maxVisitorNetGains = $summary['totalVisitorNetGains'];
                     $optimalVisitorMinPct = $minPct;
                     $optimalVisitorMinOdd = $minOdd;
+                    $optimalVisitorMaxOdd = $maxOdd;
                 }
             }
         }
 
         $optimalHomeMinOdd = $optimalHomeMinOdd / 100;
-        $optimalVisitorMinOdd = $optimalVisitorMinOdd / 100;
+        $optimalHomeMaxOdd = $optimalHomeMaxOdd / 100;
 
-        $optimalHomeMaxOdd = $optimalHomeMinOdd + self::ODD_INCREMENT;
-        $optimalVisitorMaxOdd = $optimalVisitorMinOdd + self::ODD_INCREMENT;
+        $optimalVisitorMinOdd = $optimalVisitorMinOdd / 100;
+        $optimalVisitorMaxOdd = $optimalVisitorMaxOdd / 100;
 
         echo "\n";
         echo "HOME\n";
@@ -86,9 +92,8 @@ class OptimalReport extends Command
         return Command::SUCCESS;
     }
 
-    private function filterMatchesByPctAndOdd(array $matches, int $minPct, float $minOdd, float $oddIncrement): array
+    private function filterMatchesByPctAndOdd(array $matches, int $minPct, float $minOdd, float $maxOdd): array
     {
-        $maxOdd = $minOdd + $oddIncrement;
         $filteredMatches = [];
 
         foreach ($matches as $match) {
