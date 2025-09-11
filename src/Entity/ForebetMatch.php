@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ForebetRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ForebetRepository::class)]
@@ -79,6 +80,12 @@ class ForebetMatch
 
     #[ORM\Column]
     private ?float $initialVisitorPct = null;
+
+    #[ORM\Column]
+    protected DateTime $createdAt;
+
+    #[ORM\Column]
+    protected ?DateTime $updatedAt;
 
     public function getId(): int
     {
@@ -308,6 +315,29 @@ class ForebetMatch
     public function setInitialOdd2(?float $initialOdd_2): void
     {
         $this->initialOdd_2 = $initialOdd_2;
+    }
+
+    public function getCreatedAt(): DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    public function getUpdatedAt(): DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param mixed $updatedAt
+     */
+    public function setUpdatedAt(DateTime $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
     }
 
     public function calculateHomeStake(): float

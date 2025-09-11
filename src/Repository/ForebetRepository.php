@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ForebetMatch;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
@@ -54,6 +55,7 @@ class ForebetRepository extends ServiceEntityRepository
         $match->setInitialOdd2($odd2);
         $match->setInitialHomePct($homePct);
         $match->setInitialVisitorPct($visitorPct);
+        $match->setCreatedAt(new DateTime('now'));
 
         $this->getEntityManager()->persist($match);
         $this->getEntityManager()->flush();
@@ -88,6 +90,7 @@ class ForebetRepository extends ServiceEntityRepository
         $match->setPredVisitorGoals($predVisitorGoals);
         $match->setHomeStake($match->calculateHomeStake());
         $match->setVisitorStake($match->calculateVisitorStake());
+        $match->setUpdatedAt(new DateTime('now'));
 
         $this->getEntityManager()->persist($match);
         $this->getEntityManager()->flush();
