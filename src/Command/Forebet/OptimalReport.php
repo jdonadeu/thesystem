@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'forebet:optimal')]
 class OptimalReport extends Command
 {
-    private const ODD_INCREMENT = 5;
+    private const ODD_INCREMENT = 500;
 
     public function __construct(private readonly ForebetRepository $forebetRepository)
     {
@@ -43,8 +43,8 @@ class OptimalReport extends Command
 
         for ($minPct = ForeBet::MIN_PCT; $minPct <= 95; $minPct = $minPct + 1) {
             for ($minOdd = 100; $minOdd <= 600; $minOdd = $minOdd + 5) {
-                $maxOdd = $minOdd + self::ODD_INCREMENT;
-                //$maxOdd = 10000;
+                //$maxOdd = $minOdd + self::ODD_INCREMENT;
+                $maxOdd = 10000;
                 $filteredMatches = $this->filterMatchesByPctAndOdd($matches, $minPct, $minOdd / 100, $maxOdd / 100);
                 $summary = $this->forebetRepository->matchesSummary($filteredMatches);
 
