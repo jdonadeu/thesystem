@@ -1,6 +1,5 @@
 Todo:
 -----------
-- Add create and update dates to DB
 - Pull optimal values from DB
 - Script to audit data. All dates have matches?
 - Find more tipsters like forebet. Maybe apis are better?

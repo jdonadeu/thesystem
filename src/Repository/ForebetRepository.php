@@ -183,6 +183,7 @@ class ForebetRepository extends ServiceEntityRepository
             if ($match['prediction'] === "1") {
                 $totalHomePredictions++;
                 $homeStake = $match['home_stake'];
+                $homeStake = 1;
                 $totalHomeStakes += $homeStake;
 
                 if ($isHomeWin) {
@@ -192,6 +193,7 @@ class ForebetRepository extends ServiceEntityRepository
             } elseif ($match['prediction'] === "2") {
                 $totalVisitorPredictions++;
                 $visitorStake = $match['visitor_stake'];
+                $visitorStake = 1;
                 $totalVisitorStakes += $visitorStake;
 
                 if ($isVisitorWin) {

@@ -28,40 +28,48 @@ class OptimalReport extends Command
         $start = microtime(true);
 
         $maxHomeNetGains = 0;
+        $maxHomeNetGainsStakeRatio = 0;
         $optimalHomeMinPct = 0;
         $optimalHomeMinOdd = 0;
         $optimalHomeMaxOdd = 0;
 
         $maxVisitorNetGains = 0;
+        $maxVisitorNetGainsStakeRatio = 0;
         $optimalVisitorMinPct = 0;
         $optimalVisitorMinOdd = 0;
         $optimalVisitorMaxOdd = 0;
 
-        $matches = $this->forebetRepository->getMatchesForSummary(ForeBet::MIN_PCT, 1, 99);
+        $matches = $this->forebetRepository->getMatchesForSummary(ForeBet::MIN_PCT, 1, 100);
 
-        for ($minPct = ForeBet::MIN_PCT; $minPct <= 90; $minPct = $minPct + 1) {
+        for ($minPct = ForeBet::MIN_PCT; $minPct <= 95; $minPct = $minPct + 1) {
             for ($minOdd = 100; $minOdd <= 600; $minOdd = $minOdd + 5) {
-                //$maxOdd = $minOdd + self::ODD_INCREMENT;
-                $maxOdd = 10000;
+                $maxOdd = $minOdd + self::ODD_INCREMENT;
+                //$maxOdd = 10000;
                 $filteredMatches = $this->filterMatchesByPctAndOdd($matches, $minPct, $minOdd / 100, $maxOdd / 100);
                 $summary = $this->forebetRepository->matchesSummary($filteredMatches);
 
-                if ($summary['totalHomeNetGains'] <= 0 && $summary['totalVisitorNetGains'] <= 0) {
-                    continue;
+                if ($summary['totalHomePredictions'] >= 100 && $summary['totalHomeNetGains'] > 0) {
+                    $homeNetGainsStakeRatio = $summary['totalHomeNetGains'] / $summary['totalHomeStakes'];
+
+                    if ($homeNetGainsStakeRatio >= $maxHomeNetGainsStakeRatio) {
+                        $maxHomeNetGains = $summary['totalHomeNetGains'];
+                        $maxHomeNetGainsStakeRatio = $homeNetGainsStakeRatio;
+                        $optimalHomeMinPct = $minPct;
+                        $optimalHomeMinOdd = $minOdd;
+                        $optimalHomeMaxOdd = $maxOdd;
+                    }
                 }
 
-                if ($summary['totalHomeNetGains'] >= $maxHomeNetGains) {
-                    $maxHomeNetGains = $summary['totalHomeNetGains'];
-                    $optimalHomeMinPct = $minPct;
-                    $optimalHomeMinOdd = $minOdd;
-                    $optimalHomeMaxOdd = $maxOdd;
-                }
+                if ($summary['totalVisitorPredictions'] >= 100 && $summary['totalVisitorNetGains'] > 0) {
+                    $visitorNetGainsStakeRatio = $summary['totalVisitorNetGains'] / $summary['totalVisitorStakes'];
 
-                if ($summary['totalVisitorNetGains'] >= $maxVisitorNetGains) {
-                    $maxVisitorNetGains = $summary['totalVisitorNetGains'];
-                    $optimalVisitorMinPct = $minPct;
-                    $optimalVisitorMinOdd = $minOdd;
-                    $optimalVisitorMaxOdd = $maxOdd;
+                    if ($visitorNetGainsStakeRatio >= $maxVisitorNetGainsStakeRatio) {
+                        $maxVisitorNetGains = $summary['totalVisitorNetGains'];
+                        $maxVisitorNetGainsStakeRatio = $visitorNetGainsStakeRatio;
+                        $optimalVisitorMinPct = $minPct;
+                        $optimalVisitorMinOdd = $minOdd;
+                        $optimalVisitorMaxOdd = $maxOdd;
+                    }
                 }
             }
         }
@@ -77,13 +85,15 @@ class OptimalReport extends Command
         echo "Min pct: $optimalHomeMinPct \n";
         echo "Min odd: $optimalHomeMinOdd \n";
         echo "Max odd: $optimalHomeMaxOdd \n";
-        echo "Net gains: $maxHomeNetGains \n\n";
+        echo "Net gains: $maxHomeNetGains \n";
+        echo "Net gains/Stake ratio: $maxHomeNetGainsStakeRatio \n\n";
 
         echo "VISITOR\n";
         echo "Min pct: $optimalVisitorMinPct \n";
         echo "Min odd: $optimalVisitorMinOdd \n";
         echo "Max odd: $optimalVisitorMaxOdd \n";
-        echo "Net gains: $maxVisitorNetGains \n\n";
+        echo "Net gains: $maxVisitorNetGains \n";
+        echo "Net gains/Stake ratio: $maxVisitorNetGainsStakeRatio \n\n";
 
         $end = microtime(true);
         $executionTime = $end - $start;
