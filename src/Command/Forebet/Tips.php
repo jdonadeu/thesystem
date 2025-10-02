@@ -2,6 +2,8 @@
 
 namespace App\Command\Forebet;
 
+use App\Entity\ForebetOptimaValues;
+use App\Repository\ForebetOptimalValuesRepository;
 use App\Repository\ForebetRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -11,17 +13,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'forebet:tips')]
 class Tips extends Command
 {
-    private const OPTIMAL_VALUES = [
-        'HOME_MIN_PCT' => 44,
-        'HOME_MIN_ODD' => 2.85,
-        'HOME_MAX_ODD' => 100,
-        'VISITOR_MIN_PCT' => 51,
-        'VISITOR_MIN_ODD' => 4,
-        'VISITOR_MAX_ODD' => 100,
-    ];
+    private ForebetOptimaValues $optimalValues;
 
-    public function __construct(private readonly ForebetRepository $forebetRepository)
-    {
+    public function __construct(
+        private readonly ForebetRepository $forebetRepository,
+        private readonly ForebetOptimalValuesRepository $forebetOptimalValuesRepository,
+    ){
+        $this->optimalValues = $this->forebetOptimalValuesRepository->get();
         parent::__construct();
     }
 
@@ -29,23 +27,7 @@ class Tips extends Command
     {
         $matches = $this->forebetRepository->matchesForTips();
 
-        echo "\n";
-        echo "----------------------------------------------------------------------------------\n";
-        echo "Optimal values => ";
-        echo "Home min pct: " . self::OPTIMAL_VALUES['HOME_MIN_PCT'] . " / ";
-        echo "Home min odd: " . self::OPTIMAL_VALUES['HOME_MIN_ODD'] . " / ";
-        echo "Home max odd: " . self::OPTIMAL_VALUES['HOME_MAX_ODD'] . " / ";
-        echo "Visitor min pct: " . self::OPTIMAL_VALUES['VISITOR_MIN_PCT'] . " / ";
-        echo "Visitor min odd: " . self::OPTIMAL_VALUES['VISITOR_MIN_ODD'] . " / ";
-        echo "Visitor max odd: " . self::OPTIMAL_VALUES['VISITOR_MAX_ODD']. "\n";
-        echo "----------------------------------------------------------------------------------\n\n";
-
         foreach ($matches as $match) {
-            // Only play home for now
-            if ($match['prediction'] !== "1") {
-                continue;
-            }
-
             if (!$this->isValidTip($match)) {
                 continue;
             }
@@ -62,6 +44,7 @@ class Tips extends Command
                 echo " Stake: $match[home_stake], ";
                 echo " Bet: $bet \n";
             }
+
             if ($this->isValidVisitorTip($match,)) {
                 $bet = ($match['bet_2'] == null)
                     ? "-------------------------> MISSING BET"
@@ -83,13 +66,14 @@ class Tips extends Command
         foreach ($matches as $match) {
             $updateFields = "";
 
-            if (!$this->isValidTip($match) || ($match['bet_1'] != null || $match['bet_2'] != null)) {
+            if (!$this->isValidTip($match)) {
                 continue;
             }
 
             if ($this->isValidHomeTip($match)) {
                 $updateFields .= "bet_1 = $match[odd_1], home_stake = $match[home_stake]";
             }
+
             if ($this->isValidVisitorTip($match)) {
                 $updateFields .= "bet_2 = $match[odd_2], visitor_stake = $match[visitor_stake]";
             }
@@ -110,17 +94,17 @@ class Tips extends Command
     private function isValidHomeTip(array $match): bool
     {
         return $match['prediction'] === '1'
-            && $match['home_pct'] >= self::OPTIMAL_VALUES['HOME_MIN_PCT']
-            && $match['odd_1'] >= self::OPTIMAL_VALUES['HOME_MIN_ODD']
-            && $match['odd_1'] <= self::OPTIMAL_VALUES['HOME_MAX_ODD'];
+            && $match['home_pct'] >= $this->optimalValues->getHomeMinPct()
+            && $match['odd_1'] >= $this->optimalValues->getHomeMinOdd()
+            && $match['odd_1'] <= $this->optimalValues->getHomeMaxOdd();
     }
 
     private function isValidVisitorTip(array $match): bool
     {
         return $match['prediction'] === '2'
-            && $match['visitor_pct'] >= self::OPTIMAL_VALUES['VISITOR_MIN_PCT']
-            && $match['odd_2'] >= self::OPTIMAL_VALUES['VISITOR_MIN_ODD']
-            && $match['odd_2'] <= self::OPTIMAL_VALUES['VISITOR_MAX_ODD'];
+            && $match['visitor_pct'] >= $this->optimalValues->getVisitorMinPct()
+            && $match['odd_2'] >= $this->optimalValues->getVisitorMinOdd()
+            && $match['odd_2'] <= $this->optimalValues->getVisitorMaxOdd();
     }
 }
 
