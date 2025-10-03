@@ -42,13 +42,13 @@ class OptimalReport extends Command
         $matches = $this->forebetRepository->getMatchesForSummary(ForeBet::MIN_PCT, 1, 100);
 
         for ($minPct = ForeBet::MIN_PCT; $minPct <= 95; $minPct = $minPct + 1) {
-            for ($minOdd = 100; $minOdd <= 600; $minOdd = $minOdd + 5) {
+            for ($minOdd = 100; $minOdd <= 1000; $minOdd = $minOdd + 5) {
                 //$maxOdd = $minOdd + self::ODD_INCREMENT;
                 $maxOdd = 10000;
                 $filteredMatches = $this->filterMatchesByPctAndOdd($matches, $minPct, $minOdd / 100, $maxOdd / 100);
                 $summary = $this->forebetRepository->matchesSummary($filteredMatches);
 
-                if ($summary['totalHomePredictions'] >= 100 && $summary['totalHomeNetGains'] > 0) {
+                if ($summary['totalHomePredictions'] >= 200 && $summary['totalHomeNetGains'] > 0) {
                     $homeNetGainsStakeRatio = $summary['totalHomeNetGains'] / $summary['totalHomeStakes'];
 
                     if ($homeNetGainsStakeRatio >= $maxHomeNetGainsStakeRatio) {
@@ -60,7 +60,7 @@ class OptimalReport extends Command
                     }
                 }
 
-                if ($summary['totalVisitorPredictions'] >= 100 && $summary['totalVisitorNetGains'] > 0) {
+                if ($summary['totalVisitorPredictions'] >= 200 && $summary['totalVisitorNetGains'] > 0) {
                     $visitorNetGainsStakeRatio = $summary['totalVisitorNetGains'] / $summary['totalVisitorStakes'];
 
                     if ($visitorNetGainsStakeRatio >= $maxVisitorNetGainsStakeRatio) {
