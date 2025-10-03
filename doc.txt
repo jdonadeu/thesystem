@@ -19,5 +19,6 @@ Conclusions:
 
 Util
 ------
+ git add . && git commit -m "wip" && git push
  xclip -selection clipboard -o > data/forebet-1x2.json && bin/console forebet:import
 
