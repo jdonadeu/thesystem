@@ -1,6 +1,5 @@
 Todo:
 -----------
-- Review prediction values in general. Do we need them?
 - Assign stakes again (or do it dynamically?)
 - Find more tipsters like forebet. Maybe apis are better?
 
@@ -18,12 +17,7 @@ Conclusions:
 - Use different stakes?
     - Yes, it does make a difference. The higher the pct, the higher the stake
 
-
-------------------------------------------------------
-
-Test 1:
-Start date: 2025-08-07
-Initial investment: 35 (bet365), 10 (sportium), 5(bwin)
-
-
+Util
+------
+ xclip -selection clipboard -o > data/forebet-1x2.json && bin/console forebet:import
 
