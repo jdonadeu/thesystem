@@ -48,7 +48,7 @@ class OptimalReport extends Command
                 $filteredMatches = $this->filterMatchesByPctAndOdd($matches, $minPct, $minOdd / 100, $maxOdd / 100);
                 $summary = $this->forebetRepository->matchesSummary($filteredMatches);
 
-                if ($summary['totalHomePredictions'] >= 200 && $summary['totalHomeNetGains'] > 0) {
+                if ($summary['totalHomePredictions'] >= 130 && $summary['totalHomeNetGains'] > 0) {
                     $homeNetGainsStakeRatio = $summary['totalHomeNetGains'] / $summary['totalHomeStakes'];
 
                     if ($homeNetGainsStakeRatio >= $maxHomeNetGainsStakeRatio) {
@@ -60,7 +60,7 @@ class OptimalReport extends Command
                     }
                 }
 
-                if ($summary['totalVisitorPredictions'] >= 200 && $summary['totalVisitorNetGains'] > 0) {
+                if ($summary['totalVisitorPredictions'] >= 130 && $summary['totalVisitorNetGains'] > 0) {
                     $visitorNetGainsStakeRatio = $summary['totalVisitorNetGains'] / $summary['totalVisitorStakes'];
 
                     if ($visitorNetGainsStakeRatio >= $maxVisitorNetGainsStakeRatio) {
