@@ -113,6 +113,7 @@ class ForebetRepository extends ServiceEntityRepository
         ?int $predHomeGoals = null,
         ?int $predVisitorGoals = null,
     ): ForebetMatch {
+        /** @var ForebetMatch $match */
         $match = $this->findOneBy([
             'date' => $date,
             'homeTeam' => $homeTeam,
