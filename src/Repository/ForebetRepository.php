@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ForebetMatch;
+use App\Tipster\ForeBet;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -48,8 +49,6 @@ class ForebetRepository extends ServiceEntityRepository
         $match->setAvgGoals($avgGoals);
         $match->setPredHomeGoals($predHomeGoals);
         $match->setPredVisitorGoals($predVisitorGoals);
-        $match->setHomeStake($match->calculateHomeStake());
-        $match->setVisitorStake($match->calculateVisitorStake());
         $match->setInitialOdd1($odd1);
         $match->setInitialOddx($oddX);
         $match->setInitialOdd2($odd2);
@@ -88,8 +87,6 @@ class ForebetRepository extends ServiceEntityRepository
         $match->setAvgGoals($avgGoals);
         $match->setPredHomeGoals($predHomeGoals);
         $match->setPredVisitorGoals($predVisitorGoals);
-        $match->setHomeStake($match->calculateHomeStake());
-        $match->setVisitorStake($match->calculateVisitorStake());
         $match->setUpdatedAt(new DateTime('now'));
 
         $this->getEntityManager()->persist($match);
@@ -183,8 +180,7 @@ class ForebetRepository extends ServiceEntityRepository
 
             if ($match['prediction'] === "1") {
                 $totalHomePredictions++;
-                $homeStake = $match['home_stake'];
-                $homeStake = 1;
+                $homeStake = $this->calculateStake($match['home_pct']);
                 $totalHomeStakes += $homeStake;
 
                 if ($isHomeWin) {
@@ -193,8 +189,7 @@ class ForebetRepository extends ServiceEntityRepository
                 }
             } elseif ($match['prediction'] === "2") {
                 $totalVisitorPredictions++;
-                $visitorStake = $match['visitor_stake'];
-                $visitorStake = 1;
+                $visitorStake = $this->calculateStake($match['visitor_pct']);
                 $totalVisitorStakes += $visitorStake;
 
                 if ($isVisitorWin) {
@@ -225,7 +220,7 @@ class ForebetRepository extends ServiceEntityRepository
         return $summary;
     }
 
-    public function getMatchesForSummary(int $minPct, float $minOdd, float $maxOdd,): array {
+    public function getMatchesForSummary(int $minPct, float $minOdd, float $maxOdd): array {
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = "
@@ -236,8 +231,10 @@ class ForebetRepository extends ServiceEntityRepository
                      OR (prediction = '2' AND visitor_pct >= $minPct AND odd_2 >= $minOdd AND odd_2 <= $maxOdd))
             ";
 
-        $resultSet = $conn->executeQuery($sql);
-        return $resultSet->fetchAllAssociative();
+        $queryResults = $conn->executeQuery($sql);
+        $matches = $queryResults->fetchAllAssociative();
+
+        return $matches;
     }
 
     public function matchesForTips(): array
@@ -254,29 +251,8 @@ class ForebetRepository extends ServiceEntityRepository
         return $resultSet->fetchAllAssociative();
     }
 
-    public function updateStakes(): void
+    public function calculateStake(float $pct): float
     {
-        $conn = $this->getEntityManager()->getConnection();
-
-        $sql = "SELECT * FROM forebet_matches";
-
-        $matches = $conn->executeQuery($sql)->fetchAllAssociative();
-
-        foreach ($matches as $match) {
-            $matchObj = new ForebetMatch();
-            $matchObj->setHomePct($match['home_pct']);
-            $matchObj->setVisitorPct($match['visitor_pct']);
-
-            $homeStake = $matchObj->calculateHomeStake();
-            $visitorStake = $matchObj->calculateVisitorStake();
-
-            $updateSql = "
-            UPDATE forebet_matches
-            SET home_stake = $homeStake, visitor_stake = $visitorStake
-            WHERE id = $match[id]
-            ";
-
-            $conn->executeQuery($updateSql);
-        }
+        return 1 + ($pct - ForeBet::MIN_PCT) * 0.05;
     }
 }

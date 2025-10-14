@@ -41,7 +41,7 @@ class Tips extends Command
 
                 echo " Home pct: $match[home_pct], ";
                 echo " Odd: $match[odd_1], ";
-                echo " Stake: $match[home_stake], ";
+                echo " Stake: " . $this->forebetRepository->calculateStake($match['home_pct']) . ", ";
                 echo " Bet: $bet \n";
             }
 
@@ -52,7 +52,7 @@ class Tips extends Command
 
                 echo " Visitor pct: $match[visitor_pct], ";
                 echo " Odd: $match[odd_2], ";
-                echo " Stake: $match[visitor_stake], ";
+                echo " Stake: " . $this->forebetRepository->calculateStake($match['visitor_pct']) . ", ";
                 echo " Bet: $bet \n";
             }
 
@@ -71,11 +71,13 @@ class Tips extends Command
             }
 
             if ($this->isValidHomeTip($match)) {
-                $updateFields .= "bet_1 = $match[odd_1], home_stake = $match[home_stake]";
+                $homeStake = $this->forebetRepository->calculateStake($match['home_pct']);
+                $updateFields .= "bet_1 = $match[odd_1], home_stake = $homeStake";
             }
 
             if ($this->isValidVisitorTip($match)) {
-                $updateFields .= "bet_2 = $match[odd_2], visitor_stake = $match[visitor_stake]";
+                $visitorStake = $this->forebetRepository->calculateStake($match['visitor_pct']);
+                $updateFields .= "bet_2 = $match[odd_2], visitor_stake = $visitorStake";
             }
 
             echo "-- $match[home_team] - $match[visitor_team] \n";

@@ -61,12 +61,6 @@ class ForebetMatch
     private ?int $predVisitorGoals = null;
 
     #[ORM\Column]
-    private ?float $homeStake = null;
-
-    #[ORM\Column]
-    private ?float $visitorStake = null;
-
-    #[ORM\Column]
     private ?float $initialOdd_1 = null;
 
     #[ORM\Column]
@@ -247,26 +241,6 @@ class ForebetMatch
         $this->predVisitorGoals = $predVisitorGoals;
     }
 
-    public function getHomeStake(): ?float
-    {
-        return $this->homeStake;
-    }
-
-    public function setHomeStake(?float $homeStake): void
-    {
-        $this->homeStake = $homeStake;
-    }
-
-    public function getVisitorStake(): ?float
-    {
-        return $this->visitorStake;
-    }
-
-    public function setVisitorStake(?float $visitorStake): void
-    {
-        $this->visitorStake = $visitorStake;
-    }
-
     public function getInitialHomePct(): ?float
     {
         return $this->initialHomePct;
@@ -338,30 +312,5 @@ class ForebetMatch
     public function setUpdatedAt(DateTime $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
-    }
-
-    public function calculateHomeStake(): float
-    {
-        return $this->calculateStake($this->homePct);
-    }
-
-    public function calculateVisitorStake(): float
-    {
-        return $this->calculateStake($this->visitorPct);
-    }
-
-    private function calculateStake(float $pct): float
-    {
-        $stake = 1;
-
-        for ($i = 40; $i < 100; $i = $i + 3) {
-            if ($pct >= $i && $pct < ($i + 3)) {
-                return $stake;
-            }
-
-            $stake += 0.25;
-        }
-
-        return 1;
     }
 }
