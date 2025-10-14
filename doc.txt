@@ -1,6 +1,5 @@
 Todo:
 -----------
-- Assign stakes again (or do it dynamically?)
 - Find more tipsters like forebet. Maybe apis are better?
 
 Conclusions:
