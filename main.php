@@ -20,6 +20,7 @@ $foreBetMatches1x2 = $foreBet->getMatches();
 $foreBetMatchesUnderOver = $foreBet->getUnderOverMatches();
 $foreBetMatchesBts = $foreBet->getBothToScoreMatches();
 saveCsvFile('csv/forebet-1x2.csv', $foreBetMatches1x2);
+saveCsvFile('csv/forebet-1x2-includes-past-matches.csv', $foreBet->getMatches(false));
 saveCsvFile('csv/forebet-under-over.csv', $foreBetMatchesUnderOver);
 saveCsvFile('csv/forebet-bts.csv', $foreBetMatchesBts);
 
@@ -114,6 +115,24 @@ foreach ($foreBetMatches1x2 as $match) {
         continue;
     }
     echo "-- " . implode(",", $match) . "(" . $match['homePct'] . ")\n";
+}
+
+// Forebet matches ordered by home pct (includes also past matches)
+echo "\n\n";
+echo "****************************************************** \n";
+echo "* Forebet ordered by homePct (includes also past matches)\n";
+echo "****************************************************** \n";
+$foreBetMatches1x2 = $foreBet->getMatches(false);
+
+usort($foreBetMatches1x2, function ($item1, $item2) {
+    return $item2['homePct'] <=> $item1['homePct'];
+});
+
+foreach ($foreBetMatches1x2 as $match) {
+    if ($match['homePct'] < 50) {
+        continue;
+    }
+    echo "-- " . implode(",", $match). "\n";
 }
 
 // PronosticosFutbol365 matches ordered by home pct

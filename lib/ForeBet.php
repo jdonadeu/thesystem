@@ -6,7 +6,7 @@
 
 class ForeBet
 {
-    public function getMatches(): array
+    public function getMatches(bool $excludePastMatches = true): array
     {
         $json = file_get_contents('data/forebet-1x2.json');
         $matches = json_decode($json, true);
@@ -16,7 +16,7 @@ class ForeBet
         foreach ($matches[0] as $match) {
             $dateTime = DateTime::createFromFormat("Y-m-d H:i:s", $match['DATE_BAH']);
 
-            if ($dateTime < $now) {
+            if ($excludePastMatches && $dateTime < $now) {
                 continue;
             }
 
@@ -29,6 +29,8 @@ class ForeBet
                 'awayPct' => $match['Pred_2'],
                 'goalsavg' => $match['goalsavg'],
                 'host_sc_pr' => $match['host_sc_pr'] . '-' . $match['guest_sc_pr'],
+                'hostGoals' => $match['Host_SC'],
+                'guestGoals' => $match['Guest_SC'],
             ];
         }
 
