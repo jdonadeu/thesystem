@@ -14,9 +14,7 @@ class ForeBet
         $now = new DateTime();
 
         foreach ($matches[0] as $match) {
-            $dateTime = DateTime::createFromFormat("Y-m-d H:i:s", $match['DATE_BAH']);
-
-            if ($excludePastMatches && $dateTime < $now) {
+            if ($excludePastMatches) {
                 continue;
             }
 
@@ -42,15 +40,8 @@ class ForeBet
         $json = file_get_contents('data/forebet-under-over.json');
         $matches = json_decode($json, true);
         $foreBetMatches = [];
-        $now = new DateTime();
 
         foreach ($matches[0] as $match) {
-            $dateTime = DateTime::createFromFormat("Y-m-d H:i:s", $match['DATE_BAH']);
-
-            if ($dateTime < $now) {
-                continue;
-            }
-
             $foreBetMatches[] = [
                 'FOREBET OVER UNDER 2.5',
                 $match['DATE_BAH'],
@@ -74,15 +65,8 @@ class ForeBet
         $json = file_get_contents('data/forebet-bts.json');
         $matches = json_decode($json, true);
         $foreBetMatches = [];
-        $now = new DateTime();
 
         foreach ($matches[0] as $match) {
-            $dateTime = DateTime::createFromFormat("Y-m-d H:i:s", $match['DATE_BAH']);
-
-            if ($dateTime < $now) {
-                continue;
-            }
-
             $foreBetMatches[] = [
                 'FOREBET BTS',
                 $match['DATE_BAH'],
