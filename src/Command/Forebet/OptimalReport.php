@@ -31,8 +31,8 @@ class OptimalReport extends Command
     {
         $type = $input->getArgument('type');
 
-        if (!$type) {
-            throw new Exception("type is required");
+        if ($type !== 'ratio' && $type !== 'net') {
+            throw new Exception("invalid type");
         }
 
         $start = microtime(true);
@@ -57,7 +57,7 @@ class OptimalReport extends Command
                 $filteredMatches = $this->filterMatchesByPctAndOdd($matches, $minPct, $minOdd / 100, $maxOdd / 100);
                 $summary = $this->forebetRepository->matchesSummary($filteredMatches);
 
-                if ($type === 'radio') {
+                if ($type === 'ratio') {
                     $homeNetGainsStakeRatio = $summary['totalHomeNetGains'] / $summary['totalHomeStakes'];
                     $visitorNetGainsStakeRatio = $summary['totalVisitorNetGains'] / $summary['totalVisitorStakes'];
 
