@@ -1,6 +1,5 @@
 Todo:
 -----------
-- Optimal by pct or bet gain?
 - Find more tipsters like forebet. Maybe apis are better?
 
 Conclusions:
