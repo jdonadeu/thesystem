@@ -7,17 +7,21 @@ use App\Tipster\ForeBet;
 use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: 'forebet:optimal')]
 class OptimalReport extends Command
 {
-    private const ODD_INCREMENT = 500;
-
     public function __construct(private readonly ForebetRepository $forebetRepository)
     {
         parent::__construct();
+    }
+
+    protected function configure(): void
+    {
+        $this->addArgument('type', InputArgument::OPTIONAL);
     }
 
     /**
@@ -25,6 +29,12 @@ class OptimalReport extends Command
      */
     public function __invoke(InputInterface $input, OutputInterface $output): int
     {
+        $type = $input->getArgument('type');
+
+        if (!$type) {
+            throw new Exception("type is required");
+        }
+
         $start = microtime(true);
 
         $maxHomeNetGains = 0;
@@ -43,29 +53,41 @@ class OptimalReport extends Command
 
         for ($minPct = ForeBet::MIN_PCT; $minPct <= 95; $minPct = $minPct + 1) {
             for ($minOdd = 100; $minOdd <= 1000; $minOdd = $minOdd + 5) {
-                //$maxOdd = $minOdd + self::ODD_INCREMENT;
                 $maxOdd = 10000;
                 $filteredMatches = $this->filterMatchesByPctAndOdd($matches, $minPct, $minOdd / 100, $maxOdd / 100);
                 $summary = $this->forebetRepository->matchesSummary($filteredMatches);
 
-                if ($summary['totalHomePredictions'] >= 130 && $summary['totalHomeNetGains'] > 0) {
+                if ($type === 'radio') {
                     $homeNetGainsStakeRatio = $summary['totalHomeNetGains'] / $summary['totalHomeStakes'];
+                    $visitorNetGainsStakeRatio = $summary['totalVisitorNetGains'] / $summary['totalVisitorStakes'];
 
-                    if ($homeNetGainsStakeRatio >= $maxHomeNetGainsStakeRatio) {
+                    if ($summary['totalHomePredictions'] >= 140 && $homeNetGainsStakeRatio >= $maxHomeNetGainsStakeRatio) {
                         $maxHomeNetGains = $summary['totalHomeNetGains'];
                         $maxHomeNetGainsStakeRatio = $homeNetGainsStakeRatio;
                         $optimalHomeMinPct = $minPct;
                         $optimalHomeMinOdd = $minOdd;
                         $optimalHomeMaxOdd = $maxOdd;
                     }
-                }
 
-                if ($summary['totalVisitorPredictions'] >= 130 && $summary['totalVisitorNetGains'] > 0) {
-                    $visitorNetGainsStakeRatio = $summary['totalVisitorNetGains'] / $summary['totalVisitorStakes'];
-
-                    if ($visitorNetGainsStakeRatio >= $maxVisitorNetGainsStakeRatio) {
+                    if ($summary['totalVisitorPredictions'] >= 140 && $visitorNetGainsStakeRatio >= $maxVisitorNetGainsStakeRatio) {
                         $maxVisitorNetGains = $summary['totalVisitorNetGains'];
                         $maxVisitorNetGainsStakeRatio = $visitorNetGainsStakeRatio;
+                        $optimalVisitorMinPct = $minPct;
+                        $optimalVisitorMinOdd = $minOdd;
+                        $optimalVisitorMaxOdd = $maxOdd;
+                    }
+                }
+
+                if ($type === 'net') {
+                    if ($summary['totalHomeNetGains'] > $maxHomeNetGains) {
+                        $maxHomeNetGains = $summary['totalHomeNetGains'];
+                        $optimalHomeMinPct = $minPct;
+                        $optimalHomeMinOdd = $minOdd;
+                        $optimalHomeMaxOdd = $maxOdd;
+                    }
+
+                    if ($summary['totalHomeNetGains'] > $maxVisitorNetGains) {
+                        $maxVisitorNetGains = $summary['totalVisitorNetGains'];
                         $optimalVisitorMinPct = $minPct;
                         $optimalVisitorMinOdd = $minOdd;
                         $optimalVisitorMaxOdd = $maxOdd;
@@ -86,14 +108,14 @@ class OptimalReport extends Command
         echo "Min odd: $optimalHomeMinOdd \n";
         echo "Max odd: $optimalHomeMaxOdd \n";
         echo "Net gains: $maxHomeNetGains \n";
-        echo "Net gains/Stake ratio: $maxHomeNetGainsStakeRatio \n\n";
+        echo "Net gains/stake ratio: $maxHomeNetGainsStakeRatio \n\n";
 
         echo "VISITOR\n";
         echo "Min pct: $optimalVisitorMinPct \n";
         echo "Min odd: $optimalVisitorMinOdd \n";
         echo "Max odd: $optimalVisitorMaxOdd \n";
         echo "Net gains: $maxVisitorNetGains \n";
-        echo "Net gains/Stake ratio: $maxVisitorNetGainsStakeRatio \n\n";
+        echo "Net gains/stake ratio: $maxVisitorNetGainsStakeRatio \n\n";
 
         $end = microtime(true);
         $executionTime = $end - $start;
