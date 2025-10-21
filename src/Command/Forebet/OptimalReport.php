@@ -58,29 +58,35 @@ class OptimalReport extends Command
                 $summary = $this->forebetRepository->matchesSummary($filteredMatches);
 
                 if ($type === 'ratio') {
-                    $homeNetGainsStakeRatio = $summary['totalHomeNetGains'] / $summary['totalHomeStakes'];
-                    $visitorNetGainsStakeRatio = $summary['totalVisitorNetGains'] / $summary['totalVisitorStakes'];
+                    if ($summary['totalHomePredictions'] >= 140) {
+                        $homeNetGainsStakeRatio = $summary['totalHomeNetGains'] / $summary['totalHomeStakes'];
 
-                    if ($summary['totalHomePredictions'] >= 140 && $homeNetGainsStakeRatio >= $maxHomeNetGainsStakeRatio) {
-                        $maxHomeNetGains = $summary['totalHomeNetGains'];
-                        $maxHomeNetGainsStakeRatio = $homeNetGainsStakeRatio;
-                        $optimalHomeMinPct = $minPct;
-                        $optimalHomeMinOdd = $minOdd;
-                        $optimalHomeMaxOdd = $maxOdd;
+                        if ($homeNetGainsStakeRatio >= $maxHomeNetGainsStakeRatio) {
+                            $maxHomeNetGains = $summary['totalHomeNetGains'];
+                            $maxHomeNetGainsStakeRatio = $homeNetGainsStakeRatio;
+                            $optimalHomeMinPct = $minPct;
+                            $optimalHomeMinOdd = $minOdd;
+                            $optimalHomeMaxOdd = $maxOdd;
+                        }
                     }
 
-                    if ($summary['totalVisitorPredictions'] >= 140 && $visitorNetGainsStakeRatio >= $maxVisitorNetGainsStakeRatio) {
-                        $maxVisitorNetGains = $summary['totalVisitorNetGains'];
-                        $maxVisitorNetGainsStakeRatio = $visitorNetGainsStakeRatio;
-                        $optimalVisitorMinPct = $minPct;
-                        $optimalVisitorMinOdd = $minOdd;
-                        $optimalVisitorMaxOdd = $maxOdd;
+                    if ($summary['totalVisitorPredictions'] >= 140) {
+                        $visitorNetGainsStakeRatio = $summary['totalVisitorNetGains'] / $summary['totalVisitorStakes'];
+
+                        if ($visitorNetGainsStakeRatio >= $maxVisitorNetGainsStakeRatio) {
+                            $maxVisitorNetGains = $summary['totalVisitorNetGains'];
+                            $maxVisitorNetGainsStakeRatio = $visitorNetGainsStakeRatio;
+                            $optimalVisitorMinPct = $minPct;
+                            $optimalVisitorMinOdd = $minOdd;
+                            $optimalVisitorMaxOdd = $maxOdd;
+                        }
                     }
                 }
 
                 if ($type === 'net') {
                     if ($summary['totalHomeNetGains'] > $maxHomeNetGains) {
                         $maxHomeNetGains = $summary['totalHomeNetGains'];
+                        $maxHomeNetGainsStakeRatio = $summary['totalHomeNetGains'] / $summary['totalHomeStakes'];
                         $optimalHomeMinPct = $minPct;
                         $optimalHomeMinOdd = $minOdd;
                         $optimalHomeMaxOdd = $maxOdd;
@@ -88,6 +94,7 @@ class OptimalReport extends Command
 
                     if ($summary['totalHomeNetGains'] > $maxVisitorNetGains) {
                         $maxVisitorNetGains = $summary['totalVisitorNetGains'];
+                        $maxVisitorNetGainsStakeRatio = $summary['totalVisitorNetGains'] / $summary['totalVisitorStakes'];
                         $optimalVisitorMinPct = $minPct;
                         $optimalVisitorMinOdd = $minOdd;
                         $optimalVisitorMaxOdd = $maxOdd;
