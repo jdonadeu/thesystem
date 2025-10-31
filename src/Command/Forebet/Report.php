@@ -30,7 +30,7 @@ class Report extends Command
         $minOdd = $input->getArgument('minOdd');
         $maxOdd = $input->getArgument('maxOdd');
 
-        $matches = $this->forebetRepository->getMatchesForSummary($minPct, $minOdd, $maxOdd);
+        $matches = $this->forebetRepository->getMatchesForSummary($minPct, $minOdd, $maxOdd, 6);
         $summary = $this->forebetRepository->matchesSummary($matches);
 
         $homePredictionsPct = $summary['totalHomePredictions'] === 0
