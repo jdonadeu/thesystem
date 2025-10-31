@@ -39,17 +39,20 @@ class OptimalReport extends Command
 
         $maxHomeNetGains = 0;
         $maxHomeNetGainsStakeRatio = 0;
+        $optimalHomePredictions = 0;
         $optimalHomeMinPct = 0;
         $optimalHomeMinOdd = 0;
         $optimalHomeMaxOdd = 0;
 
         $maxVisitorNetGains = 0;
         $maxVisitorNetGainsStakeRatio = 0;
+        $optimalVisitorPredictions = 0;
         $optimalVisitorMinPct = 0;
         $optimalVisitorMinOdd = 0;
         $optimalVisitorMaxOdd = 0;
 
-        $matches = $this->forebetRepository->getMatchesForSummary(ForeBet::MIN_PCT, 1, 100);
+        $matches = $this->forebetRepository->getMatchesForSummary(ForeBet::MIN_PCT, 1, 100, 6);
+        echo "Analyzing " . count($matches) . " matches\n\n";
 
         for ($minPct = ForeBet::MIN_PCT; $minPct <= 95; $minPct = $minPct + 1) {
             for ($minOdd = 100; $minOdd <= 1000; $minOdd = $minOdd + 5) {
@@ -58,24 +61,26 @@ class OptimalReport extends Command
                 $summary = $this->forebetRepository->matchesSummary($filteredMatches);
 
                 if ($type === 'ratio') {
-                    if ($summary['totalHomePredictions'] >= 140) {
+                    if ($summary['totalHomePredictions'] >= 100) {
                         $homeNetGainsStakeRatio = $summary['totalHomeNetGains'] / $summary['totalHomeStakes'];
 
                         if ($homeNetGainsStakeRatio >= $maxHomeNetGainsStakeRatio) {
                             $maxHomeNetGains = $summary['totalHomeNetGains'];
                             $maxHomeNetGainsStakeRatio = $homeNetGainsStakeRatio;
+                            $optimalHomePredictions = $summary['totalHomePredictions'];
                             $optimalHomeMinPct = $minPct;
                             $optimalHomeMinOdd = $minOdd;
                             $optimalHomeMaxOdd = $maxOdd;
                         }
                     }
 
-                    if ($summary['totalVisitorPredictions'] >= 140) {
+                    if ($summary['totalVisitorPredictions'] >= 100) {
                         $visitorNetGainsStakeRatio = $summary['totalVisitorNetGains'] / $summary['totalVisitorStakes'];
 
                         if ($visitorNetGainsStakeRatio >= $maxVisitorNetGainsStakeRatio) {
                             $maxVisitorNetGains = $summary['totalVisitorNetGains'];
                             $maxVisitorNetGainsStakeRatio = $visitorNetGainsStakeRatio;
+                            $optimalVisitorPredictions = $summary['totalVisitorPredictions'];
                             $optimalVisitorMinPct = $minPct;
                             $optimalVisitorMinOdd = $minOdd;
                             $optimalVisitorMaxOdd = $maxOdd;
@@ -87,14 +92,16 @@ class OptimalReport extends Command
                     if ($summary['totalHomeNetGains'] > $maxHomeNetGains) {
                         $maxHomeNetGains = $summary['totalHomeNetGains'];
                         $maxHomeNetGainsStakeRatio = $summary['totalHomeNetGains'] / $summary['totalHomeStakes'];
+                        $optimalHomePredictions = $summary['totalHomePredictions'];
                         $optimalHomeMinPct = $minPct;
                         $optimalHomeMinOdd = $minOdd;
                         $optimalHomeMaxOdd = $maxOdd;
                     }
 
-                    if ($summary['totalHomeNetGains'] > $maxVisitorNetGains) {
+                    if ($summary['totalVisitorNetGains'] > $maxVisitorNetGains) {
                         $maxVisitorNetGains = $summary['totalVisitorNetGains'];
                         $maxVisitorNetGainsStakeRatio = $summary['totalVisitorNetGains'] / $summary['totalVisitorStakes'];
+                        $optimalVisitorPredictions = $summary['totalVisitorPredictions'];
                         $optimalVisitorMinPct = $minPct;
                         $optimalVisitorMinOdd = $minOdd;
                         $optimalVisitorMaxOdd = $maxOdd;
@@ -111,6 +118,7 @@ class OptimalReport extends Command
 
         echo "\n";
         echo "HOME\n";
+        echo "Total matches: $optimalHomePredictions \n";
         echo "Min pct: $optimalHomeMinPct \n";
         echo "Min odd: $optimalHomeMinOdd \n";
         echo "Max odd: $optimalHomeMaxOdd \n";
@@ -118,6 +126,7 @@ class OptimalReport extends Command
         echo "Net gains/stake ratio: $maxHomeNetGainsStakeRatio \n\n";
 
         echo "VISITOR\n";
+        echo "Total matches: $optimalVisitorPredictions \n";
         echo "Min pct: $optimalVisitorMinPct \n";
         echo "Min odd: $optimalVisitorMinOdd \n";
         echo "Max odd: $optimalVisitorMaxOdd \n";

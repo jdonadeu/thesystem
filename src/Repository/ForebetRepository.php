@@ -220,15 +220,19 @@ class ForebetRepository extends ServiceEntityRepository
         return $summary;
     }
 
-    public function getMatchesForSummary(int $minPct, float $minOdd, float $maxOdd): array {
+    public function getMatchesForSummary(int $minPct, float $minOdd, float $maxOdd, int $lastMonths): array
+    {
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = "
             SELECT *
             FROM forebet_matches_extended
             WHERE home_goals IS NOT NULL AND visitor_goals IS NOT NULL
-            AND ((prediction = '1' AND home_pct >= $minPct AND odd_1 >= $minOdd AND odd_1 <= $maxOdd) 
-                     OR (prediction = '2' AND visitor_pct >= $minPct AND odd_2 >= $minOdd AND odd_2 <= $maxOdd))
+            AND date >= DATE_SUB(CURDATE(), INTERVAL $lastMonths MONTH)
+            AND (
+            (prediction = '1' AND home_pct >= $minPct AND odd_1 >= $minOdd AND odd_1 <= $maxOdd) 
+            OR (prediction = '2' AND visitor_pct >= $minPct AND odd_2 >= $minOdd AND odd_2 <= $maxOdd)
+            )
             ";
 
         $queryResults = $conn->executeQuery($sql);
