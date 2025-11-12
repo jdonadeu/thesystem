@@ -33,25 +33,25 @@ class Report extends Command
         $matches = $this->forebetRepository->getMatchesForSummary($minPct, $minOdd, $maxOdd, 6);
         $summary = $this->forebetRepository->matchesSummary($matches);
 
-        $homePredictionsPct = $summary['totalHomePredictions'] === 0
+        $homePredictionsPct = $summary['homePredictions'] === 0
             ? 0
-            : floor(($summary['totalHomePredictionsPositive'] * 100) / $summary['totalHomePredictions']);
+            : floor(($summary['homePredictionsPositive'] * 100) / $summary['homePredictions']);
 
-        $visitorPredictionsPct = $summary['totalVisitorPredictions'] === 0
+        $visitorPredictionsPct = $summary['visitorPredictions'] === 0
             ? 0
-            :floor(($summary['totalVisitorPredictionsPositive'] * 100) / $summary['totalVisitorPredictions']);
+            :floor(($summary['visitorPredictionsPositive'] * 100) / $summary['visitorPredictions']);
 
         echo "\n";
         echo "Min Pct: {$minPct} \n";
         echo "Odds: $minOdd - $maxOdd \n";
         echo "\n";
-        echo "Home predictions: {$summary['totalHomePredictions']} \n";
-        echo "Home wins: {$summary['totalHomePredictionsPositive']} ({$homePredictionsPct}%) \n";
-        echo "Home gains: {$summary['totalHomeNetGains']} ({$summary['totalHomeGains']} - {$summary['totalHomeStakes']}) \n";
+        echo "Home predictions: {$summary['homePredictions']} \n";
+        echo "Home wins: {$summary['homePredictionsPositive']} ({$homePredictionsPct}%) \n";
+        echo "Home gains: {$summary['homeNetGains']} ({$summary['homeGains']} - {$summary['homeStakes']}) \n";
         echo "\n";
-        echo "Visitor predictions: {$summary['totalVisitorPredictions']} \n";
-        echo "Visitor wins: {$summary['totalVisitorPredictionsPositive']} ({$visitorPredictionsPct}%) \n";
-        echo "Visitor gains: {$summary['totalVisitorNetGains']} ({$summary['totalVisitorGains']} - {$summary['totalVisitorStakes']}) \n";
+        echo "Visitor predictions: {$summary['visitorPredictions']} \n";
+        echo "Visitor wins: {$summary['visitorPredictionsPositive']} ({$visitorPredictionsPct}%) \n";
+        echo "Visitor gains: {$summary['visitorNetGains']} ({$summary['visitorGains']} - {$summary['visitorStakes']}) \n";
         echo "\n";
 
         return Command::SUCCESS;

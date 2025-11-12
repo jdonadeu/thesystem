@@ -199,19 +199,19 @@ class ForebetRepository extends ServiceEntityRepository
             }
         }
 
-        $summary['totalMatches'] = $totalMatches;
+        $summary['matches'] = $totalMatches;
 
-        $summary['totalHomePredictions'] = $totalHomePredictions;
-        $summary['totalHomePredictionsPositive'] = $totalHomePredictionsPositive;
-        $summary['totalHomeStakes'] = $totalHomeStakes;
-        $summary['totalHomeGains'] = $totalHomeGains;
-        $summary['totalHomeNetGains'] = $totalHomeGains - $totalHomeStakes;
+        $summary['homePredictions'] = $totalHomePredictions;
+        $summary['homePredictionsPositive'] = $totalHomePredictionsPositive;
+        $summary['homeStakes'] = $totalHomeStakes;
+        $summary['homeGains'] = $totalHomeGains;
+        $summary['homeNetGains'] = $totalHomeGains - $totalHomeStakes;
 
-        $summary['totalVisitorPredictions'] = $totalVisitorPredictions;
-        $summary['totalVisitorPredictionsPositive'] = $totalVisitorPredictionsPositive;
-        $summary['totalVisitorStakes'] = $totalVisitorStakes;
-        $summary['totalVisitorGains'] = $totalVisitorGains;
-        $summary['totalVisitorNetGains'] = $totalVisitorGains - $totalVisitorStakes;
+        $summary['visitorPredictions'] = $totalVisitorPredictions;
+        $summary['visitorPredictionsPositive'] = $totalVisitorPredictionsPositive;
+        $summary['visitorStakes'] = $totalVisitorStakes;
+        $summary['visitorGains'] = $totalVisitorGains;
+        $summary['visitorNetGains'] = $totalVisitorGains - $totalVisitorStakes;
 
         if (($totalMatches - $totalHomePredictions - $totalVisitorPredictions) !== 0) {
             throw new Exception('Invalid number of matches');
@@ -257,6 +257,7 @@ class ForebetRepository extends ServiceEntityRepository
 
     public function calculateStake(float $pct): float
     {
+        return 1;
         return 1 + ($pct - ForeBet::MIN_PCT) * 0.05;
     }
 }

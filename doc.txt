@@ -1,5 +1,6 @@
 Todo:
 -----------
+- Track odds fluctuation and bet when it changes considerably
 - Find more tipsters like forebet. Maybe apis are better?
 
 Conclusions:
