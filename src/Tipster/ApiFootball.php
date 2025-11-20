@@ -7,6 +7,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ApiFootball
 {
+    private const SKIP_BOOKMAKER = ['188Bet'];
+
     private const HTTP_CLIENT_OPTIONS = [
         'headers' => [
             'x-rapidapi-host' => 'api-football-v1.p.rapidapi.com',
@@ -61,6 +63,81 @@ class ApiFootball
                 echo "$fixtureId, $odd1, $oddX, $odd2  - ($predictions[home], $predictions[draw], $predictions[away]) \n";
             }
         }
+    }
+
+    public function sureBets(string $date): void
+    {
+        $pagesCount = $this->getSureBetsPageCount($date);
+
+        for ($i = 1; $i <= $pagesCount; $i++) {
+            echo "Processing page $i \n";
+            $this->sureBetsByPage($date, $i);
+            echo "\n";
+        }
+    }
+
+    public function sureBetsByPage(string $date, int $page): void
+    {
+        $response = $this->httpClient->request(
+            'GET',
+            "https://api-football-v1.p.rapidapi.com/v3/odds?date=$date&page=$page",
+            self::HTTP_CLIENT_OPTIONS,
+        );
+
+        $content = $response->toArray();
+        $matches = $content['response'];
+        $odds = [];
+
+        foreach ($matches as $match) {
+            foreach ($match['bookmakers'] as $bookmaker) {
+                if (in_array($bookmaker['name'], self::SKIP_BOOKMAKER)) {
+                    continue;
+                }
+
+                $bets = $bookmaker['bets'];
+
+                foreach ($bets as $bet) {
+                    if ($bet['name'] !== 'Goals Over/Under') {
+                        continue;
+                    }
+
+                    foreach ($bet['values'] as $value) {
+                        if ($value['value'] !== "Over 2.5" & $value['value'] !== "Under 2.5") {
+                            continue;
+                        }
+
+                        $odds[$match['fixture']['id']][$value['value']][$bookmaker['name']] = $value['odd'];
+                        $odds[$match['fixture']['id']][$value['value']]['values'][] = $value['odd'];
+                    }
+                }
+
+                foreach ($odds as $fixtureId => $odd) {
+                    $maxOver25 = max($odd['Over 2.5']['values']);
+                    $maxUnder25 = max($odd['Under 2.5']['values']);
+
+                    $totalOdd = 1/$maxOver25 + 1/$maxUnder25;
+
+                    if ($totalOdd < 1) {
+                        echo "$fixtureId, $totalOdd \n";
+                    }
+                }
+            }
+        }
+
+        //var_dump($odds[1478012] ?? '');
+    }
+
+    private function getSureBetsPageCount(string $date): int
+    {
+        $response = $this->httpClient->request(
+            'GET',
+            "https://api-football-v1.p.rapidapi.com/v3/odds?date=$date&page=1",
+            self::HTTP_CLIENT_OPTIONS,
+        );
+
+        $content = $response->toArray();
+
+        return $content['paging']['total'];
     }
 
     private function getPredictions(int $fixtureId): array
