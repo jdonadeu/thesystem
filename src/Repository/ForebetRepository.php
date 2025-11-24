@@ -257,7 +257,6 @@ class ForebetRepository extends ServiceEntityRepository
 
     public function calculateStake(float $pct): float
     {
-        return 1;
         return 1 + ($pct - ForeBet::MIN_PCT) * 0.05;
     }
 }
