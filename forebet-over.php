@@ -14,7 +14,7 @@ echo "* +2,5 \n";
 echo "****************************************************** \n";
 
 foreach ($foreBetMatchesUnderOver as $match) {
-    if ($match['overPct'] < 90) {
+    if ($match['overPct'] < 80) {
         continue;
     }
 
