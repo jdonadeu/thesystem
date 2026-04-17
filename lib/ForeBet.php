@@ -42,10 +42,16 @@ class ForeBet
         $foreBetMatches = [];
 
         foreach ($matches[0] as $match) {
+            $dateParts = explode(' ', $match['DATE_BAH']);
+
             $foreBetMatches[] = [
                 'FOREBET OVER UNDER 2.5',
                 $match['DATE_BAH'],
+                'date' => $dateParts[0],
+                'time' => $dateParts[1],
                 'teams' => trim(preg_replace('/\s\s+/', ' ', $match['HOST_NAME'] . " - " . $match['GUEST_NAME'])),
+                'homeTeam' => $match['HOST_NAME'],
+                'visitorTeam' => $match['GUEST_NAME'],
                 'underPct' => $match['pr_under'],
                 'overPct' => $match['pr_over'],
                 'goalsAvg' => $match['goalsavg'],

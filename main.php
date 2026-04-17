@@ -1,5 +1,8 @@
 <?php
 
+// xclip -selection clipboard -o > data/forebet-under-over.json
+// git add . && git commit -m "wip" && git push
+
 include 'utils.php';
 include 'lib/MatchMerger.php';
 include 'lib/Zulu.php';

@@ -18,5 +18,21 @@ foreach ($foreBetMatchesUnderOver as $match) {
         continue;
     }
 
-    echo "-- " . implode(",", $match) . "\n";
+    //echo "-- " . implode(",", $match) . "\n";
+}
+
+foreach ($foreBetMatchesUnderOver as $match) {
+    if ($match['overPct'] < 80) {
+        continue;
+    }
+
+    echo "INSERT INTO forebet_over (date, time, home_team, visitor_team) VALUES ('".$match['date']."','".$match['time']."','".$match['homeTeam']."','".$match['visitorTeam']."');\n";
+}
+
+foreach ($foreBetMatchesUnderOver as $match) {
+    if ($match['overPct'] < 80) {
+        continue;
+    }
+
+    echo $match['homeTeam']. " - ". $match['visitorTeam'] . "\n";
 }
