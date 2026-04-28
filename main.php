@@ -98,23 +98,6 @@ foreach ($zuluMatches1x2 as $match) {
     echo "-- " . implode(",", $match) . "(" . $match['homePct'] . ")\n";
 }
 
-// Forebet matches ordered by home pct
-echo "\n\n";
-echo "****************************************************** \n";
-echo "* Forebet ordered by homePct\n";
-echo "****************************************************** \n";
-
-usort($foreBetMatches1x2, function ($item1, $item2) {
-    return $item2['homePct'] <=> $item1['homePct'];
-});
-
-foreach ($foreBetMatches1x2 as $match) {
-    if ($match['homePct'] < 50) {
-        continue;
-    }
-    echo "-- " . implode(",", $match) . "(" . $match['homePct'] . ")\n";
-}
-
 // Forebet matches ordered by home pct (includes also past matches)
 echo "\n\n";
 echo "****************************************************** \n";
