@@ -5,15 +5,21 @@ include 'lib/ForeBet.php';
 
 $pct = 80;
 $foreBet = new Forebet();
-$foreBetMatchesUnderOver = $foreBet->getBothToScoreMatches();
+$foreBetMatches = $foreBet->getMatches(false);
 
 echo "\n\n";
 echo "****************************************************** \n";
-echo "* BTS \n";
+echo "* 1X2 \n";
 echo "****************************************************** \n";
 
-foreach ($foreBetMatchesUnderOver as $match) {
-    if ($match['yesPct'] < $pct) {
+foreach ($foreBetMatches as $match) {
+    if ($match['homePct'] < $pct && $match['awayPct'] < $pct) {
+        //continue;
+    }
+
+    $goals = explode('-', $match['host_sc_pr']);
+
+    if ((int)$goals[0] + (int)$goals[1] < 5) {
         continue;
     }
 

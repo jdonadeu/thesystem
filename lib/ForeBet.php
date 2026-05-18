@@ -11,7 +11,6 @@ class ForeBet
         $json = file_get_contents('data/forebet-1x2.json');
         $matches = json_decode($json, true);
         $foreBetMatches = [];
-        $now = new DateTime();
 
         foreach ($matches[0] as $match) {
             if ($excludePastMatches) {
