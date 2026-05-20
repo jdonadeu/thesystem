@@ -13,13 +13,13 @@ echo "* 1X2 \n";
 echo "****************************************************** \n";
 
 foreach ($foreBetMatches as $match) {
-    if ($match['homePct'] < $pct && $match['awayPct'] < $pct) {
-        //continue;
+    if ($match['goalsavg'] < 3.5) {
+        continue;
     }
 
     $goals = explode('-', $match['host_sc_pr']);
 
-    if ((int)$goals[0] + (int)$goals[1] < 5) {
+    if ((int)$goals[0] < 2 || (int)$goals[1] < 2) {
         continue;
     }
 
